@@ -34,42 +34,12 @@
         "type": "internal",
         "internal": {
             "path": "${fascinator.home}/security/roles.properties"
-        },
-        "NEWtype": "ldap",
-		"NEWldap": {
-	        "DEVbaseURL": "ldaps://ldap-dev.adelaide.edu.au:3636",
-	        "baseURL": "ldaps://ldap-uat.adelaide.edu.au:636",
-			"baseDN": "ou=people,dc=adelaide,dc=edu,dc=au",
-			"idAttribute": "uniquemember=uid",
-			"objectClassRoleMap": [
-				{
-					"objectClass": "DCAD"
-					"roles": ["admin"]
-				},
-				{
-					"objectClass": "DCLI"
-					"roles": ["reviewer"]
-				},
-				{
-					"objectClass": "DCLO"
-					"roles": ["librarian"]
-				}
-			]
-		}
-    },
+			}
+	},
     "storage": {
         "type": "file-system",
         "file-system": {
             "home": "${storage.home}"
-        }
-    },
-    "storage-fcrepo": {
-        "type": "fedora3",
-        "fedora3": {
-            "url": "http://localhost:8080/fedora",
-            "username": "fedoraAdmin",
-            "password": "fedoraAdmin",
-            "namespace": "uuid"
         }
     },
     "messaging": {

@@ -1,25 +1,108 @@
+#macro(requiredValidation $id $message)
+    <label class="validation-err-msg" for="$id"
+        data-validation-rule="when(blur,change,submit);test(notEmpty)">
+        $message
+    </label>
+#end
+
+#macro(fieldTitle $id $label $required)
+        <label for="$id">$label#if($required)<span class="required">(*)</span>#end</label>
+        <span class="helpWidget" data-help-content-id="help-$id">
+            <img src="$portalPath/images/icons/help.png"/>
+        </span>
+#end
+
+
+#macro(mintMultiSelectField $id $labelId $sourceUrl $idKey $labelKey $listKey $childrenKey)
+    <table class="input-list">
+        <tfoot>
+            <tr class="item-input">
+                <td>
+                    <span class="data-source-drop-down"
+                          data-json-source-url="$sourceUrl"
+                          data-top-level-id="top"
+                          data-id-key="$idKey"
+                          data-label-key="$labelKey"
+                          data-list-key="$listKey"
+                          data-children-key="$childrenKey">
+                        <input type="text" class="selection-added-label" id="$labelId" />
+                        <input type="text" class="selection-added-id" id="$id" />
+                    </span>
+                    <button class="item-add selection-add add-unique-only reset-on-add">
+                        Select
+                    </button>
+                </td>
+            </tr>
+        </tfoot>
+        <tbody>
+            <tr class="item-display">
+                <td>
+                    <span class="item-display-item"></span>
+                    <span class="item-display-item hidden"></span>
+                    <a class="delete-item" href="#">delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+#end
+
+#macro(inputList $id $placeholder $addLabel $requiredLabel)
+    #set($vid = $self.getCleanId($id))
+    <table class="input-list">
+        <tbody>
+            <tr class="item-input-display sortable-item">
+                <td class="sort-number"></td>
+                <td>
+                    <input type="text" size="60" placeholder="$placeholder" id="${id}.0" class="v${vid}" />
+                </td>
+                <td class="delete-item"><a href="#">delete</a></td>
+                <td style="width: 100%;">
+                    #if("$!requiredLabel" != "")
+                    <label for="${id}.0" class="validation-err-msg"
+                        data-validation-rule="test(notEmpty);when(blur,change,submit);liveFor(.v${vid});">
+                        $requiredLabel
+                    </label>
+                    #end
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td><input type="button" class="button add-another-item" value="$addLabel" /></td>
+                <td colspan="2"></td>
+            </tr>
+        </tfoot>
+    </table>
+#end
+
+#macro(mintSelectField $id $labelId $sourceUrl $idKey $labelKey $listKey $defaultValue)
+    <span class="data-source-drop-down"
+          data-json-source-url="$sourceUrl"
+          data-id-key="$idKey"
+          data-label-key="$labelKey"
+          data-list-key="$listKey"
+          #if("$!defaultValue"!="")data-default-value="$!defaultValue"#end>
+        <span class="selection-added">
+            <input type="hidden" class="selection-added-id" id="$id" name="$id" />
+            <input type="text" class="selection-added-label" readonly="readonly" id="$labelId" name="$labelId" />
+            <a href="#" class="clear-item">change</a>
+        </span>
+        <span class="drop-down-location">
+            <button class="selection-add add-unique-only" data-add-on-click="1">
+                Select
+            </button>
+        </span>
+    </span>
+#end
+
+
 #set($pageTitle = "Notify us about a dataset")
 <style type="text/css">
 fieldset p textarea { display:block; width: 98%; }
 .required { color: red; }
 label.validation, .validation label { color: red; display: block; }
 </style>
-
-<!-- MJ: hackery here 
-<div class="grid_16" id="inputForms">
-    <p class="loading-data">Loading form data, please wait...</p>
-</div>
-<script type="text/javascript" src="$portalPath/openlayers/OpenLayers.js"></script>
-<script type="text/javascript" src="$portalPath/openlayers/redbox.js"></script>
-<script type="text/javascript" src="$portalPath/js/autocomplete/lib/jquery.ajaxQueue.js"></script>
-<script type="text/javascript" src="$portalPath/js/autocomplete/lib/jquery.bgiframe.min.js"></script>
-<script type="text/javascript" src="$portalPath/js/autocomplete/jquery.autocomplete.pack.js"></script>
-<script type="text/javascript" src="$portalPath/js/jquery.jqEasyCharCounter.min.js"></script>
-<script type="text/javascript" src="$portalPath/javascript-widgets/widgets2.js"></script>
-<script type="text/javascript" src="$portalPath/javascript-widgets/nameLookup.js"></script>
--->
-<script type="text/javascript" src="$portalPath/javascript-widgets/widgets2.js"></script>
-
 <h2 id="page-heading"><span>$pageTitle</span></h2>
 <div class="grid_16 widget-form"
     data-form-fields="title,description,redbox:formVersion,redbox:newForm,redbox:submissionProcess.redbox:submitted,workflow_source,redbox:submissionProcess.dc:date,redbox:submissionProcess.dc:description,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone"
@@ -36,13 +119,204 @@ label.validation, .validation label { color: red; display: block; }
             <label for="redbox:submissionProcess.dc:date">Date Submitted</label>
             <input id="redbox:submissionProcess.dc:date" type="text" size="40" value="$!self.getSubmitDate()" readonly="readonly" />
         </p>
+
+		
+   #fieldTitle("dc:type.rdf:PlainLiteral" "Type" true)
+    <div class="help-content" id="help-dc:type.rdf:PlainLiteral">
+        <dl>
+            <dt>Catalogue or Index</dt>
+            <dd>
+                collection of resource descriptions describing the content of
+                one or more repositories or collective works at the item level.
+            </dd>
+            <dt>Collection</dt>
+            <dd>
+                compiled content created as separate and independent works and
+                assembled into a collective whole for distribution and use.
+            </dd>
+            <dt>Registry</dt>
+            <dd>
+                collection of registry objects compiled to support the business
+                of a given community.
+            </dd>
+            <dt>Repository</dt>
+            <dd>
+                collection of physical or digital objects compiled for
+                information and documentation purposes and/or for storage and
+                safekeeping.
+            </dd>
+            <dt>Dataset</dt>
+            <dd>
+                collection of physical or digital objects generated by research
+                activities.
+            </dd>
+        </dl>
+    </div>
+    <p>
+        #mintSelectField("dc:type.rdf:PlainLiteral"
+                         "dc:type.skos:prefLabel"
+                         "$portalPath/workflows/forms/data/types.json"
+                         "id"
+                         "label"
+                         "results"
+                         "")
+        #requiredValidation("dc:type.rdf:PlainLiteral" "The type is required!")
+    </p>
+
+	
+        <p>
+            <label for="redbox:submissionProcess.dc:title">Title <span class="required">*</span></label>
+            <label class="validation" for="redbox:submissionProcess.dc:title" data-validation-rule="test(notEmpty);when(submit);">A title is required!</label>
+            <textarea id="redbox:submissionProcess.dc:title" cols="40" rows="1"></textarea>
+        </p>		
+
+			
         <p>
             <label for="redbox:submissionProcess.dc:description">Description <span class="required">*</span></label>
             <label class="validation" for="redbox:submissionProcess.dc:description" data-validation-rule="test(notEmpty);when(submit);">A description is required!</label>
             <textarea id="redbox:submissionProcess.dc:description" cols="40" rows="10"></textarea>
         </p>
+		
+
+		 <div class="group">
         <p>
-            <label for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name">Contact Name <span class="required">*</span></label>
+            <label for="dc:identifier.dc:type.rdf:PlainLiteral">Type of identifier:</label>
+            #mintSelectField("dc:identifier.dc:type.rdf:PlainLiteral"
+                             "dc:identifier.dc:type.skos:prefLabel"
+                             "$portalPath/workflows/forms/data/identifierTypes.json"
+                             "id"
+                             "label"
+                             "results"
+                             "handle")
+        </p>
+        <p>
+            <label for="dc:identifier.rdf:PlainLiteral">Identifier:</label>
+            <input type="text" size="60" placeholder="persistent identifier" id="dc:identifier.rdf:PlainLiteral" class="videntifier" />
+        </p>
+    </div>
+
+        <p>
+            <label for="redbox:submissionProcess.dc:location">Location - Please enter a physical address <span class="required">*</span></label>
+            <label class="validation" for="redbox:submissionProcess.dc:location" data-validation-rule="test(notEmpty);when(submit);">A location is required!</label>
+            <input id="redbox:submissionProcess.dc:location" cols="40" rows="3" value="The University of Adelaide, Adelaide SA 5005"/>
+        </p>	
+        <p>
+            <label for="redbox:submissionProcess.locrel:prc.foaf:elocation">Please enter the electronic location of data if available </label>
+            <input id="redbox:submissionProcess.locrel:prc.foaf:elocation" type="text" size="40" />
+        </p>		
+        <p>
+            <label for="redbox:submissionProcess.locrel:prc.foaf:geodata">Please enter the geographical coverage of the data </label>
+            <input id="redbox:submissionProcess.locrel:prc.foaf:geodata" type="text" size="40" />
+        </p>		
+		
+    #fieldTitle("dc:coverage.vivo:DateTimeInterval" "Date Coverage" false)
+    <div class="help-content" id="help-dc:coverage.vivo:DateTimeInterval">
+        Use this to indicate a date range relevant to the research
+        dataset/collection, registry/repository, catalogue or index. Year format
+        requires manual entry, eg. 1990 to 2010
+    </div>
+    <p>
+        <input type="text" placeholder="Start" class="dateYMD" id="dc:coverage.vivo:DateTimeInterval.vivo:start" />
+        <label for="dc:coverage.vivo:DateTimeInterval.vivo:end">to</label>
+        <input type="text" placeholder="End" class="dateYMD" id="dc:coverage.vivo:DateTimeInterval.vivo:end" />
+        <label class="validation-err-msg" for="dc:coverage.vivo:DateTimeInterval.vivo:start"
+            data-validation-rule="when(blur,change,submit);name(testCoverageFrom);
+                    test(/^[12]\d{3}([-\/]+(10|11|12|0?\d)([-\/]+(30|31|[012]?\d))?)?$/ or empty);">
+            A valid from date or year is required!
+        </label>
+        <label class="validation-err-msg" for="dc:coverage.vivo:DateTimeInterval.vivo:end"
+            data-validation-rule="when(blur,change,submit);name(testCoverageTo);
+                    test(/^[12]\d{3}([-\/]+(10|11|12|0?\d)([-\/]+(30|31|[012]?\d))?)?$/ or empty);">
+            A valid to date or year is required!
+        </label>
+    </p>
+
+    #fieldTitle("dc:coverage.redbox:timePeriod" "Time Period" false)
+    <div class="help-content" id="help-dc:coverage.redbox:timePeriod">
+        A text description of a time period relating to the coverage of the
+        research dataset/collection, registry/repository, catalogue or index, if
+        applicable, eg. 21st Century, WWII, The Depression, etc.
+    </div>
+    <p>
+        <input type="text" id="dc:coverage.redbox:timePeriod" size="60"
+            placeholder="If dates cannot be quantified ie. 21st Century, WWII, The Depression, etc." />
+    </p>
+	
+	<p>
+        <label for="redbox:submissionProcess.dc:rights">Rights Statement</label>
+        <input id="redbox:submissionProcess.dc:rights" type="text" size="40" value="Enter the text for the rights statement" readonly="readonly" />
+     </p>     
+	 
+	<p>
+        <label for="redbox:submissionProcess.dc:access">Access Rights</label>
+        <input id="redbox:submissionProcess.dc:access" type="text" size="40" />
+     </p> 
+
+	<p>
+        <label for="redbox:submissionProcess.dc:license">License</label>
+        <input id="redbox:submissionProcess.dc:license" type="text" size="40" />
+     </p> 
+
+    <p>
+        <label for="redbox:submissionProcess.dc:related">Related Information - Please enter any relevant websites or publications that should be included on the record </label>
+        <textarea id="redbox:submissionProcess.dc:related" cols="40" rows="5"></textarea>
+    </p>
+
+<p>
+    #fieldTitle("dc:contributor.locrel:clb" "Related People" false)
+    <div class="help-content" id="help-dc:contributor.locrel:clb">
+        Names of other collaborators in the research project, if applicable,
+        eg. CSIRO, University of X, Prof. Jim Bloggs, etc.
+    </div>
+    <table class="input-list">
+        <tbody>
+            <tr class="item-input-display sortable-item">
+                <td class="sort-number"></td>
+                <td>
+                    <input type="text" size="60" placeholder="eg. CSIRO, University of X, Prof. Jim Bloggs, etc." id="dc:contributor.locrel:clb.0.foaf:Agent" />
+                </td>
+                <td class="delete-item"><a href="#">delete</a></td>
+                <td style="width: 100%;"> </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td><input type="button" class="button add-another-item" value="Add collaborator" /></td>
+                <td colspan="2"></td>
+            </tr>
+        </tfoot>
+    </table>
+</p>
+
+	
+    #fieldTitle("dc:contributor.locrel:relatedProjects" "Related Projects" false)
+    <div class="help-content" id="help-dc:contributor.locrel:relatedProjects">
+        Names of other projects that sare related to this project
+    </div>
+    <table class="input-list">
+        <tbody>
+            <tr class="item-input-display sortable-item">
+                <td class="sort-number"></td>
+                <td>
+                    <input type="text" size="60" placeholder="eg. Australias place in the worlds wine markets" id="dc:contributor.locrel:clb.0.foaf:Agent" />
+                </td>
+                <td class="delete-item"><a href="#">delete</a></td>
+                <td style="width: 100%;"> </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td><input type="button" class="button add-another-item" value="Add another project" /></td>
+                <td colspan="2"></td>
+            </tr>
+        </tfoot>
+    </table>
+
+
+        <p>
+            <label for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name">Contact Name  <span class="required">*</span></label>
             <label class="validation" for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name" data-validation-rule="test(notEmpty);when(submit);">A contact name is required!</label>
             <input id="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name" type="text" size="40" />
         </p>
@@ -64,7 +338,7 @@ label.validation, .validation label { color: red; display: block; }
     </fieldset>
 </div>
 <div class="clear"></div>
-
+<script type="text/javascript" src="$portalPath/javascript-widgets/widgets2.js"></script>
 <script type="text/javascript">
 (function($){
     $(function(){
@@ -95,14 +369,16 @@ function srSubmitFunc(widgetForm,formData){
     if(widgetForm.validator.isOkToSubmit()){
         $("#submitButton,#cancelButton").attr("disabled", "disabled");
         $("#loading").show();
-        var title = formData["redbox:submissionProcess.dc:description"];
+        var title = formData["redbox:submissionProcess.dc:title"];
         var description = formData["redbox:submissionProcess.dc:description"];
+		var identifier = formData["redbox:submissionProcess.dc:identifier"];
         var postData = jQuery.extend(formData,{
             ajax: true,
             func: "create-new",
             packageType: "dataset",
             title: title,
-            description: description
+            description: description,
+			identifier: identifier
         });
         jQuery.ajax({
             type: "POST",
@@ -115,15 +391,10 @@ function srSubmitFunc(widgetForm,formData){
                         var oid=packageData.url||"";
                         oid=oid.replace("$portalPath/workflow/", "");
                         var postData2 = jQuery.extend(postData,{
-                            //func: "update-package-meta-deposit",
-                            func: "update-package-meta",
-                            oid: oid,
-                            metaList: ["redbox:submissionProcess.dc:description"]
-                            //metaList: ["title", "description", "redbox:newForm", "redbox:formVersion"]
-                            //"redbox:newForm": "true",
-                            //"redbox:formVersion": "$systemConfig.getString("", "redbox.version.string")"
+                            func: "update-package-meta-deposit",
+                            oid: oid
                         });
-                        //delete postData2.metaList;
+                        delete postData2.metaList;
                         jQuery.ajax({
                             type: "POST",
                             url: "$portalPath/actions/workflow.ajax",
@@ -157,107 +428,4 @@ function srSubmitFunc(widgetForm,formData){
         });
     }
 }
-
-<!-- MJ: more hackery here
-(function($){
-    // OpenLayers stylesheets
-    $('head').append('<link rel="stylesheet" type="text/css" id="openLayersCss1">');
-    $('#openLayersCss1').attr('href', '$portalPath/openlayers/theme/default/style.css');
-    $('head').append('<link rel="stylesheet" type="text/css" id="openLayersCss2">');
-    $('#openLayersCss2').attr('href', '$portalPath/openlayers/redbox.css');
-
-    $(function(){
-        function onContentLoaded(){
-            // OpenLayers init, store it globally so the Geonames lookup can hit it later
-            window["openLayersMap"] = loadOpenLayers();
-
-			$(".request").remove();
-
-			widgetTabs = widgets.changeToTabLayout($(".inputscreens"));
-            widgetTabs.tabs({
-                select: function(event, ui){
-                    if(widgets.forms[0].hasChanges()){
-                        $(".form-fields-save:first").click();
-                    }
-                }
-            });
-            widgets.contentLoaded(function(){
-                try{
-                    widgets.formsById["main-form"].addListener("postOnRestore",
-                        function(ctx){
-                            nameLookup.init();
-                            // people
-                            ctx.findx(".lookup-show").each(function(){
-                                var e=$(this);
-                                e.find("a.nameLookup-lookup").text(e.find("input.nl").val()?" | change":"lookup");
-                                e.find(".identified-as-name").text(e.find("input.nl").val());
-                            });
-                            // grant numbers
-                            $(".internal-grant:checked").each(function() {
-                                var baseId = $(this).attr("id").replace(".redbox:internalGrant", "");
-                                $("input[id="+baseId+".dc:identifier]").unautocomplete();
-                                $("input[id="+baseId+".skos:prefLabel]").removeAttr("readonly").removeClass("label");
-                            });
-                            // geonames
-                            $(".autocomplete-geonames").each(function() {
-                                var baseId = $(this).attr("id").replace(".rdf:PlainLiteral", "");
-                                var uri = $("input[id='"+baseId+".dc:identifier']").val();
-                                if (uri != "") {
-                                    var east = $("input[id='"+baseId+".geo:long']").val();
-                                    var north = $("input[id='"+baseId+".geo:lat']").val();
-                                    var coordsElem = $("div[id='"+baseId+".coords']");
-                                    coordsElem.find(".east").text(east);
-                                    coordsElem.find(".north").text(north);
-                                    coordsElem.find(".map-link").attr("href", uri);
-                                    coordsElem.show();
-                                }
-                            });
-                            // insert date created if not exist
-                            var dcCreated = $("#dc\\:created");
-                            if(jQuery.trim(dcCreated.val())==""){
-                                dcCreated.val(getDate());
-                            }
-
-							// Identifier, if not 'internal' or 'external' click() it
-                            var idOrigin = $("input[id=dc:identifier.redbox:origin]").val();
-                            if (idOrigin == "") {
-                                $("input[id=dc:identifier.checkbox]").click();
-                            }
-                        }
-                    );
-                    widgets.formsById["main-form"].restore(packageData.metaData);
-                    #if($self.getCurrentStep()=="retired")
-                    $(".inputscreens").find("input,select,textarea").each(function(c,e){
-                        if($(e).parents("#notes,#submit").length==0){
-                            $(e).attr("disabled", "disabled");
-                        }
-                    });
-                    $(".inputscreens").find(".input-list tfoot,.drop-down-location,.delete-item,.selection-add,.clear-item,.clear-link,.nameLookup-lookup,.add-attachment,.delete-attachment").each(function(c,e){
-                        if($(e).parents("#notes,#submit").length==0){
-                            $(e).hide();
-                        }
-                    });
-                    #end
-
-                    // Form data is ready, load features on the map
-                    window["openLayersMap"].loadData();
-
-                }catch(e){
-                    alert(e);
-                }
-            });
-        }
-
-		$("#inputForms").load("$portalPath/workflows/researcherforms/submission.ajax",
-                {   oid: "$oid",
-                    portalPath: "$portalPath",
-                    stage: "$self.getCurrentStep()",
-                    stageLabel: "$self.getCurrentStepLabel()",
-                    nextStageMessage: "$self.getNextStepAcceptMessage()"
-                },
-                onContentLoaded);
-
-	});
-})(jQuery);
--->
 </script>

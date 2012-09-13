@@ -6,3 +6,10 @@ target
 *.jar
 *.war
 *.ear
+
+# redbox build artifacts
+/home
+/portal
+/server
+/solr
+/storage

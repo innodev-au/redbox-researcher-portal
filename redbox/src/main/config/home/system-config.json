@@ -1,0 +1,452 @@
+{
+    "version": "1.1.0.1",
+    "redbox.version.string": "${redbox.version}",
+    "redbox.identity": {
+        "institution": "The University of Adelaide",
+        "RIF-CS Group": "The University of Adelaide"
+        "internalGrantString": "urn:uoe:internal"
+    },
+    "configured": true,
+    "urlBase": "${server.url.base}",
+    "email": "DO_NOT_CHANGE",
+    "sso": {
+        "plugins": [],
+        "urlExclusions": {
+            "startsWith": ["css/", "feed/", "images/", "js/", "flowplayer/"],
+            "endsWith": [".ico"],
+            "equals": ["css"]
+        },
+        "trustTokens": {
+        }
+    },
+    "accesscontrol": {
+        "type": "derby",
+        "derby": {
+        }
+    },
+    "authentication": {
+        "type": "internal",
+        "internal": {
+            "path": "${fascinator.home}/security/users.properties"
+        }
+    },
+    "roles": {
+        "type": "internal",
+        "internal": {
+            "path": "${fascinator.home}/security/roles.properties"
+        },
+        "NEWtype": "ldap",
+		"NEWldap": {
+	        "DEVbaseURL": "ldaps://ldap-dev.adelaide.edu.au:3636",
+	        "baseURL": "ldaps://ldap-uat.adelaide.edu.au:636",
+			"baseDN": "ou=people,dc=adelaide,dc=edu,dc=au",
+			"idAttribute": "uniquemember=uid",
+			"objectClassRoleMap": [
+				{
+					"objectClass": "DCAD"
+					"roles": ["admin"]
+				},
+				{
+					"objectClass": "DCLI"
+					"roles": ["reviewer"]
+				},
+				{
+					"objectClass": "DCLO"
+					"roles": ["librarian"]
+				}
+			]
+		}
+    },
+    "storage": {
+        "type": "file-system",
+        "file-system": {
+            "home": "${storage.home}"
+        }
+    },
+    "storage-fcrepo": {
+        "type": "fedora3",
+        "fedora3": {
+            "url": "http://localhost:8080/fedora",
+            "username": "fedoraAdmin",
+            "password": "fedoraAdmin",
+            "namespace": "uuid"
+        }
+    },
+    "messaging": {
+        "url": "tcp://localhost:${amq.port}",
+        "stompUrl": "stomp://localhost:${amq.stomp.port}",
+        "home": "${fascinator.home}/activemq-data",
+        "startup": {
+            "delay": "5000",
+            "timer": "15000"
+        },
+        "statistics": {
+            "enabled": true,
+            "destination": "houseKeeping"
+        },
+        "toolChainQueue": "transactionManager",
+        "threads": [
+            {
+                "id": "transactionManager",
+                "description": "Transaction Manager Queue for complicated tool chains.",
+                "priority": "5",
+                "config": {
+                    "name": "transactionManager",
+                    "transactionManagerPlugin": "curation-redbox"
+                }
+            },
+            {
+                "id": "subscriber",
+                "description": "Subscriber queue for event log.",
+                "priority": "7",
+                "config": {
+                    "name": "subscriber",
+                    "subscribers": ["solr-event-log"]
+                }
+            },
+            {
+                "id": "solrwrapper",
+                "description": "Wrapper for ingest into main Solr core.",
+                "priority": "5",
+                "config": {
+                    "name": "solrwrapper"
+                }
+            },
+            {
+                "id": "emailnotification",
+                "description": "Queue to send email notifications",
+                "priority": "8",
+                "config": {
+                    "name": "emailnotification",
+                    "debug": false,
+                    "from": {
+                        "email": "${admin.email}",
+                        "name": "ReDBox"
+                    },
+                    "smtp": {
+                        "host": "${smtp.host}"
+                    },
+                    "defaults": {
+                        "subject": "Notification",
+                        "body": "Default email message"
+                    }
+                }
+            }
+        ]
+    },
+    "andsDoi": {
+        "apiKey": "1234",
+        "apiBaseUrl": "https://test.ands.org.au/home/dois/",
+        "doiProperty": "andsDoi",
+        "security": {
+            "users": [],
+            "roles": ["admin"]
+        }
+    },
+    "curation": {
+        "curationEmailAddress": "${admin.email}",
+        "curationRequiresConfirmation": false,
+        "pidProperty": "localPid",
+        "pidType": "local",
+        "mintBroker": "${mint.amq.broker}",
+
+        "relations": {
+            "dc:relation.vivo:Dataset.0.dc:identifier": {
+                "path": ["dc:relation", "vivo:Dataset"],
+                "identifier": ["dc:identifier"],
+                "relationship": ["vivo:Relationship", "rdf:PlainLiteral"],
+                "excludeCondition": {
+                    "path": ["redbox:publish"],
+                    "value": ""
+                },
+                "system": "redbox",
+                "optional": true
+            },
+            "dc:relation.vivo:Service.0.dc:identifier": {
+                "path": ["dc:relation", "vivo:Service"],
+                "identifier": ["dc:identifier"],
+                "relationship": ["vivo:Relationship", "rdf:PlainLiteral"]
+            },
+            "dc:creator.foaf:Person.0.dc:identifier": {
+                "path": ["dc:creator", "foaf:Person"],
+                "identifier": ["dc:identifier"],
+                "excludeCondition": {
+                    "path": ["dc:identifier"],
+                    "startsWith": "http://nla.gov.au/nla.party-"
+                },
+                "relationship": "hasCollector"
+            },
+            "locrel:prc.foaf:Person.dc:identifier": {
+                "path": ["locrel:prc", "foaf:Person"],
+                "identifier": ["dc:identifier"],
+                "excludeCondition": {
+                    "path": ["dc:identifier"],
+                    "startsWith": "http://nla.gov.au/nla.party-"
+                },
+                "relationship": "hasAssociationWith",
+                "description": "Primary Contact"
+            },
+            "swrc:supervisor.foaf:Person.0.dc:identifier": {
+                "path": ["swrc:supervisor", "foaf:Person"],
+                "identifier": ["dc:identifier"],
+                "excludeCondition": {
+                    "path": ["dc:identifier"],
+                    "startsWith": "http://nla.gov.au/nla.party-"
+                },
+                "relationship": "hasAssociationWith",
+                "description": "Supervisor"
+            },
+            "foaf:Organization.dc:identifier": {
+                "path": ["foaf:Organization"],
+                "identifier": ["dc:identifier"],
+                "relationship": "isManagedBy"
+            },
+            "foaf:fundedBy.vivo:Grant.0.dc:identifier": {
+                "path": ["foaf:fundedBy", "vivo:Grant"],
+                "identifier": ["dc:identifier"],
+                "relationship": "isOutputOf",
+                "excludeCondition": {
+                    "path": ["redbox:internalGrant"],
+                    "value": "on"
+                }
+            }
+        },
+        "reverseMappings": {
+            "describes": "isDescribedBy",
+            "hasPart": "isPartOf",
+            "hasAssociationWith": "hasAssociationWith",
+            "hasCollector": "isCollectorOf",
+            "isDescribedBy": "describes",
+            "isLocatedIn": "isLocationFor",
+            "isLocationFor": "isLocatedIn",
+            "isManagedBy": "isManagerOf",
+            "isOutputOf": "hasOutput",
+            "isOwnedBy": "isOwnerOf",
+            "isPartOf": "hasPart",
+            "supports": "isSupportedBy",
+            "isEnrichedBy": "enriches",
+            "isDerivedFrom": "hasDerivedCollection",
+            "hasDerivedCollection": "isDerivedFrom"
+        }
+    },
+    "indexer": {
+        "type": "solr",
+        "properties": "TF-OBJ-META",
+        "useCache": true,
+        "buffer": {
+            "docLimit": "200",
+            "sizeLimit": "204800",
+            "timeLimit": "30"
+        },
+        "solr": {
+            "uri": "http://localhost:${jetty.port}/solr/fascinator",
+            "coreName": "fascinator",
+            "autocommit": false,
+            "embedded": false
+        },
+        "anotar": {
+            "uri": "http://localhost:${jetty.port}/solr/anotar",
+            "coreName": "anotar",
+            "autocommit": true
+        }
+    },
+    "transformerDefaults": {
+        "local": {
+            "id": "local",
+            "useIncrements": false
+        },
+        "jsonVelocity": {
+            "id": "jsonVelocity",
+            "sourcePayload": ".tfpackage",
+            "templatesPath": "${fascinator.home}/templates"
+        }
+    },
+    "uploader": {
+        "attachment-upload":{
+            "screen-label": "Attachment Upload",
+            "security": ["librarian", "reviewer", "admin"],
+            "upload-path": "${fascinator.home}/uploads/attachments",
+            "json-config": "${fascinator.home}/harvest/workflows/attachment.json"
+        },
+        "notify": {
+            "screen-label": "Notify us about a research dataset",
+            "security": ["researcher"],
+            "upload-path": "${fascinator.home}/uploads/submissions",
+            "json-config": "${fascinator.home}/harvest/workflows/dataset.json",
+            "upload-template": "workflows/submission"
+        }
+    },
+    "mime-types": {
+        "tfpackage": "application/x-fascinator-package"
+    },
+    "database-service": {
+        "derbyHome": "${fascinator.home}/database"
+    },
+    "portal": {
+        "home": "${portal.home}",
+        "contentDir": "${fascinator.home}/content",
+        "defaultView": "default",
+        "sessionTimeout": "60",
+        "skins": {
+            "default": "default",
+            "order": [ "local", "redbox" ]
+        },
+        "caching": {
+            "caches": {
+                "scriptObjects": {
+                    "label": "Cache for Jython scripts",
+                    "profile": "dynamic",
+                    "lastModifiedCheck": true
+                },
+                "pathLookup": {
+                    "label": "Cache for path lookups",
+                    "profile": "full"
+                }
+            },
+            "profiles": {
+                "default": {
+                    "label": "Factory defaults",
+                    "refreshIntervalSeconds": 30,
+                    "maxElementsInMemory": 10000,
+                    "eternal": false,
+                    "timeToIdleSeconds": 120,
+                    "timeToLiveSeconds": 120,
+                    "overflowToDisk": false,
+                    "maxElementsOnDisk": 10000,
+                    "diskPersistent": false,
+                    "memoryStoreEvictionPolicy": "LRU"
+                },
+                "off": {
+                    "label": "Disabled",
+                    "maxElementsInMemory": 10000,
+                    "eternal": false,
+                    "timeToIdleSeconds": 1,
+                    "timeToLiveSeconds": 1,
+                    "overflowToDisk": false,
+                    "maxElementsOnDisk": 1,
+                    "diskPersistent": false,
+                    "memoryStoreEvictionPolicy": "LRU"
+                },
+                "dynamic": {
+                    "label": "Dynamic - Caches are refreshed periodically",
+                    "maxElementsInMemory": 25000,
+                    "eternal": false,
+                    "timeToIdleSeconds": 120,
+                    "timeToLiveSeconds": 300,
+                    "overflowToDisk": false,
+                    "maxElementsOnDisk": 25000,
+                    "diskPersistent": false,
+                    "memoryStoreEvictionPolicy": "LRU"
+                },
+                "full": {
+                    "label": "Full - Caches never expire",
+                    "maxElementsInMemory": 100000,
+                    "eternal": true,
+                    "timeToIdleSeconds": 0,
+                    "timeToLiveSeconds": 0,
+                    "overflowToDisk": true,
+                    "maxElementsOnDisk": 100000,
+                    "diskPersistent": false,
+                    "memoryStoreEvictionPolicy": "LRU"
+                }
+            }
+        },
+        "layout": "layout",
+        "nativeJython": true,
+        "packageTypes": {
+            "default": {
+                "jsonconfig": "packaging-config.json",
+                "packages-in-package": false
+            },
+            "dataset": {
+                "jsonconfig": "dataset.json",
+                "packages-in-package": false
+            }
+        },
+        "harvestFiles": "${fascinator.home}/harvest",
+        "houseKeeping": {
+            "config": {
+                "quartzConfig": "${fascinator.home}/quartz.properties",
+                "desktop": true,
+                "frequency": "3600",
+                "jobs": [
+                    {
+                        "name": "alerts-poll",
+                        "type": "external",
+                        "url": "http://localhost:${jetty.port}/redbox/default/hkjobs/alerts.script",
+                        "timing": "0 0/15 * * * ?"
+                    }
+                ]
+            }
+        },
+        "oai-pmh": {
+            "sessionExpiry": "300000",
+            "metadataFormats": {
+                "oai_dc": {
+                    "enabledInAllViews": false,
+                    "enabledViews": ["published"],
+                    "schema": "http://www.openarchives.org/OAI/2.0/oai_dc.xsd",
+                    "metadataNamespace": "http://www.openarchives.org/OAI/2.0/oai_dc/"
+                },
+                "eac_cpf": {
+                    "enabledInAllViews": false,
+                    "enabledViews": ["published"],
+                    "schema": "urn:isbn:1-931666-33-4 http://eac.staatsbibliothek-berlin.de/schema/cpf.xsd",
+                    "metadataNamespace": "urn:isbn:1-931666-33-4"
+                },
+                "rif": {
+                    "enabledInAllViews": false,
+                    "enabledViews": ["published"],
+                    "schema": "http://ands.org.au/standards/rif-cs/registryObjects http://services.ands.org.au/home/orca/schemata/registryObjects.xsd",
+                    "metadataNamespace": "http://ands.org.au/standards/rif-cs/registryObjects"
+                },
+                "marc": {
+                    "enabledInAllViews": false,
+                    "enabledViews": ["published"],
+                    "schema": "http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd",
+                    "metadataNamespace": "http://www.loc.gov/MARC21/slim"
+                }
+            }
+        }
+    },
+    "proxy-urls": {
+        "Activities": "${mint.proxy.url}/Activities/opensearch/lookup",
+        "ANZSRC_FOR": "${mint.proxy.url}/ANZSRC_FOR/opensearch/lookup",
+        "ANZSRC_SEO": "${mint.proxy.url}/ANZSRC_SEO/opensearch/lookup",
+        "Languages": "${mint.proxy.url}/Languages/opensearch/lookup",
+        "Funding_Bodies": "${mint.proxy.url}/Funding_Bodies/opensearch/lookup",
+        "Parties_Groups": "${mint.proxy.url}/Parties_Groups/opensearch/lookup",
+        "Parties_People": "${mint.proxy.url}/Parties_People/opensearch/lookup",
+        "Services": "${mint.proxy.url}/Services/opensearch/lookup",
+        "Geonames": "${mint.proxy.server}/geonames/search",
+        "NLA_SRU": "${mint.proxy.url}/default/search/nlaLookup"
+    },
+    "alerts": {
+        "path": "${fascinator.home}/alerts",
+        "xmlMaps": {
+            "xml": "${fascinator.home}/alerts/config/basicXmlMap.json",
+            "rif": "${fascinator.home}/alerts/config/rifXmlMap.json"
+        }
+    },
+    "watcher": {
+        "path": "${watcher.home}"
+    },
+    "subscriber": {
+        "solr-event-log": {
+            "uri": "http://localhost:${jetty.port}/solr/eventlog",
+            "buffer": {
+                "docLimit": "200",
+                "sizeLimit": "204800",
+                "timeLimit": "30"
+            }
+        }
+    },
+    "restoreTool": {
+        "harvestRemap": {
+            "enabled": false,
+            "allowOlder": false,
+            "failOnMissing": false
+        },
+        "migrationScript": "${fascinator.home}/restore/redboxMigration1.5.py"
+    }
+}

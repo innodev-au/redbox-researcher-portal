@@ -1,0 +1,263 @@
+#set($pageTitle = "Notify us about a dataset")
+<style type="text/css">
+fieldset p textarea { display:block; width: 98%; }
+.required { color: red; }
+label.validation, .validation label { color: red; display: block; }
+</style>
+
+<!-- MJ: hackery here 
+<div class="grid_16" id="inputForms">
+    <p class="loading-data">Loading form data, please wait...</p>
+</div>
+<script type="text/javascript" src="$portalPath/openlayers/OpenLayers.js"></script>
+<script type="text/javascript" src="$portalPath/openlayers/redbox.js"></script>
+<script type="text/javascript" src="$portalPath/js/autocomplete/lib/jquery.ajaxQueue.js"></script>
+<script type="text/javascript" src="$portalPath/js/autocomplete/lib/jquery.bgiframe.min.js"></script>
+<script type="text/javascript" src="$portalPath/js/autocomplete/jquery.autocomplete.pack.js"></script>
+<script type="text/javascript" src="$portalPath/js/jquery.jqEasyCharCounter.min.js"></script>
+<script type="text/javascript" src="$portalPath/javascript-widgets/widgets2.js"></script>
+<script type="text/javascript" src="$portalPath/javascript-widgets/nameLookup.js"></script>
+-->
+<script type="text/javascript" src="$portalPath/javascript-widgets/widgets2.js"></script>
+
+<h2 id="page-heading"><span>$pageTitle</span></h2>
+<div class="grid_16 widget-form"
+    data-form-fields="title,description,redbox:formVersion,redbox:newForm,redbox:submissionProcess.redbox:submitted,workflow_source,redbox:submissionProcess.dc:date,redbox:submissionProcess.dc:description,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone"
+    data-form-fields-readonly="metaList"
+    data-submit-func="srSubmitFunc">
+    <input type="hidden" id="redbox:formVersion" value="$systemConfig.getString("Unknown", "redbox.version.string")" />
+    <input type="hidden" id="redbox:newForm" value="true" />
+    <input type="hidden" name="redbox:submissionProcess.redbox:submitted" value="true" />
+    <input type="hidden" name="workflow_source" value="Submission Request" />
+    <input type="hidden" name="metaList" value="[]" />
+    <p>Please provide a brief overview of your research data and how to contact you.</p>
+    <fieldset>
+        <p>
+            <label for="redbox:submissionProcess.dc:date">Date Submitted</label>
+            <input id="redbox:submissionProcess.dc:date" type="text" size="40" value="$!self.getSubmitDate()" readonly="readonly" />
+        </p>
+        <p>
+            <label for="redbox:submissionProcess.dc:description">Description <span class="required">*</span></label>
+            <label class="validation" for="redbox:submissionProcess.dc:description" data-validation-rule="test(notEmpty);when(submit);">A description is required!</label>
+            <textarea id="redbox:submissionProcess.dc:description" cols="40" rows="10"></textarea>
+        </p>
+        <p>
+            <label for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name">Contact Name <span class="required">*</span></label>
+            <label class="validation" for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name" data-validation-rule="test(notEmpty);when(submit);">A contact name is required!</label>
+            <input id="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name" type="text" size="40" />
+        </p>
+        <p>
+            <label for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone">Phone Number <span class="required">*</span></label>
+            <label class="validation" for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone" data-validation-rule="test(notEmpty);when(submit);">A phone number is required!</label>
+            <input id="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone" type="text" size="40" />
+        </p>
+        <p>
+            <label for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox">Email Address <span class="required">*</span></label>
+            <label class="validation" for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox" data-validation-rule="test(email);when(submit);">A valid email address is required!</label>
+            <input id="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox" type="text" size="40" />
+        </p>
+        <button class="button form-fields-submit" id="submitButton">Submit</button>
+        <button class="button form-fields-cancel" id="cancelButton">Cancel</button>
+        <span class="hidden" id="loading">
+            Please wait while submitting <img src="$portalPath/images/icons/loading.gif" />
+        </span>
+    </fieldset>
+</div>
+<div class="clear"></div>
+
+<script type="text/javascript">
+(function($){
+    $(function(){
+        widgets.contentLoaded();
+        $("#cancelButton").click(function(){
+            window.location.href = "$portalPath/home";
+        });
+    });
+})(jQuery);
+
+function truncate(text, length, ellipsis) {
+    length=length||25;
+    if(text.length<length){ return text; }
+    for(var i=length-1;text.charAt(i)!=" ";i--){ length--; }
+    return text.substr(0,length)+(ellipsis||"...");
+}
+
+function srSubmitFunc(widgetForm,formData){
+    function failed(msg){
+        widgets.messageBox(
+            "Sorry, an error occurred processing your request. Please try again."+(msg?"\n"+msg:""),
+            function(){
+                $("#submitButton,#cancelButton").removeAttr("disabled");
+                $("#loading").hide();
+            },
+            "Error");
+    }
+    if(widgetForm.validator.isOkToSubmit()){
+        $("#submitButton,#cancelButton").attr("disabled", "disabled");
+        $("#loading").show();
+        var title = formData["redbox:submissionProcess.dc:description"];
+        var description = formData["redbox:submissionProcess.dc:description"];
+        var postData = jQuery.extend(formData,{
+            ajax: true,
+            func: "create-new",
+            packageType: "dataset",
+            title: title,
+            description: description
+        });
+        jQuery.ajax({
+            type: "POST",
+            url: "$portalPath/actions/packaging.ajax",
+            data: postData,
+            dataType: "json",
+            success: function(packageData){
+                function updateWorkflow(){
+                    if(packageData.status=="ok"){
+                        var oid=packageData.url||"";
+                        oid=oid.replace("$portalPath/workflow/", "");
+                        var postData2 = jQuery.extend(postData,{
+                            //func: "update-package-meta-deposit",
+                            func: "update-package-meta",
+                            oid: oid,
+                            metaList: ["redbox:submissionProcess.dc:description"]
+                            //metaList: ["title", "description", "redbox:newForm", "redbox:formVersion"]
+                            //"redbox:newForm": "true",
+                            //"redbox:formVersion": "$systemConfig.getString("", "redbox.version.string")"
+                        });
+                        //delete postData2.metaList;
+                        jQuery.ajax({
+                            type: "POST",
+                            url: "$portalPath/actions/workflow.ajax",
+                            data: postData2,
+                            dataType: "json",
+                            success: function(workflowData){
+                                if(workflowData.ok){
+                                    $("#submitButton,#cancelButton").removeAttr("disabled");
+                                    $("#loading").hide();
+                                    widgets.messageBox(
+                                        "Your request has been submitted and you will be contacted shortly.",
+                                        function(){ window.location.href="$portalPath/home"; },
+                                        "Submitted");
+                                }else{
+                                    failed(workflowData.error);
+                                }
+                            },
+                            error: function(req){
+                                failed(req.responseText);
+                            }
+                        });
+                    }else{
+                        failed();
+                    }
+                }
+                setTimeout(updateWorkflow, 1500);
+            },
+            error: function(req){
+                failed(req.responseText);
+            }
+        });
+    }
+}
+
+<!-- MJ: more hackery here
+(function($){
+    // OpenLayers stylesheets
+    $('head').append('<link rel="stylesheet" type="text/css" id="openLayersCss1">');
+    $('#openLayersCss1').attr('href', '$portalPath/openlayers/theme/default/style.css');
+    $('head').append('<link rel="stylesheet" type="text/css" id="openLayersCss2">');
+    $('#openLayersCss2').attr('href', '$portalPath/openlayers/redbox.css');
+
+    $(function(){
+        function onContentLoaded(){
+            // OpenLayers init, store it globally so the Geonames lookup can hit it later
+            window["openLayersMap"] = loadOpenLayers();
+
+			$(".request").remove();
+
+			widgetTabs = widgets.changeToTabLayout($(".inputscreens"));
+            widgetTabs.tabs({
+                select: function(event, ui){
+                    if(widgets.forms[0].hasChanges()){
+                        $(".form-fields-save:first").click();
+                    }
+                }
+            });
+            widgets.contentLoaded(function(){
+                try{
+                    widgets.formsById["main-form"].addListener("postOnRestore",
+                        function(ctx){
+                            nameLookup.init();
+                            // people
+                            ctx.findx(".lookup-show").each(function(){
+                                var e=$(this);
+                                e.find("a.nameLookup-lookup").text(e.find("input.nl").val()?" | change":"lookup");
+                                e.find(".identified-as-name").text(e.find("input.nl").val());
+                            });
+                            // grant numbers
+                            $(".internal-grant:checked").each(function() {
+                                var baseId = $(this).attr("id").replace(".redbox:internalGrant", "");
+                                $("input[id="+baseId+".dc:identifier]").unautocomplete();
+                                $("input[id="+baseId+".skos:prefLabel]").removeAttr("readonly").removeClass("label");
+                            });
+                            // geonames
+                            $(".autocomplete-geonames").each(function() {
+                                var baseId = $(this).attr("id").replace(".rdf:PlainLiteral", "");
+                                var uri = $("input[id='"+baseId+".dc:identifier']").val();
+                                if (uri != "") {
+                                    var east = $("input[id='"+baseId+".geo:long']").val();
+                                    var north = $("input[id='"+baseId+".geo:lat']").val();
+                                    var coordsElem = $("div[id='"+baseId+".coords']");
+                                    coordsElem.find(".east").text(east);
+                                    coordsElem.find(".north").text(north);
+                                    coordsElem.find(".map-link").attr("href", uri);
+                                    coordsElem.show();
+                                }
+                            });
+                            // insert date created if not exist
+                            var dcCreated = $("#dc\\:created");
+                            if(jQuery.trim(dcCreated.val())==""){
+                                dcCreated.val(getDate());
+                            }
+
+							// Identifier, if not 'internal' or 'external' click() it
+                            var idOrigin = $("input[id=dc:identifier.redbox:origin]").val();
+                            if (idOrigin == "") {
+                                $("input[id=dc:identifier.checkbox]").click();
+                            }
+                        }
+                    );
+                    widgets.formsById["main-form"].restore(packageData.metaData);
+                    #if($self.getCurrentStep()=="retired")
+                    $(".inputscreens").find("input,select,textarea").each(function(c,e){
+                        if($(e).parents("#notes,#submit").length==0){
+                            $(e).attr("disabled", "disabled");
+                        }
+                    });
+                    $(".inputscreens").find(".input-list tfoot,.drop-down-location,.delete-item,.selection-add,.clear-item,.clear-link,.nameLookup-lookup,.add-attachment,.delete-attachment").each(function(c,e){
+                        if($(e).parents("#notes,#submit").length==0){
+                            $(e).hide();
+                        }
+                    });
+                    #end
+
+                    // Form data is ready, load features on the map
+                    window["openLayersMap"].loadData();
+
+                }catch(e){
+                    alert(e);
+                }
+            });
+        }
+
+		$("#inputForms").load("$portalPath/workflows/researcherforms/submission.ajax",
+                {   oid: "$oid",
+                    portalPath: "$portalPath",
+                    stage: "$self.getCurrentStep()",
+                    stageLabel: "$self.getCurrentStepLabel()",
+                    nextStageMessage: "$self.getNextStepAcceptMessage()"
+                },
+                onContentLoaded);
+
+	});
+})(jQuery);
+-->
+</script>

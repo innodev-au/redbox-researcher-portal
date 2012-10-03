@@ -12,6 +12,25 @@
         </span>
 #end
 
+#macro(mintSelectField $id $labelId $sourceUrl $idKey $labelKey $listKey $defaultValue)
+    <span class="data-source-drop-down"
+          data-json-source-url="$sourceUrl"
+          data-id-key="$idKey"
+          data-label-key="$labelKey"
+          data-list-key="$listKey"
+          #if("$!defaultValue"!="")data-default-value="$!defaultValue"#end>
+        <span class="selection-added">
+            <input type="hidden" class="selection-added-id" id="$id" name="$id" />
+            <input type="text" class="selection-added-label" readonly="readonly" id="$labelId" name="$labelId" />
+            <a href="#" class="clear-item">change</a>
+        </span>
+        <span class="drop-down-location">
+            <button class="selection-add add-unique-only" data-add-on-click="1">
+                Select
+            </button>
+        </span>
+    </span>
+#end
 
 #macro(mintMultiSelectField $id $labelId $sourceUrl $idKey $labelKey $listKey $childrenKey)
     <table class="input-list">
@@ -46,6 +65,42 @@
     </table>
 #end
 
+#macro(relatedInfoField $id $placeholder $addLabel)
+    <table class="input-list">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>URL</th>
+                <th>Title</th>
+                <th>Notes</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="item-input-display sortable-item">
+                <td class="sort-number"></td>
+                <td>
+                    <input type="text" size="60" placeholder="$placeholder" id="${id}.0.dc:identifier" />
+                </td>
+                <td>
+                    <input type="text" size="60" placeholder="title" id="${id}.0.dc:title" />
+                </td>
+                <td>
+                    <input type="text" size="60" placeholder="notes" id="${id}.0.skos:note" />
+                </td>
+                <td class="delete-item" style="width: 100%;"><a href="#">delete</a></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td><input type="button" class="button add-another-item" value="$addLabel" /></td>
+                <td colspan="3"></td>
+            </tr>
+        </tfoot>
+    </table>
+#end
+
 #macro(inputList $id $placeholder $addLabel $requiredLabel)
     #set($vid = $self.getCleanId($id))
     <table class="input-list">
@@ -76,36 +131,16 @@
     </table>
 #end
 
-#macro(mintSelectField $id $labelId $sourceUrl $idKey $labelKey $listKey $defaultValue)
-    <span class="data-source-drop-down"
-          data-json-source-url="$sourceUrl"
-          data-id-key="$idKey"
-          data-label-key="$labelKey"
-          data-list-key="$listKey"
-          #if("$!defaultValue"!="")data-default-value="$!defaultValue"#end>
-        <span class="selection-added">
-            <input type="hidden" class="selection-added-id" id="$id" name="$id" />
-            <input type="text" class="selection-added-label" readonly="readonly" id="$labelId" name="$labelId" />
-            <a href="#" class="clear-item">change</a>
-        </span>
-        <span class="drop-down-location">
-            <button class="selection-add add-unique-only" data-add-on-click="1">
-                Select
-            </button>
-        </span>
-    </span>
-#end
 
-
-#set($pageTitle = "Notify us about a dataset")
+#set($pageTitle = "Notify us about a dataset latest submission")
 <style type="text/css">
 fieldset p textarea { display:block; width: 98%; }
 .required { color: red; }
 label.validation, .validation label { color: red; display: block; }
 </style>
 <h2 id="page-heading"><span>$pageTitle</span></h2>
-<div class="grid_16 widget-form"
-    data-form-fields="title,description,redbox:formVersion,redbox:newForm,redbox:submissionProcess.redbox:submitted,workflow_source,redbox:submissionProcess.dc:date,redbox:submissionProcess.dc:description,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone"
+<div class="grid_16 widget-form" 
+    data-form-fields="dc:relation.swrc:Publication,dc:relation.bibo:Website,dc:creator,dc:accessRights.dc:identifier,dc:accessRights.skos:prefLabel,dc:accessRights.dc:RightsStatement.skos:prefLabel,vivo:Location.vivo:GeographicLocation.gn:name,bibo:Website.1.dc:identifier,dc:subject.anzsrc:for,dc:subject.vivo:keyword.0.rdf:PlainLiteral,title,description,location,dc:title,dc:extent,dc:description,redbox:submissionProcess.dc:title,dc:SizeOrDuration,dc:coverage.vivo:DateTimeInterval,dc:coverage.redbox:timePeriod,dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral,dc:coverage.vivo:DateTimeInterval,dc:coverage.vivo:GeographicLocation.1.dc:type,dc:coverage.vivo:DateTimeInterval.vivo:start,dc:coverage.vivo:DateTimeInterval.vivo:end,dc:subject.anzsrc:for,redbox:formVersion,redbox:newForm,redbox:submissionProcess.redbox:submitted,workflow_source,redbox:submissionProcess.dc:date,redbox:submissionProcess.dc:description,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone"
     data-form-fields-readonly="metaList"
     data-submit-func="srSubmitFunc">
     <input type="hidden" id="redbox:formVersion" value="$systemConfig.getString("Unknown", "redbox.version.string")" />
@@ -119,95 +154,41 @@ label.validation, .validation label { color: red; display: block; }
             <label for="redbox:submissionProcess.dc:date">Date Submitted</label>
             <input id="redbox:submissionProcess.dc:date" type="text" size="40" value="$!self.getSubmitDate()" readonly="readonly" />
         </p>
-
-		
-   #fieldTitle("dc:type.rdf:PlainLiteral" "Type" true)
-    <div class="help-content" id="help-dc:type.rdf:PlainLiteral">
-        <dl>
-            <dt>Catalogue or Index</dt>
-            <dd>
-                collection of resource descriptions describing the content of
-                one or more repositories or collective works at the item level.
-            </dd>
-            <dt>Collection</dt>
-            <dd>
-                compiled content created as separate and independent works and
-                assembled into a collective whole for distribution and use.
-            </dd>
-            <dt>Registry</dt>
-            <dd>
-                collection of registry objects compiled to support the business
-                of a given community.
-            </dd>
-            <dt>Repository</dt>
-            <dd>
-                collection of physical or digital objects compiled for
-                information and documentation purposes and/or for storage and
-                safekeeping.
-            </dd>
-            <dt>Dataset</dt>
-            <dd>
-                collection of physical or digital objects generated by research
-                activities.
-            </dd>
-        </dl>
-    </div>
-    <p>
-        #mintSelectField("dc:type.rdf:PlainLiteral"
-                         "dc:type.skos:prefLabel"
-                         "$portalPath/workflows/forms/data/types.json"
-                         "id"
-                         "label"
-                         "results"
-                         "")
-        #requiredValidation("dc:type.rdf:PlainLiteral" "The type is required!")
-    </p>
-
-	
-        <p>
-            <label for="redbox:submissionProcess.dc:title">Title <span class="required">*</span></label>
-            <label class="validation" for="redbox:submissionProcess.dc:title" data-validation-rule="test(notEmpty);when(submit);">A title is required!</label>
-            <textarea id="redbox:submissionProcess.dc:title" cols="40" rows="1"></textarea>
-        </p>		
-
-			
+		<p>
+            <label for="redbox:submissionProcess.dc:title">Title<span class ="required">*</span></label>
+			<label class="validation" for="redbox:submissionProcess.dc:title" data-validation-rule="test(notEmpty);when(submit);">A title is required!</label>
+			<input id="redbox:submissionProcess.dc:title" type="text" size="40"/>
+		</p>
         <p>
             <label for="redbox:submissionProcess.dc:description">Description <span class="required">*</span></label>
             <label class="validation" for="redbox:submissionProcess.dc:description" data-validation-rule="test(notEmpty);when(submit);">A description is required!</label>
             <textarea id="redbox:submissionProcess.dc:description" cols="40" rows="10"></textarea>
         </p>
 		
-
-		 <div class="group">
-        <p>
-            <label for="dc:identifier.dc:type.rdf:PlainLiteral">Type of identifier:</label>
-            #mintSelectField("dc:identifier.dc:type.rdf:PlainLiteral"
-                             "dc:identifier.dc:type.skos:prefLabel"
-                             "$portalPath/workflows/forms/data/identifierTypes.json"
-                             "id"
-                             "label"
-                             "results"
-                             "handle")
-        </p>
-        <p>
-            <label for="dc:identifier.rdf:PlainLiteral">Identifier:</label>
-            <input type="text" size="60" placeholder="persistent identifier" id="dc:identifier.rdf:PlainLiteral" class="videntifier" />
-        </p>
+	#fieldTitle("dc:extent" "Extent or Quantity" false)
+    <div class="help-content" id="help-dc:extent">
+        Enter the number of files that comprise the research dataset/collection,
+        registry/repository, catalogue or index (including supporting material),
+        and the format.
     </div>
+	    <p>
+        <input type="text" size="60" placeholder="quantity" id="dc:extent" />
+    </p>
 
+	#fieldTitle("dc:SizeOrDuration" "Data Size" false)
+    <div class="help-content" id="help-dc:SizeOrDuration">
+        Record the size of the data in KB, MB, GB, TB etc.
+    </div>
+    <p><input type="text" size="60" placeholder="size" id="dc:SizeOrDuration" /></p>
+
+	
+			#fieldTitle("Coverage" "Coverage" false)
+		    <div class="group">
         <p>
-            <label for="redbox:submissionProcess.dc:location">Location - Please enter a physical address <span class="required">*</span></label>
-            <label class="validation" for="redbox:submissionProcess.dc:location" data-validation-rule="test(notEmpty);when(submit);">A location is required!</label>
-            <input id="redbox:submissionProcess.dc:location" cols="40" rows="3" value="The University of Adelaide, Adelaide SA 5005"/>
-        </p>	
-        <p>
-            <label for="redbox:submissionProcess.locrel:prc.foaf:elocation">Please enter the electronic location of data if available </label>
-            <input id="redbox:submissionProcess.locrel:prc.foaf:elocation" type="text" size="40" />
+            <label for="dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral">Please enter the geographical coverage of the data </label>
+            <input id="dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral" type="text" size="40" />
         </p>		
-        <p>
-            <label for="redbox:submissionProcess.locrel:prc.foaf:geodata">Please enter the geographical coverage of the data </label>
-            <input id="redbox:submissionProcess.locrel:prc.foaf:geodata" type="text" size="40" />
-        </p>		
+
 		
     #fieldTitle("dc:coverage.vivo:DateTimeInterval" "Date Coverage" false)
     <div class="help-content" id="help-dc:coverage.vivo:DateTimeInterval">
@@ -217,7 +198,7 @@ label.validation, .validation label { color: red; display: block; }
     </div>
     <p>
         <input type="text" placeholder="Start" class="dateYMD" id="dc:coverage.vivo:DateTimeInterval.vivo:start" />
-        <label for="dc:coverage.vivo:DateTimeInterval.vivo:end">to</label>
+        <label for="dc:coverage.vivo:DateTimeInterval.vivo:end"></label>
         <input type="text" placeholder="End" class="dateYMD" id="dc:coverage.vivo:DateTimeInterval.vivo:end" />
         <label class="validation-err-msg" for="dc:coverage.vivo:DateTimeInterval.vivo:start"
             data-validation-rule="when(blur,change,submit);name(testCoverageFrom);
@@ -230,93 +211,330 @@ label.validation, .validation label { color: red; display: block; }
             A valid to date or year is required!
         </label>
     </p>
-
-    #fieldTitle("dc:coverage.redbox:timePeriod" "Time Period" false)
-    <div class="help-content" id="help-dc:coverage.redbox:timePeriod">
-        A text description of a time period relating to the coverage of the
-        research dataset/collection, registry/repository, catalogue or index, if
-        applicable, eg. 21st Century, WWII, The Depression, etc.
+			
+		#fieldTitle("dc:coverage.redbox:timePeriod" "Time Period" false)
+        <div class="help-content" id="help-dc:coverage.redbox:timePeriod">
+            A text description of a time period relating to the coverage of the
+            research dataset/collection, registry/repository, catalogue or index, if
+            applicable, eg. 21st Century, WWII, The Depression, etc.
+        </div>
+    	    <p>
+            <input type="text" id="dc:coverage.redbox:timePeriod" size="60"
+                placeholder="If dates cannot be quantified ie. 21st Century, WWII, The Depression, etc." />
+        </p>
+            </div>
+			
+			
+################################################################################################################## 		
+	#fieldTitle("dc:subject.anzsrc:for" "Fields of Research" false)
+    <div class="help-content" id="help-dc:subject.anzsrc:for">
+        Select relevant FOR code/s.
     </div>
-    <p>
-        <input type="text" id="dc:coverage.redbox:timePeriod" size="60"
-            placeholder="If dates cannot be quantified ie. 21st Century, WWII, The Depression, etc." />
-    </p>
+    #mintMultiSelectField("dc:subject.anzsrc:for.0.rdf:resource"
+                          "dc:subject.anzsrc:for.0.skos:prefLabel"
+                          "$portalPath/proxyGet?ns=ANZSRC_FOR&qs=count%3D999%26level%3D"
+                          "rdf:about"
+                          "skos:prefLabel"
+                          "results"
+                          "skos:narrower")
+################################################################################################################## 
+
 	
-	<p>
-        <label for="redbox:submissionProcess.dc:rights">Rights Statement</label>
-        <input id="redbox:submissionProcess.dc:rights" type="text" size="40" value="Enter the text for the rights statement" readonly="readonly" />
-     </p>     
-	 
-	<p>
-        <label for="redbox:submissionProcess.dc:access">Access Rights</label>
-        <input id="redbox:submissionProcess.dc:access" type="text" size="40" />
-     </p> 
-
-	<p>
-        <label for="redbox:submissionProcess.dc:license">License</label>
-        <input id="redbox:submissionProcess.dc:license" type="text" size="40" />
-     </p> 
-
-    <p>
-        <label for="redbox:submissionProcess.dc:related">Related Information - Please enter any relevant websites or publications that should be included on the record </label>
-        <textarea id="redbox:submissionProcess.dc:related" cols="40" rows="5"></textarea>
-    </p>
+	#fieldTitle("dc:subject.vivo:keyword" "Keywords" false)
+    <div class="help-content" id="help-dc:subject.vivo:keyword">
+        Enter descriptive keywords as required.
+    </div>
+    <table class="input-list">
+        <tbody>
+            <tr class="item-input-display sortable-item">
+                <td class="sort-number"></td>
+                <td>
+                    <input type="text" size="60" placeholder="keyword" id="dc:subject.vivo:keyword.0.rdf:PlainLiteral" class="vkeyword" />
+                </td>
+                <td class="delete-item"><a href="#">delete</a></td>
+                <td style="width: 100%;"> </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td><input type="button" class="button add-another-item" value="Add keyword" /></td>
+                <td colspan="2"></td>
+            </tr>
+        </tfoot>
+    </table>
+	
+#fieldTitle("th.locatoin" "Location" false)
+		<div class="group">
+		<p>
+            <label for="vivo:Location.vivo:GeographicLocation.gn:name">Please enter a physical address <span class="required">*</span></label>
+            <label class="validation" for="vivo:Location.vivo:GeographicLocation.gn:name" data-validation-rule="test(notEmpty);when(submit);">A location is required!</label>
+            <input id="vivo:Location.vivo:GeographicLocation.gn:name" cols="40" rows="3" value="The University of Adelaide, Adelaide SA 5005"/>
+        </p>	
+        <p>
+            <label for="bibo:Website.1.dc:identifier">Please enter the electronic location of data if available </label>
+            <input id="bibo:Website.1.dc:identifier" type="text" size="40" />
+        </p>
+		
+	</div>
 
 <p>
-    #fieldTitle("dc:contributor.locrel:clb" "Related People" false)
-    <div class="help-content" id="help-dc:contributor.locrel:clb">
-        Names of other collaborators in the research project, if applicable,
-        eg. CSIRO, University of X, Prof. Jim Bloggs, etc.
-    </div>
-    <table class="input-list">
-        <tbody>
-            <tr class="item-input-display sortable-item">
-                <td class="sort-number"></td>
-                <td>
-                    <input type="text" size="60" placeholder="eg. CSIRO, University of X, Prof. Jim Bloggs, etc." id="dc:contributor.locrel:clb.0.foaf:Agent" />
-                </td>
-                <td class="delete-item"><a href="#">delete</a></td>
-                <td style="width: 100%;"> </td>
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td></td>
-                <td><input type="button" class="button add-another-item" value="Add collaborator" /></td>
-                <td colspan="2"></td>
-            </tr>
-        </tfoot>
-    </table>
-</p>
+        #fieldTitle("dc:accessRights.dc:RightsStatement.skos:prefLabel" "Rights Statement" false)
+        <div class="help-content" id="help-dc:accessRights.dc:RightsStatement.skos:prefLabel">
+<dd>This statement summarises the University’s rights and obligations regarding copyright and intellectual property rights associated with the data.</dd>
+<dd>If the default text is not appropriate, please contact XXX after submitting the form.</dd>
+        </div>
+        <div>
+            <input type="text" size="100" id="dc:accessRights.dc:RightsStatement.skos:prefLabel" value="This data collection is subject to the intellectual property rights arrangements agreed for the project." readonly="readonly"
+        </div>
+		</p> 
 
 	
-    #fieldTitle("dc:contributor.locrel:relatedProjects" "Related Projects" false)
-    <div class="help-content" id="help-dc:contributor.locrel:relatedProjects">
-        Names of other projects that sare related to this project
+    #fieldTitle("dc:accessRights.skos:prefLabel" "Access Rights" false)
+    <div class="help-content" id="help-dc:accessRights.skos:prefLabel">
+        <dl>
+            <dt>Access to the data is available via the link provided</dt>
+            <dd>
+                TODO add explanation of what this means
+            </dd>
+            <dt>Access to the data may be available under certain conditions</dt>
+            <dd>
+				TODO add explanation of what this means
+            </dd>
+            <dt>No access to the data is currently allowed</dt>
+            <dd>
+                TODO add explanation of what this means
+            </dd>
+            
+        </dl>
+    </div>
+    <p>
+        #mintSelectField("dc:accessRights.skos:prefLabel"
+                         "dc:accessRights.dc:RightsStatement.skos:prefLabel"
+                         "$portalPath/workflows/forms/data/accessRights.json"
+                         "id"
+                         "label"
+                         "results"
+                         "")
+        #requiredValidation("dc:accessRights.skos:prefLabel" "The type is required!")
+    </p>
+	
+     <p>
+        <input type="text" size="60" id="dc:accessRights.dc:identifier" 
+        <input type="text" size="60" id="dc:accessRights.dc:identifier" placeholder="Access Rights URI" />
+    </p>
+
+#######################################################################################################&nbsp;
+
+
+    #fieldTitle("dc:creator" "Creators" true)
+    <div class="help-content" id="help-dc:creator">
+        <p>Record names of the creators.</p>
+        <ul>
+            <li>
+                Enter the given name and/or family name of persons who created
+                the research dataset/collection, registry/repository, catalogue
+                or index. Click 'lookup' to search and select the name authority
+                record.
+            </li>
+            <li>Select the persons' appropriate affiliation.</li>
+            <li>
+                Indicate persons with roles of 'Chief Investigator' or 'Partner
+                Investigator' by checking the boxes provided.
+            </li>
+        </ul>
+    </div>
+    <table class="input-list sortable">
+        <thead>
+            <tr class="header-row">
+                <th></th>
+                <th>CI</th>
+                <th>PI</th>
+                <th>Display Name</th>
+                <th>Name Authority</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="item-input-display sortable-item">
+                <td class="valign-middle">
+                    <img class="facets-grip" src="$portalPath/images/icons/grippy.png" />
+                </td>
+                <td class="valign-middle">
+                    <input type="checkbox" id="dc:creator.foaf:Person.0.redbox:isCoPrimaryInvestigator" />
+                </td>
+                <td class="valign-middle">
+                    <input type="checkbox" id="dc:creator.foaf:Person.0.redbox:isPrimaryInvestigator" />
+                </td>
+                <td>
+                    <table class="lookup">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label for="dc:creator.foaf:Person.0.foaf:title">Title:</label>
+                                </td>
+                                <td>
+                                    <input type="text" placeholder="title" size="5"
+                                           id="dc:creator.foaf:Person.0.foaf:title" />
+                                </td>
+                                <td>
+                                    <label for="dc:creator.foaf:Person.0.foaf:givenName">Given name:</label>
+                                </td>
+                                <td>
+                                    <input type="text" placeholder="given name" size="25"
+                                           class="nameLookup-name creatorGivenName creatorName givenName"
+                                           id="dc:creator.foaf:Person.0.foaf:givenName" />
+                                </td>
+                                <td>
+                                    <label for="dc:creator.foaf:Person.0.foaf:familyName">Family name:</label>
+                                </td>
+                                <td>
+                                    <input type="text" placeholder="family name" size="25"
+                                           class="nameLookup-name creatorFamilyName creatorName familyName"
+                                           id="dc:creator.foaf:Person.0.foaf:familyName" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="6">
+                                    <label class="validation-err-msg"
+                                        for="dc:creator.foaf:Person.0.foaf:givenName"
+                                        data-validation-rule="test(notEmpty);when(blur,change,submit);
+                                                                jsTest(
+                                                                    var fid, gid, f, g;
+                                                                    fid=id.replace('given', 'family');
+                                                                    gid=id.replace('family', 'given');
+                                                                    f=ctx.find('input[id='+fid+']').val();
+                                                                    g=ctx.find('input[id='+gid+']').val();
+                                                                    f=jQ.trim(f); g=jQ.trim(g);
+                                                                    r=(g=='')&&(f=='');
+                                                                    id=gid;
+                                                                );
+                                                                liveFor(.creatorName);">
+                                        A creator's given name or family name is required!
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="dc:creator.foaf:Person.0.foaf:Organization.dc:identifier">Affiliation:</label>
+                                </td>
+                                <td colspan="3">
+                                    <span class="data-source-drop-down"
+                                          data-delay="1"
+                                          data-json-source-url="$portalPath/proxyGet?ns=Parties_Groups&qs=count%3D9999"
+                                          data-id-key="dc:identifier"
+                                          data-label-key="rdfs:label"
+                                          data-list-key="results">
+                                        <span class="selection-added">
+                                            <input type="hidden" class="selection-added-id"
+                                                   id="dc:creator.foaf:Person.0.foaf:Organization.dc:identifier" value="" />
+                                            <input type="text" class="selection-added-label" readonly="readonly" size="60"
+                                                   id="dc:creator.foaf:Person.0.foaf:Organization.skos:prefLabel" value="" />
+                                            <a href="#" class="clear-item">change</a>
+                                        </span>
+                                        <span class="drop-down-location">
+                                            <button class="selection-add add-unique-only" data-add-on-click="1">
+                                                Select
+                                            </button>
+                                        </span>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td>
+                    <span class="lookup-show">
+                        <span class="identified-as-name"></span>
+                        <a href="#" class="nameLookup-lookup" data-selected-func="lookupDone"
+                            data-cleared-func="lookupCleared">lookup</a>
+                        <span class="nameLookup-progress hidden">
+                            <img src="$portalPath/images/icons/loading.gif" />
+                        </span>
+                        <input id="dc:creator.foaf:Person.0.foaf:name"
+                               type="hidden"
+                               class="nl nl-rdfs:label nlLabel" readonly="readonly"/>
+                        <input type="hidden" id="dc:creator.foaf:Person.0.dc:identifier"
+                               class="nl nl-dc:identifier nlId" />
+                    </span>
+                </td>
+                <td class="valign-middle"><a class="delete-item" href="#">delete</a></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3"></td>
+                <td colspan="6">
+                    <input type="button" class="button add-another-item" value="Add person" />
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+	
+	    #fieldTitle("grants" "Related Projects" false)
+    <div class="help-content" id="help-grants">
+        Select/enter the grant number and/or title if applicable.
     </div>
     <table class="input-list">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Internal?</th>
+                <th>Grant</th>
+                <th></th>
+            </tr>
+        </thead>
         <tbody>
             <tr class="item-input-display sortable-item">
                 <td class="sort-number"></td>
-                <td>
-                    <input type="text" size="60" placeholder="eg. Australias place in the worlds wine markets" id="dc:contributor.locrel:clb.0.foaf:Agent" />
+                <td><input type="checkbox" id="foaf:fundedBy.vivo:Grant.0.redbox:internalGrant" class="internal-grant"/></td>
+                <td style="width:100%">
+                    <table class="inner-table">
+                        <tr>
+                            <td>
+                                <input type="text" size="20" id="foaf:fundedBy.vivo:Grant.0.redbox:grantNumber"
+                                    placeholder="grant number" class="autocomplete-grant" />
+                                <input type="hidden" id="foaf:fundedBy.vivo:Grant.0.dc:identifier" />
+                            </td>
+                            <td style="width:100%">
+                                <input type="text" size="60" id="foaf:fundedBy.vivo:Grant.0.skos:prefLabel"
+                                    readonly="readonly" placeholder="grant description"
+                                    class="autocomplete-grant-label label" style="width:100%" />
+                            </td>
+                        </tr>
+                    </table>
                 </td>
-                <td class="delete-item"><a href="#">delete</a></td>
-                <td style="width: 100%;"> </td>
+                <td class="delete-item" style="text-align:right;width:100%;"><a href="#">delete</a></td>
             </tr>
         </tbody>
         <tfoot>
             <tr>
                 <td></td>
-                <td><input type="button" class="button add-another-item" value="Add another project" /></td>
-                <td colspan="2"></td>
+                <td colspan="3"><input type="button" class="button add-another-item" value="Add grant" /></td>
             </tr>
         </tfoot>
     </table>
 
+    #fieldTitle("dc:relation.swrc:Publication" "Related Publications" false)
+    <div class="help-content" id="help-dc:relation.swrc:Publication">
+        Include URL/s to any publications underpinning the research
+        dataset/collection, registry/repository, catalogue or index.
+    </div>
+    #relatedInfoField("dc:relation.swrc:Publication" "publication url" "Add publication")
 
+    #fieldTitle("dc:relation.bibo:Website" "Related Website" false)
+    <div id="help-dc:relation.bibo:Website" class="help-content">
+        Include URL/s for the relevant website.
+    </div>
+    #relatedInfoField("dc:relation.bibo:Website" "website url" "Add website")
+	
+	
+	
+#######################################################################################################    	
+		
         <p>
-            <label for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name">Contact Name  <span class="required">*</span></label>
+            <label for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name">Contact Name <span class="required">*</span></label>
             <label class="validation" for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name" data-validation-rule="test(notEmpty);when(submit);">A contact name is required!</label>
             <input id="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name" type="text" size="40" />
         </p>
@@ -371,14 +589,16 @@ function srSubmitFunc(widgetForm,formData){
         $("#loading").show();
         var title = formData["redbox:submissionProcess.dc:title"];
         var description = formData["redbox:submissionProcess.dc:description"];
-		var identifier = formData["redbox:submissionProcess.dc:identifier"];
         var postData = jQuery.extend(formData,{
             ajax: true,
             func: "create-new",
             packageType: "dataset",
             title: title,
             description: description,
-			identifier: identifier
+			"dc:title": title,
+			"dc:description": description,
+			"dc:coverage.vivo:GeographicLocation.1.dc:type": "text"
+			
         });
         jQuery.ajax({
             type: "POST",
@@ -391,10 +611,10 @@ function srSubmitFunc(widgetForm,formData){
                         var oid=packageData.url||"";
                         oid=oid.replace("$portalPath/workflow/", "");
                         var postData2 = jQuery.extend(postData,{
-                            func: "update-package-meta-deposit",
+                            func: "update-package-meta",
                             oid: oid
                         });
-                        delete postData2.metaList;
+                        // delete postData2.metaList;
                         jQuery.ajax({
                             type: "POST",
                             url: "$portalPath/actions/workflow.ajax",
@@ -428,4 +648,79 @@ function srSubmitFunc(widgetForm,formData){
         });
     }
 }
+$(function(){
+    $(".vkeyword").live("focus", function(){
+        var elem=$(this);
+        elem.unautocomplete();
+        elem.autocomplete("$portalPath/actions/keywords.ajax", { width: "32em" });
+    });
+});
+
+    function addAutocompleteGrant(elem) {
+        elem.autocomplete(
+            "$portalPath/proxyGet?ns=Activities&autocomplete=true&fields=grant_number,dc:title,repository_name,dc:identifier",
+            {
+                extraParams: {
+                    qs: function() { return "count=25&searchTerms=" + escape(elem.val().toLowerCase()); }
+                },
+                formatItem: function(row) { return splitGrantData(row).display; },
+                formatResult: function(row) { return splitGrantData(row).id; },
+                mustMatch: true,
+                width: "40em"
+            }).result(function(event, row) {
+                var uri = $(this).next();
+                var label = $(this).parent().next().find(".autocomplete-grant-label")
+                if (row) {
+                    var data = splitGrantData(row);
+                    label.val("(" + data.source + ") " + data.label);
+                    uri.val(data.uri);
+                }
+            });
+    }
+
+    $(".internal-grant").live("click", function() {
+        var checked = $(this).is(":checked");
+        var baseId = $(this).attr("id").replace(".redbox:internalGrant", "");
+        var idElem = $("input[id=" + baseId + ".redbox:grantNumber]");
+        var labelElem = $("input[id=" + baseId + ".skos:prefLabel]");
+        var uriElem = $("input[id=" + baseId + ".dc:identifier]");
+        var uri = uriElem.val();
+        if (uri == INTERNAL_GRANT_ID) {
+            if (labelElem.val() == "" ||
+                    confirm("The selected grant will be cleared.\nAre you sure you want to change it to an external grant?")) {
+                idElem.val("");
+                addAutocompleteGrant(idElem);
+                labelElem
+                    .addClass("label")
+                    .attr("readonly", "readonly")
+                    .val("");
+                uriElem.val("");
+                return true;
+            }
+        } else {
+            if (uri == "" ||
+                    confirm("The selected grant will be cleared.\nAre you sure you want to change it to an internal grant?")) {
+                idElem.unautocomplete().val("");
+                labelElem
+                    .removeClass("label")
+                    .removeAttr("readonly")
+                    .val("");
+                uriElem.val(INTERNAL_GRANT_ID);
+                return true;
+            }
+        }
+        return false;
+    });
+
+
+    $(".autocomplete-grant").live("focus", function() {
+        var baseId = $(this).attr("id").replace(".redbox:grantNumber", "");
+        if (!$("input[id=" + baseId + ".redbox:internalGrant]").is(":checked")) {
+            $(this).unautocomplete();
+            addAutocompleteGrant($(this));
+        }
+    });
+
 </script>
+
+

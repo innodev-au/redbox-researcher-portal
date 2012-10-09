@@ -131,16 +131,15 @@
     </table>
 #end
 
-
-#set($pageTitle = "Notify us about a dataset latest submission")
+#set($pageTitle = "Notify us about a dataset submission")
 <style type="text/css">
 fieldset p textarea { display:block; width: 98%; }
 .required { color: red; }
 label.validation, .validation label { color: red; display: block; }
 </style>
 <h2 id="page-heading"><span>$pageTitle</span></h2>
-<div class="grid_16 widget-form" 
-    data-form-fields="dc:subject.anzsrc:for.0.rdf:resource,dc:subject.anzsrc:for.0.skos:prefLabel,foaf:fundedBy.vivo:Grant.1.redbox:internalGrant,foaf:fundedBy.vivo:Grant.1.redbox:grantNumber,foaf:fundedBy.vivo:Grant.0.dc:identifier,foaf:fundedBy.vivo:Grant.1.skos:prefLabel,dc:relation.swrc:Publication,dc:relation.bibo:Website,dc:relation.swrc:Publication.0.dc:identifier,dc:relation.swrc:Publication.0.dc:title,dc:relation.swrc:Publication.0.skos:note,dc:relation.bibo:Website.0.dc:identifier,dc:relation.bibo:Website.0.dc:title,dc:relation.bibo:Website.0.skos:note,dc:creator,dc:creator.foaf:Person.0.redbox:isCoPrimaryInvestigator,dc:creator.foaf:Person.0.redbox:isPrimaryInvestigator,dc:creator.foaf:Person.0.foaf:title,dc:creator.foaf:Person.0.foaf:givenName,dc:creator.foaf:Person.0.foaf:familyName,dc:accessRights.dc:identifier,dc:accessRights.skos:prefLabel,dc:accessRights.dc:RightsStatement.skos:prefLabel,vivo:Location.vivo:GeographicLocation.gn:name,bibo:Website.1.dc:identifier,dc:subject.anzsrc:for,dc:subject.vivo:keyword.0.rdf:PlainLiteral,title,description,location,dc:title,dc:extent,dc:description,redbox:submissionProcess.dc:title,dc:SizeOrDuration,dc:coverage.vivo:DateTimeInterval,dc:coverage.redbox:timePeriod,dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral,dc:coverage.vivo:DateTimeInterval,dc:coverage.vivo:GeographicLocation.1.dc:type,dc:coverage.vivo:DateTimeInterval.vivo:start,dc:coverage.vivo:DateTimeInterval.vivo:end,dc:subject.anzsrc:for,redbox:formVersion,redbox:newForm,redbox:submissionProcess.redbox:submitted,workflow_source,redbox:submissionProcess.dc:date,redbox:submissionProcess.dc:description,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone"
+<div class="grid_16 widget-form inputscreen nameLookup-section" id="main-form"
+    data-form-fields="dc:subject.anzsrc:for.0.rdf:resource,dc:subject.anzsrc:for.0.skos:prefLabel,grants,foaf:fundedBy.vivo:Grant.0.redbox:internalGrant,foaf:fundedBy.vivo:Grant.0.redbox:grantNumber,foaf:fundedBy.vivo:Grant.0.dc:identifier,foaf:fundedBy.vivo:Grant.0.skos:prefLabel,dc:relation.swrc:Publication,dc:relation.bibo:Website,dc:relation.swrc:Publication.0.dc:identifier,dc:relation.swrc:Publication.0.dc:title,dc:relation.swrc:Publication.0.skos:note,dc:relation.bibo:Website.0.dc:identifier,dc:relation.bibo:Website.0.dc:title,dc:relation.bibo:Website.0.skos:note,dc:creator,dc:creator.foaf:Person.0.redbox:isCoPrimaryInvestigator,dc:creator.foaf:Person.0.redbox:isPrimaryInvestigator,dc:creator.foaf:Person.0.foaf:title,dc:creator.foaf:Person.0.foaf:givenName,dc:creator.foaf:Person.0.foaf:familyName,dc:accessRights.dc:identifier,dc:accessRights.skos:prefLabel,dc:accessRights.dc:RightsStatement.skos:prefLabel,vivo:Location.vivo:GeographicLocation.gn:name,bibo:Website.1.dc:identifier,dc:subject.anzsrc:for,dc:subject.vivo:keyword.0.rdf:PlainLiteral,title,description,location,dc:title,dc:extent,dc:description,redbox:submissionProcess.dc:title,dc:SizeOrDuration,dc:coverage.vivo:DateTimeInterval,dc:coverage.redbox:timePeriod,dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral,dc:coverage.vivo:DateTimeInterval,dc:coverage.vivo:GeographicLocation.1.dc:type,dc:coverage.vivo:DateTimeInterval.vivo:start,dc:coverage.vivo:DateTimeInterval.vivo:end,dc:subject.anzsrc:for,redbox:formVersion,redbox:newForm,redbox:submissionProcess.redbox:submitted,workflow_source,redbox:submissionProcess.dc:date,redbox:submissionProcess.dc:description,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone"
     data-form-fields-readonly="metaList"
     data-submit-func="srSubmitFunc">
     <input type="hidden" id="redbox:formVersion" value="$systemConfig.getString("Unknown", "redbox.version.string")" />
@@ -148,6 +147,9 @@ label.validation, .validation label { color: red; display: block; }
     <input type="hidden" name="redbox:submissionProcess.redbox:submitted" value="true" />
     <input type="hidden" name="workflow_source" value="Submission Request" />
     <input type="hidden" name="metaList" value="[]" />
+	<input type="hidden" class="nameLookup-url" value="$portalPath/proxyGet?ns=Parties_People&qs=searchTerms%3D{searchTerms}" />
+    <input type="hidden" class="nlaLookup-url" value="$portalPath/proxyGet?ns=NLA_SRU&qs={searchTerms}" />
+    <input type="hidden" class="nameLookup-value-ns" value="nl" />
     <p>Please provide a brief overview of your research data and how to contact you.</p>
     <fieldset>
         <p>
@@ -532,8 +534,14 @@ label.validation, .validation label { color: red; display: block; }
     </fieldset>
 </div>
 <div class="clear"></div>
+
 <script type="text/javascript" src="$portalPath/javascript-widgets/widgets2.js"></script>
+<script type="text/javascript" src="$portalPath/js/autocomplete/jquery.autocomplete.pack.js"></script>
+<script type="text/javascript" src="$portalPath/javascript-widgets/nameLookup.js"></script>
 <script type="text/javascript">
+
+
+
 (function($){
     $(function(){
         widgets.contentLoaded();
@@ -696,6 +704,240 @@ $(function(){
             addAutocompleteGrant($(this));
         }
     });
+
+function lookupDone(target,data){
+    var p=target.parent();
+    target.text(" | change");
+    var displayName = p.find(".identified-as-name");
+    displayName.text(p.find("input.nl").val());
+
+    // fill in the fields
+    // National Library of Australia
+    var nlaId = data["nlaId"];
+    if (nlaId != null) {
+        displayName.append(" (<a href=\""+nlaId+"\" target=\"_blank\">NLA</a>)");
+        var baseId = p.find("input[id$=\\.foaf\\:name]").attr("id").replace(".foaf:name", "");
+        $("input[id='"+baseId+".foaf:title']").val("");
+        $("input[id='"+baseId+".foaf:givenName']").val(data["firstName"]);
+        $("input[id='"+baseId+".foaf:familyName']").val(data["surname"]);
+
+    // Mint Identity
+    } else {
+        var lookupData=data["result-metadata"].all;
+        var baseId=p.find("input[id$=\\.foaf\\:name]").attr("id").replace(".foaf:name", "");
+        $("input[id='"+baseId+".foaf:title']").val(lookupData["Honorific"]);
+        $("input[id='"+baseId+".foaf:givenName']").val(lookupData["Given_Name"]);
+        $("input[id='"+baseId+".foaf:familyName']").val(lookupData["Family_Name"]);
+        $("input[id='"+baseId+".foaf:Organization.dc:identifier']").parents("td").find("option").each(function(c,e){
+            var option=$(e);
+            if (jQuery.trim(option.val()) == lookupData["primary_group_id"]){
+                $("input[id='"+baseId+".foaf:Organization.dc:identifier']")
+                    .val(option.val()).trigger("onDataChanged");
+                $("input[id='"+baseId+".foaf:Organization.skos:prefLabel']")
+                    .val(option.text()).trigger("onDataChanged");
+                return;
+            }
+        });
+    }
+}
+
+function lookupCleared(target,data){
+    var p = target.parent();
+    target.text("lookup");
+    p.find(".identified-as-name").text("");
+    p.find("input.nl").val("");
+}
+
+function pcLookupDone(target,data){
+    lookupDone(target,data);
+    var metadata = data["result-metadata"];
+    if (metadata != null) {
+        $("#locrel\\:prc\\.foaf\\:Person\\.foaf\\:email").val(metadata.all["Email"]);
+    }
+}
+
+function pcLookupCleared(target,data){
+    lookupCleared(target,data);
+    $("#locrel\\:prc\\.foaf\\:Person\\.foaf\\:email").val("");
+}	
+
+$(function() {
+    function splitGrantData(row) {
+        var items = row[0].split("::");
+        var id = items[0];
+        var uri = items[3];
+        var label = items[1];
+        var source = items[2];
+        return {
+            id: id,
+            uri: uri,
+            label: label,
+            source: source,
+            display: "[" + id + "] (" + source + ") " + label
+        };
+    }
+
+    function addAutocompleteGrant(elem) {
+        elem.autocomplete(
+            "$portalPath/proxyGet?ns=Activities&autocomplete=true&fields=grant_number,dc:title,repository_name,dc:identifier",
+            {
+                extraParams: {
+                    qs: function() { return "count=25&searchTerms=" + escape(elem.val().toLowerCase()); }
+                },
+                formatItem: function(row) { return splitGrantData(row).display; },
+                formatResult: function(row) { return splitGrantData(row).id; },
+                mustMatch: true,
+                width: "40em"
+            }).result(function(event, row) {
+                var uri = $(this).next();
+                var label = $(this).parent().next().find(".autocomplete-grant-label")
+                if (row) {
+                    var data = splitGrantData(row);
+                    label.val("(" + data.source + ") " + data.label);
+                    uri.val(data.uri);
+                }
+            });
+    }
+
+    $(".internal-grant").live("click", function() {
+        var checked = $(this).is(":checked");
+        var baseId = $(this).attr("id").replace(".redbox:internalGrant", "");
+        var idElem = $("input[id=" + baseId + ".redbox:grantNumber]");
+        var labelElem = $("input[id=" + baseId + ".skos:prefLabel]");
+        var uriElem = $("input[id=" + baseId + ".dc:identifier]");
+        var uri = uriElem.val();
+        if (uri == INTERNAL_GRANT_ID) {
+            if (labelElem.val() == "" ||
+                    confirm("The selected grant will be cleared.\nAre you sure you want to change it to an external grant?")) {
+                idElem.val("");
+                addAutocompleteGrant(idElem);
+                labelElem
+                    .addClass("label")
+                    .attr("readonly", "readonly")
+                    .val("");
+                uriElem.val("");
+                return true;
+            }
+        } else {
+            if (uri == "" ||
+                    confirm("The selected grant will be cleared.\nAre you sure you want to change it to an internal grant?")) {
+                idElem.unautocomplete().val("");
+                labelElem
+                    .removeClass("label")
+                    .removeAttr("readonly")
+                    .val("");
+                uriElem.val(INTERNAL_GRANT_ID);
+                return true;
+            }
+        }
+        return false;
+    });
+
+
+    $(".autocomplete-grant").live("focus", function() {
+        var baseId = $(this).attr("id").replace(".redbox:grantNumber", "");
+        if (!$("input[id=" + baseId + ".redbox:internalGrant]").is(":checked")) {
+            $(this).unautocomplete();
+            addAutocompleteGrant($(this));
+        }
+    });
+
+    function splitFundingData(row) {
+        var items = row[0].split("::");
+        return {
+            uri: items[0],
+            label: items[1]
+        };
+    }
+
+    $(".autocomplete-funding").live("focus", function() {
+        var elem = $(this);
+        $(this).unautocomplete();
+        $(this).autocomplete(
+            "$portalPath/proxyGet?ns=Funding_Bodies&autocomplete=true&fields=dc:identifier,dc:title",
+            {
+                extraParams: {
+                    qs: function() { return "count=25&searchTerms=" + escape(elem.val().toLowerCase()); }
+                },
+                formatItem: function(row) { return splitFundingData(row).label; },
+                formatResult: function(row) { return splitFundingData(row).label; },
+                width: "40em"
+            }).result(function(event, row) {
+                var trElem = $(this).parent().parent();
+                var uriElem = trElem.find(".funding-body-id");
+                var labelElem = trElem.find(".funding-body-id-label");
+                if (row) {
+                    var uri = splitFundingData(row).uri;
+                    uriElem.val(uri);
+                    labelElem.html("ID: '"+uri+"'");
+                } else {
+                    uriElem.val("urn:uon:internal");
+                    labelElem.html("ID: 'urn:uon:internal'");
+                }
+                labelElem.show();
+                var clearElem = trElem.find(".clear-funding-body-id");
+                clearElem.show();
+            })
+        }).live("blur", function() {
+            $(this).search();
+        });
+    $(".funding-body-id").live("onDataChanged", function() {
+            var elem = $(this);
+            var value = elem.val();
+            if (value != null && value != "") {
+                var trElem = $(this).parent().parent();
+                var linkElem = trElem.find(".clear-funding-body-id");
+                var labelElem = trElem.find(".funding-body-id-label");
+                linkElem.show();
+                labelElem.html("ID: '"+value+"'");
+                labelElem.show();
+            }
+        });
+    $(".clear-funding-body-id").live("click", function() {
+        var elem = $(this);
+        elem.hide();
+        var trElem = $(this).parent().parent();
+        var uriElem = trElem.find(".funding-body-id");
+        uriElem.val("");
+        var nameElem = trElem.find(".autocomplete-funding");
+        nameElem.val("");
+        var labelElem = trElem.find(".funding-body-id-label");
+        labelElem.html("");
+        labelElem.hide();
+        return false;
+    });
+
+    function styleIdentifier(isChecked, idInput, originInput) {
+        if (isChecked) {
+            idInput.attr("readonly", "readonly");
+            idInput.addClass("strike");
+            originInput.val("internal");
+        } else {
+            idInput.removeAttr("readonly");
+            idInput.removeClass("strike");
+            originInput.val("external");
+        }
+    }
+
+    $("input[id=dc:identifier.checkbox]").change(function() {
+        styleIdentifier(
+            $(this).is(":checked"),
+            $("input[id=dc:identifier.rdf:PlainLiteral]"),
+            $("input[id=dc:identifier.redbox:origin]"));
+    });
+
+    $("input[id=dc:identifier.redbox:origin]").live("onDataChanged", function() {
+        var value = $(this).val();
+        var checked = true;
+        if (value == "internal" || value == "") {
+            $("input[id=dc:identifier.checkbox]").attr('checked','checked');
+        } else {
+            $("input[id=dc:identifier.checkbox]").removeAttr('checked');
+            checked = false;
+        }
+        styleIdentifier(checked, $("input[id=dc:identifier.rdf:PlainLiteral]"), $(this));
+    });
+});
 
 </script>
 

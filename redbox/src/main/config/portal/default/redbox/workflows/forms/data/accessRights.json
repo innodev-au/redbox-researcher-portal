@@ -1,0 +1,16 @@
+{
+    "results": [
+        {
+            "id": "Access to the data is available via the link provided.",
+            "label": "Access to the data is available via the link provided."
+        },
+        {
+            "id": "Access to the data may be available under certain conditions. Please contact the data custodian for further information.",
+            "label": "Access to the data may be available under certain conditions. Please contact the data custodian for further information."
+        },
+        {
+            "id": "No access to the data is currently allowed",
+            "label": "No access to the data is currently allowed"
+        }
+    ]
+}

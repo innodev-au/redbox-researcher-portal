@@ -6,10 +6,31 @@
 #end
 
 #macro(fieldTitle $id $label $required)
-        <label for="$id">$label#if($required)<span class="required">(*)</span>#end</label>
+		<label for="$id">$label#if($required)<span class="required">*</span>#end</label>
         <span class="helpWidget" data-help-content-id="help-$id">
-            <img src="$portalPath/images/icons/help.png"/>
+            <img src="$portalPath/images/icons/help.png" alt="help" title="help"/>
         </span>
+#end
+
+#macro(fieldsetT $id $label $required)
+	<fieldset name="$label" class="subsection-table">
+		<legend>$label#if($required)<span class="required">*</span>#end
+        <span class="helpWidget" data-help-content-id="help-$id">
+            <img src="$portalPath/images/icons/help.png" alt="help" title="help"/>
+        </span>
+		</legend>
+#end
+
+#macro(fieldset $id $label $required)
+	<fieldset name="$label" class="subsection">
+		<legend>$label#if($required)<span class="required">*</span>#end
+        <span class="helpWidget" data-help-content-id="help-$id">
+            <img src="$portalPath/images/icons/help.png" alt="help" title="help"/>
+        </span>
+		</legend>
+#end
+#macro(endfieldset)
+	</fieldset>
 #end
 
 #macro(mintSelectField $id $labelId $sourceUrl $idKey $labelKey $listKey $defaultValue)
@@ -134,7 +155,45 @@
 #set($pageTitle = "Notify us about a dataset submission")
 <style type="text/css">
 fieldset p textarea { display:block; width: 98%; }
-.required { color: red; }
+fieldset {
+	border-radius:5px;
+	margin-top:30px;
+}
+.subsection {
+	width:600px;
+}
+.subsection-table {
+	max-width:1200px;
+}
+fieldset label {
+	width:300px;
+}
+fieldset td {
+	background:inherit;
+}
+fieldset p input, fieldset p select {
+	width:400px;
+	display:block;
+}
+fieldset table {
+	border:0px;
+}
+legend {
+	position:relative;
+	width:150px;
+	border-radius: 5px;
+}
+legend .helpWidget {
+	position:absolute;
+	right:10px;
+}
+span.required {
+color: red;
+position:relative;
+bottom:-3px;
+font-weight:bold;
+font-size:100%;
+}
 label.validation, .validation label { color: red; display: block; }
 </style>
 <h2 id="page-heading"><span>$pageTitle</span></h2>
@@ -151,7 +210,7 @@ label.validation, .validation label { color: red; display: block; }
     <input type="hidden" class="nlaLookup-url" value="$portalPath/proxyGet?ns=NLA_SRU&qs={searchTerms}" />
     <input type="hidden" class="nameLookup-value-ns" value="nl" />
     <p>Please provide a brief overview of your research data and how to contact you.</p>
-    <fieldset>
+	#fieldset("Summary" "Summary" false)
         <p>
             <label for="redbox:submissionProcess.dc:date">Date Submitted</label>
             <input id="redbox:submissionProcess.dc:date" type="text" size="40" value="$!self.getSubmitDate()" readonly="readonly" />
@@ -167,31 +226,30 @@ label.validation, .validation label { color: red; display: block; }
             <textarea id="redbox:submissionProcess.dc:description" cols="40" rows="10"></textarea>
         </p>
 		
-	#fieldTitle("dc:extent" "Extent or Quantity" false)
-    <div class="help-content" id="help-dc:extent">
-        Enter the number of files that comprise the research dataset/collection,
-        registry/repository, catalogue or index (including supporting material),
-        and the format.
-    </div>
-	    <p>
-        <input type="text" size="60" placeholder="quantity" id="dc:extent" />
-    </p>
-
-	#fieldTitle("dc:SizeOrDuration" "Data Size" false)
-    <div class="help-content" id="help-dc:SizeOrDuration">
-        Record the size of the data in KB, MB, GB, TB etc.
-    </div>
-    <p><input type="text" size="60" placeholder="size" id="dc:SizeOrDuration" /></p>
-
+		#fieldTitle("dc:extent" "Extent or Quantity" false)
+	    <div class="help-content" id="help-dc:extent">
+	        Enter the number of files that comprise the research dataset/collection,
+	        registry/repository, catalogue or index (including supporting material),
+	        and the format.
+	    </div>
+		    <p>
+	        <input type="text" size="60" placeholder="quantity" id="dc:extent" />
+	    </p>
 	
-			#fieldTitle("Coverage" "Coverage" false)
-		    <div class="group">
+		#fieldTitle("dc:SizeOrDuration" "Data Size" false)
+	    <div class="help-content" id="help-dc:SizeOrDuration">
+	        Record the size of the data in KB, MB, GB, TB etc.
+	    </div>
+	    <p><input type="text" size="60" placeholder="size" id="dc:SizeOrDuration" /></p>
+	
+	#endfieldset
+
+	#fieldset("Coverage" "Coverage" false)
         <p>
             <label for="dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral">Please enter the geographical coverage of the data </label>
             <input id="dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral" type="text" size="40" />
         </p>		
 
-		
     #fieldTitle("dc:coverage.vivo:DateTimeInterval" "Date Coverage" false)
     <div class="help-content" id="help-dc:coverage.vivo:DateTimeInterval">
         Use this to indicate a date range relevant to the research
@@ -224,11 +282,11 @@ label.validation, .validation label { color: red; display: block; }
             <input type="text" id="dc:coverage.redbox:timePeriod" size="60"
                 placeholder="If dates cannot be quantified ie. 21st Century, WWII, The Depression, etc." />
         </p>
-            </div>
+	#endfieldset
 			
 			
 ################################################################################################################## 		
-	#fieldTitle("dc:subject.anzsrc:for" "Fields of Research" false)
+	#fieldset("dc:subject.anzsrc:for" "Fields of Research" false)
     <div class="help-content" id="help-dc:subject.anzsrc:for">
         Select relevant FOR code/s.
     </div>
@@ -239,10 +297,11 @@ label.validation, .validation label { color: red; display: block; }
                           "skos:prefLabel"
                           "results"
                           "skos:narrower")
+	#endfieldset
 ################################################################################################################## 
 
 	
-	#fieldTitle("dc:subject.vivo:keyword" "Keywords" false)
+	#fieldset("dc:subject.vivo:keyword" "Keywords" false)
     <div class="help-content" id="help-dc:subject.vivo:keyword">
         Enter descriptive keywords as required.
     </div>
@@ -265,9 +324,9 @@ label.validation, .validation label { color: red; display: block; }
             </tr>
         </tfoot>
     </table>
+	#endfieldset
 	
-#fieldTitle("th.locatoin" "Location" false)
-		<div class="group">
+	#fieldset("th.location" "Location" false)
 		<p>
             <label for="vivo:Location.vivo:GeographicLocation.gn:name">Please enter a physical address <span class="required">*</span></label>
             <label class="validation" for="vivo:Location.vivo:GeographicLocation.gn:name" data-validation-rule="test(notEmpty);when(submit);">A location is required!</label>
@@ -277,13 +336,13 @@ label.validation, .validation label { color: red; display: block; }
             <label for="bibo:Website.1.dc:identifier">Please enter the electronic location of data if available </label>
             <input id="bibo:Website.1.dc:identifier" type="text" size="40" />
         </p>
-		
-	</div>
+	#endfieldset
 
+	#fieldset("rights" "Rights" false)
 <p>
         #fieldTitle("dc:accessRights.dc:RightsStatement.skos:prefLabel" "Rights Statement" false)
         <div class="help-content" id="help-dc:accessRights.dc:RightsStatement.skos:prefLabel">
-<dd>This statement summarises the University’s rights and obligations regarding copyright and intellectual property rights associated with the data.</dd>
+<dd>This statement summarises the UniversityÂ’s rights and obligations regarding copyright and intellectual property rights associated with the data.</dd>
 <dd>If the default text is not appropriate, please contact XXX after submitting the form.</dd>
         </div>
         <div>
@@ -325,9 +384,9 @@ label.validation, .validation label { color: red; display: block; }
         <input type="text" size="60" id="dc:accessRights.dc:identifier" 
         <input type="text" size="60" id="dc:accessRights.dc:identifier" placeholder="Access Rights URI" />
     </p>
+	#endfieldset
 
-
-    #fieldTitle("dc:creator" "Creators" true)
+    #fieldsetT("dc:creator" "Creators" true)
     <div class="help-content" id="help-dc:creator">
         <p>Record names of the creators.</p>
         <ul>
@@ -445,10 +504,11 @@ label.validation, .validation label { color: red; display: block; }
             </tr>
         </tfoot>
     </table>
+	#endfieldset
 
 ##################################################################################################
 
-	    #fieldTitle("grants" "Related Projects" false)
+	    #fieldsetT("grants" "Related Projects" false)
     <div class="help-content" id="help-grants">
         Select/enter the grant number and/or title if applicable.
     </div>
@@ -491,26 +551,27 @@ label.validation, .validation label { color: red; display: block; }
             </tr>
         </tfoot>
     </table>
-	
+	#endfieldset
 ##################################################################################################
 
-    #fieldTitle("dc:relation.swrc:Publication" "Related Publications" false)
+    #fieldsetT("dc:relation.swrc:Publication" "Related Publications" false)
     <div class="help-content" id="help-dc:relation.swrc:Publication">
         Include URL/s to any publications underpinning the research
         dataset/collection, registry/repository, catalogue or index.
     </div>
     #relatedInfoField("dc:relation.swrc:Publication" "publication url" "Add publication")
+	#endfieldset
 
-    #fieldTitle("dc:relation.bibo:Website" "Related Website" false)
+    #fieldsetT("dc:relation.bibo:Website" "Related Website" false)
     <div id="help-dc:relation.bibo:Website" class="help-content">
         Include URL/s for the relevant website.
     </div>
     #relatedInfoField("dc:relation.bibo:Website" "website url" "Add website")
-	
+	#endfieldset
 	
 	
 #######################################################################################################    	
-		
+	#fieldset("Contact Details" "Contact Details" false)
         <p>
             <label for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name">Contact Name <span class="required">*</span></label>
             <label class="validation" for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name" data-validation-rule="test(notEmpty);when(submit);">A contact name is required!</label>
@@ -531,7 +592,7 @@ label.validation, .validation label { color: red; display: block; }
         <span class="hidden" id="loading">
             Please wait while submitting <img src="$portalPath/images/icons/loading.gif" />
         </span>
-    </fieldset>
+	#endfieldset
 </div>
 <div class="clear"></div>
 
@@ -940,5 +1001,3 @@ $(function() {
 });
 
 </script>
-
-

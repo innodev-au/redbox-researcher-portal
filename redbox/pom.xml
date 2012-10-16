@@ -59,8 +59,7 @@
         <dependency>
             <groupId>com.googlecode.redbox-mint</groupId>
             <artifactId>redbox-secure-api</artifactId>
-<!--             <version>${redbox.version}</version> -->
-			<!-- Change back to redbox.version once upgraded to v1.5.2 -->
+			<!-- Change version back to ${redbox.version} once upgraded to v1.5.2 -->
 			<version>1.5.2-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -80,7 +79,7 @@
 			<groupId>com.googlecode.the-fascinator</groupId>
 			<artifactId>fascinator-portal</artifactId>
 			<type>warpath</type>
-			<version>1.1.1</version>
+			<version>${tf.version}</version>
 		</dependency>
     </dependencies>
     <profiles>
@@ -134,6 +133,35 @@
         </resources>
 
         <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/config.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>${project.name}_config_assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <goals>deploy</goals>
+                    <pushChanges>false</pushChanges>
+                </configuration>
+            </plugin>
+
+
             <!-- 1st - Unpack Generic Mint setup -->
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -297,13 +325,7 @@
             </plugin>
         </plugins>
     </build>
-<!--
-    <scm>
-        <url>https://redbox-mint.googlecode.com/svn/redbox/builds/dev-local/trunk</url>
-        <connection>scm:svn:http://redbox-mint.googlecode.com/svn/redbox/builds/dev-local/trunk</connection>
-        <developerConnection>scm:svn:https://redbox-mint.googlecode.com/svn/redbox/builds/dev-local/trunk</developerConnection>
-    </scm>
--->
+
     <repositories>
         <repository>
             <id>fascinator-snapshots</id>

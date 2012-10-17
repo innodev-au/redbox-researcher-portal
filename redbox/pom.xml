@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>au.edu.adelaide.redbox-mint</groupId>
     <artifactId>redbox-researcher-portal</artifactId>
-    <version>1.5.1</version>
+    <version>1.5.1-UoA-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>University of Adelaide - ReDBox Installer</name>
+    <name>ReDBox Researcher Portal (Researcher Submission)</name>
     <parent>
         <groupId>com.googlecode.redbox-mint</groupId>
         <artifactId>redbox</artifactId>
@@ -160,6 +160,13 @@
                     <pushChanges>false</pushChanges>
                 </configuration>
             </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
 
 
             <!-- 1st - Unpack Generic Mint setup -->
@@ -326,7 +333,18 @@
         </plugins>
     </build>
 
+	<scm>
+		<url>https://github.com/innodev-au/redbox-researcher-portal</url>
+		<developerConnection>scm:git:https://github.com/innodev-au/redbox-researcher-portal.git</developerConnection>
+	  <tag>HEAD</tag>
+  </scm>
+
     <repositories>
+        <repository>
+            <id>maven.adelaide.edu.au</id>
+            <name>University of Adelaide - Releases</name>
+            <url>https://maven.adelaide.edu.au/artifactory/libs-releases-local</url>
+        </repository>
         <repository>
             <id>fascinator-snapshots</id>
             <name>The Fascinator Community Nexus Server - Snapshots</name>

@@ -13,3 +13,5 @@ target
 /server
 /solr
 /storage
+/redbox/pom.xml.releaseBackup
+/redbox/release.properties

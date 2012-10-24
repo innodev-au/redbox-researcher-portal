@@ -9,12 +9,12 @@
     <parent>
         <groupId>com.googlecode.redbox-mint</groupId>
         <artifactId>redbox</artifactId>
-        <version>1.5.2-SNAPSHOT</version>
+        <version>1.5.2</version>
     </parent>
     <properties>
         <!-- Used in build -->
-        <redbox.version>1.5.1</redbox.version>
-        <tf.version>1.1.1</tf.version>
+        <redbox.version>1.5.2</redbox.version>
+        <tf.version>1.1.2</tf.version>
 
         <!-- Runtime values, will replace placeholders
              in config and control scripts -->
@@ -59,8 +59,7 @@
         <dependency>
             <groupId>com.googlecode.redbox-mint</groupId>
             <artifactId>redbox-secure-api</artifactId>
-			<!-- Change version back to ${redbox.version} once upgraded to v1.5.2 -->
-			<version>1.5.2-SNAPSHOT</version>
+			<version>${redbox.version}</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.redbox-mint</groupId>
@@ -75,12 +74,12 @@
         </dependency>
 
 		<!-- Remove the next dependency (for fascinator-portal) once upgraded to v1.5.2 -->
-		<dependency>
-			<groupId>com.googlecode.the-fascinator</groupId>
-			<artifactId>fascinator-portal</artifactId>
-			<type>warpath</type>
-			<version>${tf.version}</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>com.googlecode.the-fascinator</groupId> -->
+<!-- 			<artifactId>fascinator-portal</artifactId> -->
+<!-- 			<type>warpath</type> -->
+<!-- 			<version>${tf.version}</version> -->
+<!-- 		</dependency> -->
     </dependencies>
     <profiles>
         <profile>

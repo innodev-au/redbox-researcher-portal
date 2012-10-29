@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>au.edu.adelaide.redbox-mint</groupId>
     <artifactId>redbox-researcher-portal</artifactId>
-    <version>1.5.3-UoA-SNAPSHOT</version>
+    <version>1.5.2-UoA-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>ReDBox Researcher Portal (Researcher Submission)</name>
     <parent>
@@ -72,14 +72,6 @@
             <artifactId>plugin-transformer-local</artifactId>
             <version>${redbox.version}</version>
         </dependency>
-
-		<!-- Remove the next dependency (for fascinator-portal) once upgraded to v1.5.2 -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>com.googlecode.the-fascinator</groupId> -->
-<!-- 			<artifactId>fascinator-portal</artifactId> -->
-<!-- 			<type>warpath</type> -->
-<!-- 			<version>${tf.version}</version> -->
-<!-- 		</dependency> -->
     </dependencies>
     <profiles>
         <profile>

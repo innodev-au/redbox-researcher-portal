@@ -12,7 +12,7 @@
         #if($page.authentication.is_logged_in())
 			<li>
 				#if($page.authentication.has_role("researcher"))
-					<a id="notify-record" href="$portalPath/workflows/submission">Notify us about a research dataset</a>
+					<a id="notify-record" href="$portalPath/workflows/submission">Describe my data</a>
                 #else
 					<a id="new-record" href="#">Add a new dataset</a>
 				#end

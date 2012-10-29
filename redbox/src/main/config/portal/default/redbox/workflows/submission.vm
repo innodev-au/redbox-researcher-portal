@@ -154,7 +154,7 @@
     </table>
 #end
 
-#set($pageTitle = "Describe your data")
+#set($pageTitle = "Describe my data")
 <style type="text/css">
 fieldset p textarea { display:block; width: 98%; }
 fieldset {

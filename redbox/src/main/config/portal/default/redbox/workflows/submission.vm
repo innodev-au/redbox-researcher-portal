@@ -21,12 +21,14 @@
 		</legend>
 #end
 
-#macro(fieldset $id $label $required)
+#macro(fieldset $id $label $required $showhelp)
 	<fieldset name="$label" class="subsection">
 		<legend>$label#if($required)<span class="required">*</span>#end
-        <span class="helpWidget" data-help-content-id="help-$id">
-            <img src="$portalPath/images/icons/help.png" alt="help" title="help"/>
-        </span>
+		#if($showhelp)
+    		<span class="helpWidget" data-help-content-id="help-$id">
+                <img src="$portalPath/images/icons/help.png" alt="help" title="help"/>
+            </span>
+		#end
 		</legend>
 #end
 #macro(endfieldset)
@@ -152,7 +154,7 @@
     </table>
 #end
 
-#set($pageTitle = "Notify us about a dataset submission")
+#set($pageTitle = "Describe your data")
 <style type="text/css">
 fieldset p textarea { display:block; width: 98%; }
 fieldset {
@@ -188,13 +190,23 @@ legend .helpWidget {
 	right:10px;
 }
 span.required {
-color: red;
-position:relative;
-bottom:-3px;
-font-weight:bold;
-font-size:100%;
+    color: red;
+    position:relative;
+    bottom:-3px;
+    font-weight:bold;
+    font-size:100%;
 }
-label.validation, .validation label { color: red; display: block; }
+label.validation, .validation label {
+	color: red;
+	display: block;
+}
+a.plain-link {
+    font-weight: normal;
+    text-decoration: underline;
+}
+.introduction {
+	margin: 1em 3em;
+}
 </style>
 <h2 id="page-heading"><span>$pageTitle</span></h2>
 <div class="grid_16 widget-form inputscreen nameLookup-section" id="main-form"
@@ -209,124 +221,151 @@ label.validation, .validation label { color: red; display: block; }
 	<input type="hidden" class="nameLookup-url" value="$portalPath/proxyGet?ns=Parties_People&qs=searchTerms%3D{searchTerms}" />
     <input type="hidden" class="nlaLookup-url" value="$portalPath/proxyGet?ns=NLA_SRU&qs={searchTerms}" />
     <input type="hidden" class="nameLookup-value-ns" value="nl" />
-    <p>Please provide a brief overview of your research data and how to contact you.</p>
+	<p class="introduction">
+    Provide a brief description of your dataset or data collection below. Your record will be moderated
+	and published in
+	<a class="plain-link" href="/redbox/published/" target="_blank">DataConnect</a> and to
+	<a class="plain-link" href="http://researchdata.ands.org.au/">Research Data Australia</a>.
+    <br/>
+	Click on the Question icon for explanatory information. Fields marked with an asterisk are mandatory.
+    <br/>
+    For assistance contact the Digital Library: Email
+    <a class="plain-link" href="mailto:digital-library@adelaide.edu.au">digital-library@adelaide.edu.au</a>
+	or Phone 8313 3629.
+	</p>
 	#fieldset("Summary" "Summary" false)
         <p>
             <label for="redbox:submissionProcess.dc:date">Date Submitted</label>
             <input id="redbox:submissionProcess.dc:date" type="text" size="40" value="$!self.getSubmitDate()" readonly="readonly" />
         </p>
-		<p>
-            <label for="redbox:submissionProcess.dc:title">Title<span class ="required">*</span></label>
-			<label class="validation" for="redbox:submissionProcess.dc:title" data-validation-rule="test(notEmpty);when(submit);">A title is required!</label>
-			<input id="redbox:submissionProcess.dc:title" type="text" size="40"/>
-		</p>
-        <p>
-            <label for="redbox:submissionProcess.dc:description">Description <span class="required">*</span></label>
-            <label class="validation" for="redbox:submissionProcess.dc:description" data-validation-rule="test(notEmpty);when(submit);">A description is required!</label>
-            <textarea id="redbox:submissionProcess.dc:description" cols="40" rows="10"></textarea>
-        </p>
+
+		#fieldTitle("redbox:submissionProcess.dc:title" "Title" true)
+	    <div class="help-content" id="help-redbox:submissionProcess.dc:title">
+	        Enter a unique title that meaningfully identifies the data. For example,
+			&apos;Southern Adelaide social capital survey responses 2005&apos;.
+	    </div>
+		<p><input id="redbox:submissionProcess.dc:title" type="text" size="40"/></p>
+
+		#fieldTitle("redbox:submissionProcess.dc:description" "Description" true)
+	    <div class="help-content" id="help-redbox:submissionProcess.dc:description">
+	        Enter a concise description of the dataset or data collection. This may
+			include a description of the nature of the data, how the data are arranged,
+			and details of how the data have been processed or analysed including
+			relevant tools and software. Use relevant terminology from your discipline
+			but minimise use of specialist acronyms and jargon.
+	    </div>
+        <p><textarea id="redbox:submissionProcess.dc:description" cols="40" rows="10"></textarea></p>
 		
 		#fieldTitle("dc:extent" "Extent or Quantity" false)
 	    <div class="help-content" id="help-dc:extent">
-	        Enter the number of files that comprise the research dataset/collection,
-	        registry/repository, catalogue or index (including supporting material),
-	        and the format.
+	        Describe the extent of the dataset in terms meaningful for the data. For
+			example, the number of pages, files or objects.
 	    </div>
-		    <p>
-	        <input type="text" size="60" placeholder="quantity" id="dc:extent" />
-	    </p>
+	    <p><input type="text" size="60" placeholder="quantity" id="dc:extent"/></p>
 	
 		#fieldTitle("dc:SizeOrDuration" "Data Size" false)
 	    <div class="help-content" id="help-dc:SizeOrDuration">
-	        Record the size of the data in KB, MB, GB, TB etc.
+	        For electronic data, enter the disk space. For example 5MB.
 	    </div>
-	    <p><input type="text" size="60" placeholder="size" id="dc:SizeOrDuration" /></p>
+	    <p><input type="text" size="60" placeholder="size" id="dc:SizeOrDuration"/></p>
 	
 	#endfieldset
 
-	#fieldset("Coverage" "Coverage" false)
-        <p>
-            <label for="dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral">Please enter the geographical coverage of the data </label>
+	#fieldset("Coverage" "Coverage" false true)
+		<div class="help-content" id="help-Coverage">
+			Describe the dates and location that your data cover.
+        </div>
+
+        #fieldTitle("dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral" "Geographic Coverage" false)
+        <div class="help-content" id="help-dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral">
+			Enter the geographic area relevant to the data. Do not enter the location
+			where the data are stored. For example, Riverland and Sunraysia regions of
+			Australia OR Salisbury, South Australia. If your data are not geographic
+			specific then leave this field blank.
+        </div>
+		<p>
             <input id="dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral" type="text" size="40" />
         </p>		
 
-    #fieldTitle("dc:coverage.vivo:DateTimeInterval" "Date Coverage" false)
-    <div class="help-content" id="help-dc:coverage.vivo:DateTimeInterval">
-        Use this to indicate a date range relevant to the research
-        dataset/collection, registry/repository, catalogue or index. Year format
-        requires manual entry, eg. 1990 to 2010
-    </div>
-    <p>
-        <input type="text" placeholder="Start" class="dateYMD" id="dc:coverage.vivo:DateTimeInterval.vivo:start" />
-        <label for="dc:coverage.vivo:DateTimeInterval.vivo:end"></label>
-        <input type="text" placeholder="End" class="dateYMD" id="dc:coverage.vivo:DateTimeInterval.vivo:end" />
-        <label class="validation-err-msg" for="dc:coverage.vivo:DateTimeInterval.vivo:start"
-            data-validation-rule="when(blur,change,submit);name(testCoverageFrom);
-                    test(/^[12]\d{3}([-\/]+(10|11|12|0?\d)([-\/]+(30|31|[012]?\d))?)?$/ or empty);">
-            A valid from date or year is required!
-        </label>
-        <label class="validation-err-msg" for="dc:coverage.vivo:DateTimeInterval.vivo:end"
-            data-validation-rule="when(blur,change,submit);name(testCoverageTo);
-                    test(/^[12]\d{3}([-\/]+(10|11|12|0?\d)([-\/]+(30|31|[012]?\d))?)?$/ or empty);">
-            A valid to date or year is required!
-        </label>
-    </p>
-			
+        #fieldTitle("dc:coverage.vivo:DateTimeInterval" "Date Coverage" false)
+        <div class="help-content" id="help-dc:coverage.vivo:DateTimeInterval">
+            Enter the date range relevant to the data. For example, 1999-2002. Do not enter
+    		the dates of how long you intend to keep the data.
+        </div>
+        <p>
+            <input type="text" placeholder="Start" class="dateYMD" id="dc:coverage.vivo:DateTimeInterval.vivo:start" />
+            <label for="dc:coverage.vivo:DateTimeInterval.vivo:end"></label>
+            <input type="text" placeholder="End" class="dateYMD" id="dc:coverage.vivo:DateTimeInterval.vivo:end" />
+            <label class="validation-err-msg" for="dc:coverage.vivo:DateTimeInterval.vivo:start"
+                data-validation-rule="when(blur,change,submit);name(testCoverageFrom);
+                        test(/^[12]\d{3}([-\/]+(10|11|12|0?\d)([-\/]+(30|31|[012]?\d))?)?$/ or empty);">
+                A valid from date or year is required!
+            </label>
+            <label class="validation-err-msg" for="dc:coverage.vivo:DateTimeInterval.vivo:end"
+                data-validation-rule="when(blur,change,submit);name(testCoverageTo);
+                        test(/^[12]\d{3}([-\/]+(10|11|12|0?\d)([-\/]+(30|31|[012]?\d))?)?$/ or empty);">
+                A valid to date or year is required!
+            </label>
+        </p>
+
 		#fieldTitle("dc:coverage.redbox:timePeriod" "Time Period" false)
         <div class="help-content" id="help-dc:coverage.redbox:timePeriod">
-            A text description of a time period relating to the coverage of the
-            research dataset/collection, registry/repository, catalogue or index, if
-            applicable, eg. 21st Century, WWII, The Depression, etc.
+            Enter a text description of the time period relevant to the data if it cannot
+			be described using the date range fields above. For example, Ancient Greece.
         </div>
-    	    <p>
+   	    <p>
             <input type="text" id="dc:coverage.redbox:timePeriod" size="60"
                 placeholder="If dates cannot be quantified ie. 21st Century, WWII, The Depression, etc." />
         </p>
 	#endfieldset
 			
 			
-################################################################################################################## 		
-	#fieldset("dc:subject.anzsrc:for" "Fields of Research" false)
-    <div class="help-content" id="help-dc:subject.anzsrc:for">
-        Select relevant FOR code/s.
-    </div>
-    #mintMultiSelectField("dc:subject.anzsrc:for.0.rdf:resource"
-                          "dc:subject.anzsrc:for.0.skos:prefLabel"
-                          "$portalPath/proxyGet?ns=ANZSRC_FOR&qs=count%3D999%26level%3D"
-                          "rdf:about"
-                          "skos:prefLabel"
-                          "results"
-                          "skos:narrower")
+	#fieldset("dc:subject.anzsrc:for" "Fields of Research" false true)
+        <div class="help-content" id="help-dc:subject.anzsrc:for">
+            Use the drop down menus to choose the relevant Field of Research Codes.
+        </div>
+        #mintMultiSelectField("dc:subject.anzsrc:for.0.rdf:resource"
+                              "dc:subject.anzsrc:for.0.skos:prefLabel"
+                              "$portalPath/proxyGet?ns=ANZSRC_FOR&qs=count%3D999%26level%3D"
+                              "rdf:about"
+                              "skos:prefLabel"
+                              "results"
+                              "skos:narrower")
 	#endfieldset
-################################################################################################################## 
 
 	
-	#fieldset("dc:subject.vivo:keyword" "Keywords" false)
-    <div class="help-content" id="help-dc:subject.vivo:keyword">
-        Enter descriptive keywords as required.
-    </div>
-    <table class="input-list">
-        <tbody>
-            <tr class="item-input-display sortable-item">
-                <td class="sort-number"></td>
-                <td>
-                    <input type="text" size="60" placeholder="keyword" id="dc:subject.vivo:keyword.0.rdf:PlainLiteral" class="vkeyword" />
-                </td>
-                <td class="delete-item"><a href="#">delete</a></td>
-                <td style="width: 100%;"> </td>
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td></td>
-                <td><input type="button" class="button add-another-item" value="Add keyword" /></td>
-                <td colspan="2"></td>
-            </tr>
-        </tfoot>
-    </table>
+	#fieldset("dc:subject.vivo:keyword" "Keywords" false true)
+        <div class="help-content" id="help-dc:subject.vivo:keyword">
+            Enter relevant keywords and terminology. Use the &apos;Add Keyword&apos; button to
+			enter one keyword per field.
+        </div>
+        <table class="input-list">
+            <tbody>
+                <tr class="item-input-display sortable-item">
+                    <td class="sort-number"></td>
+                    <td>
+                        <input type="text" size="60" placeholder="keyword" id="dc:subject.vivo:keyword.0.rdf:PlainLiteral" class="vkeyword" />
+                    </td>
+                    <td class="delete-item"><a href="#">delete</a></td>
+                    <td style="width: 100%;"> </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td><input type="button" class="button add-another-item" value="Add keyword" /></td>
+                    <td colspan="2"></td>
+                </tr>
+            </tfoot>
+        </table>
 	#endfieldset
 	
-	#fieldset("th.location" "Location" false)
+	#fieldset("th.location" "Location" false true)
+        <div class="help-content" id="help-th.location">
+			Enter the location of where the data are stored. If the data are electronic,
+			leave the default location as the University&apos;s postal address. If the
+			data are available electronically, include the URL here.
+        </div>
 		<p>
             <label for="vivo:Location.vivo:GeographicLocation.gn:name">Please enter a physical address <span class="required">*</span></label>
             <label class="validation" for="vivo:Location.vivo:GeographicLocation.gn:name" data-validation-rule="test(notEmpty);when(submit);">A location is required!</label>
@@ -338,240 +377,234 @@ label.validation, .validation label { color: red; display: block; }
         </p>
 	#endfieldset
 
-	#fieldset("rights" "Rights" false)
-<p>
-        #fieldTitle("dc:accessRights.dc:RightsStatement.skos:prefLabel" "Rights Statement" false)
+	#fieldset("rights" "Rights" false true)
+        <div class="help-content" id="help-rights">
+			Use the options to describe the intellectual property and access arrangements for the data.
+        </div>
+
+		#fieldTitle("dc:accessRights.dc:RightsStatement.skos:prefLabel" "Rights Statement" false)
         <div class="help-content" id="help-dc:accessRights.dc:RightsStatement.skos:prefLabel">
-<dd>This statement summarises the University¬ís rights and obligations regarding copyright and intellectual property rights associated with the data.</dd>
-<dd>If the default text is not appropriate, please contact XXX after submitting the form.</dd>
+			<dd>This statement summarises the University&apos;s rights and obligations regarding
+				copyright and intellectual property rights associated with the data.</dd>
+			<dd>If the default text is not appropriate, please contact the Digital Library after
+				submitting the form.</dd>
         </div>
         <div>
-            <input type="text" size="100" id="dc:accessRights.dc:RightsStatement.skos:prefLabel" value="This data collection is subject to the intellectual property rights arrangements agreed for the project." readonly="readonly"
+            <input type="text" size="100" id="dc:accessRights.dc:RightsStatement.skos:prefLabel"
+				value="This data collection is subject to the intellectual property rights arrangements agreed for the project." readonly="readonly"
         </div>
-		</p> 
-
 	
-    #fieldTitle("dc:accessRights.skos:prefLabel" "Access Rights" false)
-    <div class="help-content" id="help-dc:accessRights.skos:prefLabel">
-        <dl>
-            <dt>Access to the data is available via the link provided</dt>
-            <dd>
-                TODO add explanation of what this means
-            </dd>
-            <dt>Access to the data may be available under certain conditions</dt>
-            <dd>
-				TODO add explanation of what this means
-            </dd>
-            <dt>No access to the data is currently allowed</dt>
-            <dd>
-                TODO add explanation of what this means
-            </dd>
-            
-        </dl>
-    </div>
-    <p>
-        #mintSelectField("dc:accessRights.skos:prefLabel"
-                         "dc:accessRights.dc:RightsStatement.skos:prefLabel"
-                         "$portalPath/workflows/forms/data/accessRights.json"
-                         "id"
-                         "label"
-                         "results"
-                         "")
-        #requiredValidation("dc:accessRights.skos:prefLabel" "The type is required!")
-    </p>
-	
-     <p>
-        <input type="text" size="60" id="dc:accessRights.dc:identifier" 
-        <input type="text" size="60" id="dc:accessRights.dc:identifier" placeholder="Access Rights URI" />
-    </p>
+        #fieldTitle("dc:accessRights.skos:prefLabel" "Access Rights" false)
+        <div class="help-content" id="help-dc:accessRights.skos:prefLabel">
+            Please choose an appropriate statement about access arrangements for the data. If
+			the data are available electronically, include the URL in the field below. If none
+			of the statements are appropriate, please contact the Digital Library after
+			submitting the form.
+        </div>
+        <p>
+            #mintSelectField("dc:accessRights.skos:prefLabel"
+                             "dc:accessRights.dc:RightsStatement.skos:prefLabel"
+                             "$portalPath/workflows/forms/data/accessRights.json"
+                             "id"
+                             "label"
+                             "results"
+                             "")
+            #requiredValidation("dc:accessRights.skos:prefLabel" "The type is required!")
+        </p>
+    	
+         <p>
+            <input type="text" size="60" id="dc:accessRights.dc:identifier" 
+            <input type="text" size="60" id="dc:accessRights.dc:identifier" placeholder="Access Rights URI" />
+        </p>
 	#endfieldset
 
     #fieldsetT("dc:creator" "Creators" true)
-    <div class="help-content" id="help-dc:creator">
-        <p>Record names of the creators.</p>
-        <ul>
-            <li>
-                Enter the given name and/or family name of persons who created
-                the research dataset/collection, registry/repository, catalogue
-                or index. Click 'lookup' to search and select the name authority
-                record.
-            </li>
-            <li>Select the persons' appropriate affiliation.</li>
-            <li>
-                Indicate persons with roles of 'Chief Investigator' or 'Partner
-                Investigator' by checking the boxes provided.
-            </li>
-        </ul>
-    </div>
-    <table class="input-list sortable">
-        <thead>
-            <tr class="header-row">
-                <th></th>
-                <th>CI</th>
-                <th>PI</th>
-                <th>Display Name</th>
-                <th>Name Authority</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="item-input-display sortable-item">
-                <td class="valign-middle">
-                    <img class="facets-grip" src="$portalPath/images/icons/grippy.png" />
-                </td>
-                <td class="valign-middle">
-                    <input type="checkbox" id="dc:creator.foaf:Person.0.redbox:isCoPrimaryInvestigator" />
-                </td>
-                <td class="valign-middle">
-                    <input type="checkbox" id="dc:creator.foaf:Person.0.redbox:isPrimaryInvestigator" />
-                </td>
-                <td>
-                    <table class="lookup">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <label for="dc:creator.foaf:Person.0.foaf:title">Title:</label>
-                                </td>
-                                <td>
-                                    <input type="text" placeholder="title" size="5"
-                                           id="dc:creator.foaf:Person.0.foaf:title" />
-                                </td>
-                                <td>
-                                    <label for="dc:creator.foaf:Person.0.foaf:givenName">Given name:</label>
-                                </td>
-                                <td>
-                                    <input type="text" placeholder="given name" size="25"
-                                           class="nameLookup-name creatorGivenName creatorName givenName"
-                                           id="dc:creator.foaf:Person.0.foaf:givenName" />
-                                </td>
-                                <td>
-                                    <label for="dc:creator.foaf:Person.0.foaf:familyName">Family name:</label>
-                                </td>
-                                <td>
-                                    <input type="text" placeholder="family name" size="25"
-                                           class="nameLookup-name creatorFamilyName creatorName familyName"
-                                           id="dc:creator.foaf:Person.0.foaf:familyName" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="6">
-                                    <label class="validation-err-msg"
-                                        for="dc:creator.foaf:Person.0.foaf:givenName"
-                                        data-validation-rule="test(notEmpty);when(blur,change,submit);
-                                                                jsTest(
-                                                                    var fid, gid, f, g;
-                                                                    fid=id.replace('given', 'family');
-                                                                    gid=id.replace('family', 'given');
-                                                                    f=ctx.find('input[id='+fid+']').val();
-                                                                    g=ctx.find('input[id='+gid+']').val();
-                                                                    f=jQ.trim(f); g=jQ.trim(g);
-                                                                    r=(g=='')&&(f=='');
-                                                                    id=gid;
-                                                                );
-                                                                liveFor(.creatorName);">
-                                        A creator's given name or family name is required!
-                                    </label>
-                                </td>
-                            </tr>
-                            
-                        </tbody>
-                    </table>
-                </td>
-                <td>
-                    <span class="lookup-show">
-                        <span class="identified-as-name"></span>
-                        <a href="#" class="nameLookup-lookup" data-selected-func="lookupDone"
-                            data-cleared-func="lookupCleared">lookup</a>
-                        <span class="nameLookup-progress hidden">
-                            <img src="$portalPath/images/icons/loading.gif" />
+        <div class="help-content" id="help-dc:creator">
+    		<dd>Enter the names of the people who should be attributed to the data (creators
+    			or custodians).</dd>
+            <dd>Use the &apos;lookup&apos; button to select the correct person from the pop-up list.</dd>
+            <dd>Use the &apos;Add person&apos; button to credit multiple people.</dd>
+            <dd>Use the CI tick box to indicate Chief Investigator and the PI tick box to
+    			indicate Partner Investigator.</dd>
+        </div>
+        <table class="input-list sortable">
+            <thead>
+                <tr class="header-row">
+                    <th></th>
+                    <th>CI</th>
+                    <th>PI</th>
+                    <th>Display Name</th>
+                    <th>Name Authority</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="item-input-display sortable-item">
+                    <td class="valign-middle">
+                        <img class="facets-grip" src="$portalPath/images/icons/grippy.png" />
+                    </td>
+                    <td class="valign-middle">
+                        <input type="checkbox" id="dc:creator.foaf:Person.0.redbox:isCoPrimaryInvestigator" />
+                    </td>
+                    <td class="valign-middle">
+                        <input type="checkbox" id="dc:creator.foaf:Person.0.redbox:isPrimaryInvestigator" />
+                    </td>
+                    <td>
+                        <table class="lookup">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label for="dc:creator.foaf:Person.0.foaf:title">Title:</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" placeholder="title" size="5"
+                                               id="dc:creator.foaf:Person.0.foaf:title" />
+                                    </td>
+                                    <td>
+                                        <label for="dc:creator.foaf:Person.0.foaf:givenName">Given name:</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" placeholder="given name" size="25"
+                                               class="nameLookup-name creatorGivenName creatorName givenName"
+                                               id="dc:creator.foaf:Person.0.foaf:givenName" />
+                                    </td>
+                                    <td>
+                                        <label for="dc:creator.foaf:Person.0.foaf:familyName">Family name:</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" placeholder="family name" size="25"
+                                               class="nameLookup-name creatorFamilyName creatorName familyName"
+                                               id="dc:creator.foaf:Person.0.foaf:familyName" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="6">
+                                        <label class="validation-err-msg"
+                                            for="dc:creator.foaf:Person.0.foaf:givenName"
+                                            data-validation-rule="test(notEmpty);when(blur,change,submit);
+                                                                    jsTest(
+                                                                        var fid, gid, f, g;
+                                                                        fid=id.replace('given', 'family');
+                                                                        gid=id.replace('family', 'given');
+                                                                        f=ctx.find('input[id='+fid+']').val();
+                                                                        g=ctx.find('input[id='+gid+']').val();
+                                                                        f=jQ.trim(f); g=jQ.trim(g);
+                                                                        r=(g=='')&&(f=='');
+                                                                        id=gid;
+                                                                    );
+                                                                    liveFor(.creatorName);">
+                                            A creator's given name or family name is required!
+                                        </label>
+                                    </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </td>
+                    <td>
+                        <span class="lookup-show">
+                            <span class="identified-as-name"></span>
+                            <a href="#" class="nameLookup-lookup" data-selected-func="lookupDone"
+                                data-cleared-func="lookupCleared">lookup</a>
+                            <span class="nameLookup-progress hidden">
+                                <img src="$portalPath/images/icons/loading.gif" />
+                            </span>
+                            <input id="dc:creator.foaf:Person.0.foaf:name"
+                                   type="hidden"
+                                   class="nl nl-rdfs:label nlLabel" readonly="readonly"/>
+                            <input type="hidden" id="dc:creator.foaf:Person.0.dc:identifier"
+                                   class="nl nl-dc:identifier nlId" />
                         </span>
-                        <input id="dc:creator.foaf:Person.0.foaf:name"
-                               type="hidden"
-                               class="nl nl-rdfs:label nlLabel" readonly="readonly"/>
-                        <input type="hidden" id="dc:creator.foaf:Person.0.dc:identifier"
-                               class="nl nl-dc:identifier nlId" />
-                    </span>
-                </td>
-                <td class="valign-middle"><a class="delete-item" href="#">delete</a></td>
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="3"></td>
-                <td colspan="6">
-                    <input type="button" class="button add-another-item" value="Add person" />
-                </td>
-            </tr>
-        </tfoot>
-    </table>
+                    </td>
+                    <td class="valign-middle"><a class="delete-item" href="#">delete</a></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3"></td>
+                    <td colspan="6">
+                        <input type="button" class="button add-another-item" value="Add person" />
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
 	#endfieldset
 
-##################################################################################################
 
-	    #fieldsetT("grants" "Related Projects" false)
-    <div class="help-content" id="help-grants">
-        Select/enter the grant number and/or title if applicable.
-    </div>
-    <table class="input-list">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Internal?</th>
-                <th>Grant</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="item-input-display sortable-item">
-                <td class="sort-number"></td>
-                <td><input type="checkbox" id="foaf:fundedBy.vivo:Grant.0.redbox:internalGrant" class="internal-grant"/></td>
-                <td style="width:100%">
-                    <table class="inner-table">
-                        <tr>
-                            <td>
-                                <input type="text" size="20" id="foaf:fundedBy.vivo:Grant.0.redbox:grantNumber"
-                                    placeholder="grant number" class="autocomplete-grant" />
-                                <input type="hidden" id="foaf:fundedBy.vivo:Grant.0.dc:identifier" />
-                            </td>
-                            <td style="width:100%">
-                                <input type="text" size="60" id="foaf:fundedBy.vivo:Grant.0.skos:prefLabel"
-                                    readonly="readonly" placeholder="grant description"
-                                    class="autocomplete-grant-label label" style="width:100%" />
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-                <td class="delete-item" style="text-align:right;width:100%;"><a href="#">delete</a></td>
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td></td>
-                <td colspan="3"><input type="button" class="button add-another-item" value="Add grant" /></td>
-            </tr>
-        </tfoot>
-    </table>
+    #fieldsetT("grants" "Related Projects" false)
+        <div class="help-content" id="help-grants">
+            <dd>Enter details of projects that have generated or used the data.</dd>
+            <dd>Enter the funder&apos;s grant number and choose the appropriate project from the
+    			drop down list. If the project is internally funded, use the Internal tick box.</dd>
+            <dd>Use the &apos;Add grant&apos; button to list multiple grants.</dd>
+        </div>
+        <table class="input-list">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Internal?</th>
+                    <th>Grant</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="item-input-display sortable-item">
+                    <td class="sort-number"></td>
+                    <td><input type="checkbox" id="foaf:fundedBy.vivo:Grant.0.redbox:internalGrant" class="internal-grant"/></td>
+                    <td style="width:100%">
+                        <table class="inner-table">
+                            <tr>
+                                <td>
+                                    <input type="text" size="20" id="foaf:fundedBy.vivo:Grant.0.redbox:grantNumber"
+                                        placeholder="grant number" class="autocomplete-grant" />
+                                    <input type="hidden" id="foaf:fundedBy.vivo:Grant.0.dc:identifier" />
+                                </td>
+                                <td style="width:100%">
+                                    <input type="text" size="60" id="foaf:fundedBy.vivo:Grant.0.skos:prefLabel"
+                                        readonly="readonly" placeholder="grant description"
+                                        class="autocomplete-grant-label label" style="width:100%" />
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="delete-item" style="text-align:right;width:100%;"><a href="#">delete</a></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td colspan="3"><input type="button" class="button add-another-item" value="Add grant" /></td>
+                </tr>
+            </tfoot>
+        </table>
 	#endfieldset
-##################################################################################################
 
     #fieldsetT("dc:relation.swrc:Publication" "Related Publications" false)
-    <div class="help-content" id="help-dc:relation.swrc:Publication">
-        Include URL/s to any publications underpinning the research
-        dataset/collection, registry/repository, catalogue or index.
-    </div>
-    #relatedInfoField("dc:relation.swrc:Publication" "publication url" "Add publication")
+        <div class="help-content" id="help-dc:relation.swrc:Publication">
+            <dd>Enter the URL and publication title for any publication that
+				you have produced based on the data.</dd>
+            <dd>Use the notes field if you need to include additional information
+				about how the publication relates to the data.</dd>
+            <dd>Use the &apos;Add publication&apos; button to list multiple publications.</dd>
+        </div>
+		#relatedInfoField("dc:relation.swrc:Publication" "publication url" "Add publication")
 	#endfieldset
 
     #fieldsetT("dc:relation.bibo:Website" "Related Website" false)
-    <div id="help-dc:relation.bibo:Website" class="help-content">
-        Include URL/s for the relevant website.
-    </div>
-    #relatedInfoField("dc:relation.bibo:Website" "website url" "Add website")
+        <div id="help-dc:relation.bibo:Website" class="help-content">
+            <dd>Enter the URL and title for any website that relates to the data.</dd>
+            <dd>Use the notes field if you need to include additional information
+				about how the website relates to the data.</dd>
+            <dd>Use the &apos;Add website&apos; button to list multiple websites.</dd>
+        </div>
+        #relatedInfoField("dc:relation.bibo:Website" "website url" "Add website")
 	#endfieldset
 	
 	
-#######################################################################################################    	
-	#fieldset("Contact Details" "Contact Details" false)
+	#fieldset("ContactDetails" "Contact Details" false true)
+        <div id="help-ContactDetails" class="help-content">
+			Enter your contact details, even if you have already included your name as a creator above.
+		</div>
         <p>
             <label for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name">Contact Name <span class="required">*</span></label>
             <label class="validation" for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name" data-validation-rule="test(notEmpty);when(submit);">A contact name is required!</label>

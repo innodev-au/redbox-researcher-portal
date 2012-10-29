@@ -1,5 +1,32 @@
 #set($pageTitle = "Home")
 
+<style type="text/css">
+.welcome {
+  padding: 0.5em;
+  border-bottom: 1px solid #CCCCCC;;
+}
+
+.welcome-text {
+  margin-left: 3em;
+  margin-right: 3em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+</style>
+
+<div class="welcome">
+  <br/>
+  <p class="welcome-text">
+    Welcome to DataConnect.
+    <br/>
+    DataConnect is the University of Adelaide’s research metadata store. It contains descriptions (metadata) of our datasets and data collections, and links this information with records about related people and projects.
+    <br/>
+    Use the Search box or the Browse button to find records.
+    <br/>
+    If you have a dataset or data collection to register, please use the ‘Describe my data’ link in the left-hand menu.
+  </p>
+</div>
+
 #parseTemplate("elements/atom-link.vm")
 <h2 id="page-heading">
   <span>$page.portalName</span> $atomHtml

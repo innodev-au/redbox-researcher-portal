@@ -103,13 +103,13 @@
             <tr class="item-input-display sortable-item">
                 <td class="sort-number"></td>
                 <td>
-                    <input type="text" size="60" placeholder="$placeholder" id="${id}.0.dc:identifier" />
+                    <input type="text" style="width:310px" placeholder="$placeholder" id="${id}.0.dc:identifier" />
                 </td>
                 <td>
-                    <input type="text" size="60" placeholder="title" id="${id}.0.dc:title" />
+                    <input type="text" style="width:310px" placeholder="title" id="${id}.0.dc:title" />
                 </td>
                 <td>
-                    <input type="text" size="60" placeholder="notes" id="${id}.0.skos:note" />
+                    <input type="text" style="width:310px" placeholder="notes" id="${id}.0.skos:note" />
                 </td>
                 <td class="delete-item" style="width: 100%;"><a href="#">delete</a></td>
             </tr>
@@ -165,7 +165,7 @@ fieldset {
 	width:600px;
 }
 .subsection-table {
-	max-width:1200px;
+	width:1200px;
 }
 fieldset label {
 	width:300px;

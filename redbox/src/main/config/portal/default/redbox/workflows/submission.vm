@@ -6,23 +6,20 @@
 #end
 
 #macro(fieldTitle $id $label $required)
-		<label for="$id">$label#if($required)<span class="required">*</span>#end</label>
-        <span class="helpWidget" data-help-content-id="help-$id">
-            <img src="$portalPath/images/icons/help.png" alt="help" title="help"/>
-        </span>
+	<label for="$id">$label#if($required)<span class="required">*</span>#end</label>
+    <span class="helpWidget" data-help-content-id="help-$id">
+        <img src="$portalPath/images/icons/help.png" alt="help" title="help"/>
+    </span>
+    
+    #set($helpFile = $id.replaceAll("^.*?[.]dc[:]","dc-").replaceAll("[.]1[.].*","").replaceAll("[.]|[:]","-"))
+    <div class="help-content" id="help-$id">
+        #parseTemplate("workflows/help/${helpFile}.vm")
+    </div>
 #end
 
-#macro(fieldsetT $id $label $required)
-	<fieldset name="$label" class="subsection-table">
-		<legend>$label#if($required)<span class="required">*</span>#end
-        <span class="helpWidget" data-help-content-id="help-$id">
-            <img src="$portalPath/images/icons/help.png" alt="help" title="help"/>
-        </span>
-		</legend>
-#end
-
-#macro(fieldset $id $label $required $showhelp)
-	<fieldset name="$label" class="subsection">
+#macro(fieldset $id $label $required $css)
+	#set($showhelp = true)
+	<fieldset name="$label" class="$css subsection">
 		<legend>$label#if($required)<span class="required">*</span>#end
 		#if($showhelp)
     		<span class="helpWidget" data-help-content-id="help-$id">
@@ -30,6 +27,12 @@
             </span>
 		#end
 		</legend>
+		#if($showhelp)
+			#set($helpFile = $id.replaceAll("^.*?[.]dc[:]","dc-").replaceAll("[.]1[.].*","").replaceAll("[.]|[:]","-"))
+		    <div class="help-content" id="help-$id">
+		        #parseTemplate("workflows/help/${helpFile}.vm")
+		    </div>
+		#end
 #end
 #macro(endfieldset)
 	</fieldset>
@@ -103,13 +106,13 @@
             <tr class="item-input-display sortable-item">
                 <td class="sort-number"></td>
                 <td>
-                    <input type="text" style="width:310px" placeholder="$placeholder" id="${id}.0.dc:identifier" />
+                    <input type="text" size="60" placeholder="$placeholder" id="${id}.0.dc:identifier" />
                 </td>
                 <td>
-                    <input type="text" style="width:310px" placeholder="title" id="${id}.0.dc:title" />
+                    <input type="text" size="60" placeholder="title" id="${id}.0.dc:title" />
                 </td>
                 <td>
-                    <input type="text" style="width:310px" placeholder="notes" id="${id}.0.skos:note" />
+                    <input type="text" size="60" placeholder="notes" id="${id}.0.skos:note" />
                 </td>
                 <td class="delete-item" style="width: 100%;"><a href="#">delete</a></td>
             </tr>
@@ -165,7 +168,8 @@ fieldset {
 	width:600px;
 }
 .subsection-table {
-	width:1200px;
+	max-width:1200px;
+	width:inherit !important;
 }
 fieldset label {
 	width:300px;
@@ -219,79 +223,52 @@ a.plain-link {
     <input type="hidden" name="workflow_source" value="Submission Request" />
     <input type="hidden" name="metaList" value="[]" />
 	<input type="hidden" class="nameLookup-url" value="$portalPath/proxyGet?ns=Parties_People&qs=searchTerms%3D{searchTerms}" />
+    #if($page.authentication.has_role("admin") || $page.authentication.has_role("librarian") || $page.authentication.has_role("reviewer"))
     <input type="hidden" class="nlaLookup-url" value="$portalPath/proxyGet?ns=NLA_SRU&qs={searchTerms}" />
+    #else
+    <input type="hidden" class="nlaLookup-url" value="" />
+    #end
     <input type="hidden" class="nameLookup-value-ns" value="nl" />
-	<p class="introduction">
-    Provide a brief description of your dataset or data collection below. Your record will be moderated
-	and published in
-	<a class="plain-link" href="/redbox/published/" target="_blank">DataConnect</a> and to
-	<a class="plain-link" href="http://researchdata.ands.org.au/">Research Data Australia</a>.
-    <br/>
-	Click on the Question icon for explanatory information. Fields marked with an asterisk are mandatory.
-    <br/>
-    For assistance contact the Digital Library: Email
-    <a class="plain-link" href="mailto:digital-library@adelaide.edu.au">digital-library@adelaide.edu.au</a>
-	or Phone 8313 3629.
-	</p>
-	#fieldset("Summary" "Summary" false)
+
+	#parseTemplate("workflows/submission/introduction.vm")
+	<div style="display:none" id="success-dialog-message">
+		#parseTemplate("workflows/submission/success-dialog.vm")
+	</div>
+
+	#fieldset("Summary" "Summary" false false "subsection-table")
         <p>
             <label for="redbox:submissionProcess.dc:date">Date Submitted</label>
             <input id="redbox:submissionProcess.dc:date" type="text" size="40" value="$!self.getSubmitDate()" readonly="readonly" />
         </p>
-
+		
 		#fieldTitle("redbox:submissionProcess.dc:title" "Title" true)
-	    <div class="help-content" id="help-redbox:submissionProcess.dc:title">
-	        Enter a unique title that meaningfully identifies the data. For example,
-			&apos;Southern Adelaide social capital survey responses 2005&apos;.
-	    </div>
-		<p><input id="redbox:submissionProcess.dc:title" type="text" size="40"/></p>
+		<p>
+		<label class="validation" for="redbox:submissionProcess.dc:title" data-validation-rule="test(notEmpty);when(submit);">A title is required!</label>
+		<input id="redbox:submissionProcess.dc:title" type="text" size="40"/>
+		</p>
 
 		#fieldTitle("redbox:submissionProcess.dc:description" "Description" true)
-	    <div class="help-content" id="help-redbox:submissionProcess.dc:description">
-	        Enter a concise description of the dataset or data collection. This may
-			include a description of the nature of the data, how the data are arranged,
-			and details of how the data have been processed or analysed including
-			relevant tools and software. Use relevant terminology from your discipline
-			but minimise use of specialist acronyms and jargon.
-	    </div>
-        <p><textarea id="redbox:submissionProcess.dc:description" cols="40" rows="10"></textarea></p>
+        <p>
+        <label class="validation" for="redbox:submissionProcess.dc:description" data-validation-rule="test(notEmpty);when(submit);">A description is required!</label>
+        <textarea id="redbox:submissionProcess.dc:description" cols="40" rows="10"></textarea>
+        </p>
 		
 		#fieldTitle("dc:extent" "Extent or Quantity" false)
-	    <div class="help-content" id="help-dc:extent">
-	        Describe the extent of the dataset in terms meaningful for the data. For
-			example, the number of pages, files or objects.
-	    </div>
 	    <p><input type="text" size="60" placeholder="quantity" id="dc:extent"/></p>
 	
 		#fieldTitle("dc:SizeOrDuration" "Data Size" false)
-	    <div class="help-content" id="help-dc:SizeOrDuration">
-	        For electronic data, enter the disk space. For example 5MB.
-	    </div>
 	    <p><input type="text" size="60" placeholder="size" id="dc:SizeOrDuration"/></p>
 	
 	#endfieldset
 
 	#fieldset("Coverage" "Coverage" false true)
-		<div class="help-content" id="help-Coverage">
-			Describe the dates and location that your data cover.
-        </div>
 
         #fieldTitle("dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral" "Geographic Coverage" false)
-        <div class="help-content" id="help-dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral">
-			Enter the geographic area relevant to the data. Do not enter the location
-			where the data are stored. For example, Riverland and Sunraysia regions of
-			Australia OR Salisbury, South Australia. If your data are not geographic
-			specific then leave this field blank.
-        </div>
 		<p>
             <input id="dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral" type="text" size="40" />
         </p>		
 
         #fieldTitle("dc:coverage.vivo:DateTimeInterval" "Date Coverage" false)
-        <div class="help-content" id="help-dc:coverage.vivo:DateTimeInterval">
-            Enter the date range relevant to the data. For example, 1999-2002. Do not enter
-    		the dates of how long you intend to keep the data.
-        </div>
         <p>
             <input type="text" placeholder="Start" class="dateYMD" id="dc:coverage.vivo:DateTimeInterval.vivo:start" />
             <label for="dc:coverage.vivo:DateTimeInterval.vivo:end"></label>
@@ -309,10 +286,6 @@ a.plain-link {
         </p>
 
 		#fieldTitle("dc:coverage.redbox:timePeriod" "Time Period" false)
-        <div class="help-content" id="help-dc:coverage.redbox:timePeriod">
-            Enter a text description of the time period relevant to the data if it cannot
-			be described using the date range fields above. For example, Ancient Greece.
-        </div>
    	    <p>
             <input type="text" id="dc:coverage.redbox:timePeriod" size="60"
                 placeholder="If dates cannot be quantified ie. 21st Century, WWII, The Depression, etc." />
@@ -321,9 +294,6 @@ a.plain-link {
 			
 			
 	#fieldset("dc:subject.anzsrc:for" "Fields of Research" false true)
-        <div class="help-content" id="help-dc:subject.anzsrc:for">
-            Use the drop down menus to choose the relevant Field of Research Codes.
-        </div>
         #mintMultiSelectField("dc:subject.anzsrc:for.0.rdf:resource"
                               "dc:subject.anzsrc:for.0.skos:prefLabel"
                               "$portalPath/proxyGet?ns=ANZSRC_FOR&qs=count%3D999%26level%3D"
@@ -335,10 +305,6 @@ a.plain-link {
 
 	
 	#fieldset("dc:subject.vivo:keyword" "Keywords" false true)
-        <div class="help-content" id="help-dc:subject.vivo:keyword">
-            Enter relevant keywords and terminology. Use the &apos;Add Keyword&apos; button to
-			enter one keyword per field.
-        </div>
         <table class="input-list">
             <tbody>
                 <tr class="item-input-display sortable-item">
@@ -361,11 +327,6 @@ a.plain-link {
 	#endfieldset
 	
 	#fieldset("th.location" "Location" false true)
-        <div class="help-content" id="help-th.location">
-			Enter the location of where the data are stored. If the data are electronic,
-			leave the default location as the University&apos;s postal address. If the
-			data are available electronically, include the URL here.
-        </div>
 		<p>
             <label for="vivo:Location.vivo:GeographicLocation.gn:name">Please enter a physical address <span class="required">*</span></label>
             <label class="validation" for="vivo:Location.vivo:GeographicLocation.gn:name" data-validation-rule="test(notEmpty);when(submit);">A location is required!</label>
@@ -378,29 +339,13 @@ a.plain-link {
 	#endfieldset
 
 	#fieldset("rights" "Rights" false true)
-        <div class="help-content" id="help-rights">
-			Use the options to describe the intellectual property and access arrangements for the data.
-        </div>
-
 		#fieldTitle("dc:accessRights.dc:RightsStatement.skos:prefLabel" "Rights Statement" false)
-        <div class="help-content" id="help-dc:accessRights.dc:RightsStatement.skos:prefLabel">
-			<dd>This statement summarises the University&apos;s rights and obligations regarding
-				copyright and intellectual property rights associated with the data.</dd>
-			<dd>If the default text is not appropriate, please contact the Digital Library after
-				submitting the form.</dd>
-        </div>
         <div>
             <input type="text" size="100" id="dc:accessRights.dc:RightsStatement.skos:prefLabel"
 				value="This data collection is subject to the intellectual property rights arrangements agreed for the project." readonly="readonly"
         </div>
 	
         #fieldTitle("dc:accessRights.skos:prefLabel" "Access Rights" false)
-        <div class="help-content" id="help-dc:accessRights.skos:prefLabel">
-            Please choose an appropriate statement about access arrangements for the data. If
-			the data are available electronically, include the URL in the field below. If none
-			of the statements are appropriate, please contact the Digital Library after
-			submitting the form.
-        </div>
         <p>
             #mintSelectField("dc:accessRights.skos:prefLabel"
                              "dc:accessRights.dc:RightsStatement.skos:prefLabel"
@@ -409,7 +354,7 @@ a.plain-link {
                              "label"
                              "results"
                              "")
-            #requiredValidation("dc:accessRights.skos:prefLabel" "The type is required!")
+            #requiredValidation("dc:accessRights.skos:prefLabel" "An Access Rights statement is required!")
         </p>
     	
          <p>
@@ -418,15 +363,7 @@ a.plain-link {
         </p>
 	#endfieldset
 
-    #fieldsetT("dc:creator" "Creators" true)
-        <div class="help-content" id="help-dc:creator">
-    		<dd>Enter the names of the people who should be attributed to the data (creators
-    			or custodians).</dd>
-            <dd>Use the &apos;lookup&apos; button to select the correct person from the pop-up list.</dd>
-            <dd>Use the &apos;Add person&apos; button to credit multiple people.</dd>
-            <dd>Use the CI tick box to indicate Chief Investigator and the PI tick box to
-    			indicate Partner Investigator.</dd>
-        </div>
+    #fieldset("dc:creator" "Creators" true "subsection-table")
         <table class="input-list sortable">
             <thead>
                 <tr class="header-row">
@@ -493,7 +430,7 @@ a.plain-link {
                                                                         id=gid;
                                                                     );
                                                                     liveFor(.creatorName);">
-                                            A creator's given name or family name is required!
+                                            A creator is required!
                                         </label>
                                     </td>
                                 </tr>
@@ -531,13 +468,7 @@ a.plain-link {
 	#endfieldset
 
 
-    #fieldsetT("grants" "Related Projects" false)
-        <div class="help-content" id="help-grants">
-            <dd>Enter details of projects that have generated or used the data.</dd>
-            <dd>Enter the funder&apos;s grant number and choose the appropriate project from the
-    			drop down list. If the project is internally funded, use the Internal tick box.</dd>
-            <dd>Use the &apos;Add grant&apos; button to list multiple grants.</dd>
-        </div>
+    #fieldset("grants" "Related Projects" false "subsection-table")
         <table class="input-list">
             <thead>
                 <tr>
@@ -579,32 +510,16 @@ a.plain-link {
         </table>
 	#endfieldset
 
-    #fieldsetT("dc:relation.swrc:Publication" "Related Publications" false)
-        <div class="help-content" id="help-dc:relation.swrc:Publication">
-            <dd>Enter the URL and publication title for any publication that
-				you have produced based on the data.</dd>
-            <dd>Use the notes field if you need to include additional information
-				about how the publication relates to the data.</dd>
-            <dd>Use the &apos;Add publication&apos; button to list multiple publications.</dd>
-        </div>
+    #fieldset("dc:relation.swrc:Publication" "Related Publications" false "subsection-table")
 		#relatedInfoField("dc:relation.swrc:Publication" "publication url" "Add publication")
 	#endfieldset
 
-    #fieldsetT("dc:relation.bibo:Website" "Related Website" false)
-        <div id="help-dc:relation.bibo:Website" class="help-content">
-            <dd>Enter the URL and title for any website that relates to the data.</dd>
-            <dd>Use the notes field if you need to include additional information
-				about how the website relates to the data.</dd>
-            <dd>Use the &apos;Add website&apos; button to list multiple websites.</dd>
-        </div>
+    #fieldset("dc:relation.bibo:Website" "Related Website" false "subsection-table")
         #relatedInfoField("dc:relation.bibo:Website" "website url" "Add website")
 	#endfieldset
 	
 	
 	#fieldset("ContactDetails" "Contact Details" false true)
-        <div id="help-ContactDetails" class="help-content">
-			Enter your contact details, even if you have already included your name as a creator above.
-		</div>
         <p>
             <label for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name">Contact Name <span class="required">*</span></label>
             <label class="validation" for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name" data-validation-rule="test(notEmpty);when(submit);">A contact name is required!</label>
@@ -631,6 +546,7 @@ a.plain-link {
 
 <script type="text/javascript" src="$portalPath/javascript-widgets/widgets2.js"></script>
 <script type="text/javascript" src="$portalPath/js/autocomplete/jquery.autocomplete.pack.js"></script>
+<script type="text/javascript" src="$portalPath/js/jquery.scrollto.min.js"></script>
 <script type="text/javascript" src="$portalPath/javascript-widgets/nameLookup.js"></script>
 <script type="text/javascript">
 
@@ -642,6 +558,29 @@ a.plain-link {
         $("#cancelButton").click(function(){
             window.location.href = "$portalPath/home";
         });
+        var hello = function() {
+        	alert('hello');
+        };
+       	var submit = $(".form-fields-submit");
+       	// if there are visible error messages after the initial validation
+       	// scroll to the fieldset containg first one (or just above the first one if it's
+       	// not in a fieldset for some reason), and bounce the error message
+       	var focusFirstError = function() {
+       		var firstError = $('.validation:visible, .validation-err-msg:visible').first();
+       		if (firstError.size() > 0) {
+	       		var fieldset = firstError.parents('fieldset');
+	       		if (fieldset.size() > 0) {
+	       			fieldset.ScrollTo();
+	       		} else {
+	       			firstError.ScrollTo();
+	       			window.scrollBy(0,-25);
+	       		}
+	       		firstError.effect("bounce", { times:2 }, 300);
+       		}
+       	};
+       	
+        $(".form-fields-submit").click(focusFirstError);
+        
     });
 })(jQuery);
 
@@ -651,6 +590,16 @@ function truncate(text, length, ellipsis) {
     for(var i=length-1;text.charAt(i)!=" ";i--){ length--; }
     return text.substr(0,length)+(ellipsis||"...");
 }
+
+/**
+ * A little hack to allow you to put formatted HTML into a message box
+ * the current version in widgets2 only allows you to set message txt
+ */
+widgets.htmlMessageBox = function(html, callback, title) {
+	widgets.messageBox('...',callback,title);
+	widgets.messageBox.msgBox.dialog("option","close", callback);
+	widgets.messageBox.msgBox.find("span:first").html(html);
+};
 
 function srSubmitFunc(widgetForm,formData){
     function failed(msg){
@@ -702,8 +651,8 @@ function srSubmitFunc(widgetForm,formData){
                                 if(workflowData.ok){
                                     $("#submitButton,#cancelButton").removeAttr("disabled");
                                     $("#loading").hide();
-                                    widgets.messageBox(
-                                        "Your request has been submitted and you will be contacted shortly.",
+                                    widgets.htmlMessageBox(
+                                    	$('#success-dialog-message').html(),
                                         function(){ window.location.href="$portalPath/home"; },
                                         "Submitted");
                                 }else{

@@ -345,7 +345,7 @@ a.plain-link {
 				value="This data collection is subject to the intellectual property rights arrangements agreed for the project." readonly="readonly"
         </div>
 	
-        #fieldTitle("dc:accessRights.skos:prefLabel" "Access Rights" false)
+        #fieldTitle("dc:accessRights.skos:prefLabel" "Access Rights" true)
         <p>
             #mintSelectField("dc:accessRights.skos:prefLabel"
                              "dc:accessRights.dc:RightsStatement.skos:prefLabel"

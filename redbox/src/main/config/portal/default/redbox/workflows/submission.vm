@@ -341,8 +341,10 @@ a.plain-link {
 	#fieldset("rights" "Rights" false true)
 		#fieldTitle("dc:accessRights.dc:RightsStatement.skos:prefLabel" "Rights Statement" false)
         <div>
-            <input type="text" size="100" id="dc:accessRights.dc:RightsStatement.skos:prefLabel"
-				value="This data collection is subject to the intellectual property rights arrangements agreed for the project." readonly="readonly"
+            <div>
+            <textarea style="width:560px;height:3em;border:0px;margin-top:3px" type="text" size="140" id="dc:accessRights.dc:RightsStatement.skos:prefLabel"
+				disabled="disabled">This data collection is subject to the intellectual property rights arrangements agreed for the project.</textarea>
+        </div>
         </div>
 	
         #fieldTitle("dc:accessRights.skos:prefLabel" "Access Rights" true)

@@ -18,7 +18,7 @@
 #end
 
 #macro(fieldset $id $label $required $css)
-	#set($showhelp = true)
+	#set($showhelp = $id != 'Summary')
 	<fieldset name="$label" class="$css subsection">
 		<legend>$label#if($required)<span class="required">*</span>#end
 		#if($showhelp)
@@ -58,7 +58,7 @@
     </span>
 #end
 
-#macro(mintMultiSelectField $id $labelId $sourceUrl $idKey $labelKey $listKey $childrenKey)
+#macro(mintMultiSelectField $id $labelId $button $sourceUrl $idKey $labelKey $listKey $childrenKey)
     <table class="input-list">
         <tfoot>
             <tr class="item-input">
@@ -74,7 +74,7 @@
                         <input type="text" class="selection-added-id" id="$id" />
                     </span>
                     <button class="item-add selection-add add-unique-only reset-on-add">
-                        Select
+                        $button
                     </button>
                 </td>
             </tr>
@@ -296,6 +296,7 @@ a.plain-link {
 	#fieldset("dc:subject.anzsrc:for" "Fields of Research" false true)
         #mintMultiSelectField("dc:subject.anzsrc:for.0.rdf:resource"
                               "dc:subject.anzsrc:for.0.skos:prefLabel"
+                              "Add FOR"
                               "$portalPath/proxyGet?ns=ANZSRC_FOR&qs=count%3D999%26level%3D"
                               "rdf:about"
                               "skos:prefLabel"
@@ -516,7 +517,7 @@ a.plain-link {
 		#relatedInfoField("dc:relation.swrc:Publication" "publication url" "Add publication")
 	#endfieldset
 
-    #fieldset("dc:relation.bibo:Website" "Related Website" false "subsection-table")
+    #fieldset("dc:relation.bibo:Website" "Related Websites" false "subsection-table")
         #relatedInfoField("dc:relation.bibo:Website" "website url" "Add website")
 	#endfieldset
 	

@@ -5,7 +5,7 @@
     </label>
 #end
 
-#macro(fieldTitle $id $label $required)
+#macro(fieldTitleS $id $label $required)
 	<label for="$id">$label#if($required)<span class="required">*</span>#end</label>
     <span class="helpWidget" data-help-content-id="help-$id">
         <img src="$portalPath/images/icons/help.png" alt="help" title="help"/>
@@ -241,34 +241,34 @@ a.plain-link {
             <input id="redbox:submissionProcess.dc:date" type="text" size="40" value="$!self.getSubmitDate()" readonly="readonly" />
         </p>
 		
-		#fieldTitle("redbox:submissionProcess.dc:title" "Title" true)
+		##fieldTitleS("redbox:submissionProcess.dc:title" "Title" true)
 		<p>
 		<label class="validation" for="redbox:submissionProcess.dc:title" data-validation-rule="test(notEmpty);when(submit);">A title is required!</label>
 		<input id="redbox:submissionProcess.dc:title" type="text" size="40"/>
 		</p>
 
-		#fieldTitle("redbox:submissionProcess.dc:description" "Description" true)
+		#fieldTitleS("redbox:submissionProcess.dc:description" "Description" true)
         <p>
         <label class="validation" for="redbox:submissionProcess.dc:description" data-validation-rule="test(notEmpty);when(submit);">A description is required!</label>
         <textarea id="redbox:submissionProcess.dc:description" cols="40" rows="10"></textarea>
         </p>
 		
-		#fieldTitle("dc:extent" "Extent or Quantity" false)
+		#fieldTitleS("dc:extent" "Extent or Quantity" false)
 	    <p><input type="text" size="60" placeholder="quantity" id="dc:extent"/></p>
 	
-		#fieldTitle("dc:SizeOrDuration" "Data Size" false)
+		#fieldTitleS("dc:SizeOrDuration" "Data Size" false)
 	    <p><input type="text" size="60" placeholder="size" id="dc:SizeOrDuration"/></p>
 	
 	#endfieldset
 
 	#fieldset("Coverage" "Coverage" false true)
 
-        #fieldTitle("dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral" "Geographic Coverage" false)
+        #fieldTitleS("dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral" "Geographic Coverage" false)
 		<p>
             <input id="dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral" type="text" size="40" />
         </p>		
 
-        #fieldTitle("dc:coverage.vivo:DateTimeInterval" "Date Coverage" false)
+        #fieldTitleS("dc:coverage.vivo:DateTimeInterval" "Date Coverage" false)
         <p>
             <input type="text" placeholder="Start" class="dateYMD" id="dc:coverage.vivo:DateTimeInterval.vivo:start" />
             <label for="dc:coverage.vivo:DateTimeInterval.vivo:end"></label>
@@ -285,7 +285,7 @@ a.plain-link {
             </label>
         </p>
 
-		#fieldTitle("dc:coverage.redbox:timePeriod" "Time Period" false)
+		#fieldTitleS("dc:coverage.redbox:timePeriod" "Time Period" false)
    	    <p>
             <input type="text" id="dc:coverage.redbox:timePeriod" size="60"
                 placeholder="If dates cannot be quantified ie. 21st Century, WWII, The Depression, etc." />
@@ -340,7 +340,7 @@ a.plain-link {
 	#endfieldset
 
 	#fieldset("rights" "Rights" false true)
-		#fieldTitle("dc:accessRights.dc:RightsStatement.skos:prefLabel" "Rights Statement" false)
+		#fieldTitleS("dc:accessRights.dc:RightsStatement.skos:prefLabel" "Rights Statement" false)
         <div>
             <div>
             <textarea style="width:560px;height:3em;border:0px;margin-top:3px" type="text" size="140" id="dc:accessRights.dc:RightsStatement.skos:prefLabel"
@@ -348,7 +348,7 @@ a.plain-link {
         </div>
         </div>
 	
-        #fieldTitle("dc:accessRights.skos:prefLabel" "Access Rights" true)
+        #fieldTitleS("dc:accessRights.skos:prefLabel" "Access Rights" true)
         <p>
             #mintSelectField("dc:accessRights.skos:prefLabel"
                              "dc:accessRights.dc:RightsStatement.skos:prefLabel"

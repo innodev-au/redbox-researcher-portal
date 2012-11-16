@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>au.edu.adelaide.redbox-mint</groupId>
     <artifactId>redbox-researcher-portal</artifactId>
-    <version>1.5.2.4-UoA</version>
+    <version>1.5.2.5-UoA-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>ReDBox Researcher Portal (Researcher Submission)</name>
     <parent>
@@ -327,7 +327,7 @@
 	<scm>
 		<url>https://github.com/innodev-au/redbox-researcher-portal</url>
 		<developerConnection>scm:git:https://github.com/innodev-au/redbox-researcher-portal.git</developerConnection>
-	  <tag>redbox-researcher-portal-1.5.2.4-UoA</tag>
+	  <tag>HEAD</tag>
   </scm>
 
     <repositories>

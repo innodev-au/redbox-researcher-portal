@@ -106,15 +106,15 @@
             <tr class="item-input-display sortable-item">
                 <td class="sort-number"></td>
                 <td>
-                    <input type="text" size="60" placeholder="$placeholder" id="${id}.0.dc:identifier" />
+                    <input type="text" style="width:100%;" placeholder="$placeholder" id="${id}.0.dc:identifier" />
                 </td>
                 <td>
-                    <input type="text" size="60" placeholder="title" id="${id}.0.dc:title" />
+                    <input type="text" style="width:100%" placeholder="title" id="${id}.0.dc:title" />
                 </td>
                 <td>
-                    <input type="text" size="60" placeholder="notes" id="${id}.0.skos:note" />
+                    <input type="text" style="width:100%" placeholder="notes" id="${id}.0.skos:note" />
                 </td>
-                <td class="delete-item" style="width: 100%;"><a href="#">delete</a></td>
+                <td class="delete-item"><a href="#">delete</a></td>
             </tr>
         </tbody>
         <tfoot>
@@ -209,8 +209,25 @@ a.plain-link {
     text-decoration: underline;
 }
 .introduction {
-	margin: 1em 3em;
+	margin: 2em 3em;
 }
+
+/* IE hack fixes for fieldsets
+http://www.mattheerema.com/web-tech-design/2006/04/getting-fieldset-backgrounds-and-legends-to-behave-in-ie/
+*/
+fieldset{
+    position: relative;
+    padding-top:2em;
+    margin-top:10px;
+    margin-top:45px;
+    margin-bottom:40px;
+}
+legend{
+    position:absolute;
+    top: -1.5em;
+    left: .5em;
+}
+
 </style>
 <h2 id="page-heading"><span>$pageTitle</span></h2>
 <div class="grid_16 widget-form inputscreen nameLookup-section" id="main-form"
@@ -241,7 +258,7 @@ a.plain-link {
             <input id="redbox:submissionProcess.dc:date" type="text" size="40" value="$!self.getSubmitDate()" readonly="readonly" />
         </p>
 		
-		##fieldTitleS("redbox:submissionProcess.dc:title" "Title" true)
+		#fieldTitleS("redbox:submissionProcess.dc:title" "Title" true)
 		<p>
 		<label class="validation" for="redbox:submissionProcess.dc:title" data-validation-rule="test(notEmpty);when(submit);">A title is required!</label>
 		<input id="redbox:submissionProcess.dc:title" type="text" size="40"/>

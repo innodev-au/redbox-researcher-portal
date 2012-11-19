@@ -58,7 +58,7 @@
     </span>
 #end
 
-#macro(mintMultiSelectField $id $labelId $button $sourceUrl $idKey $labelKey $listKey $childrenKey)
+#macro(mintMultiSelectFieldS $id $labelId $button $sourceUrl $idKey $labelKey $listKey $childrenKey)
     <table class="input-list">
         <tfoot>
             <tr class="item-input">
@@ -311,7 +311,7 @@ legend{
 			
 			
 	#fieldset("dc:subject.anzsrc:for" "Fields of Research" false true)
-        #mintMultiSelectField("dc:subject.anzsrc:for.0.rdf:resource"
+        #mintMultiSelectFieldS("dc:subject.anzsrc:for.0.rdf:resource"
                               "dc:subject.anzsrc:for.0.skos:prefLabel"
                               "Add FOR"
                               "$portalPath/proxyGet?ns=ANZSRC_FOR&qs=count%3D999%26level%3D"

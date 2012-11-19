@@ -322,7 +322,7 @@ legend{
 	#endfieldset
 
 	
-	#fieldset("dc:subject.vivo:keyword" "Keywords" false true)
+	#fieldset("dc:subject.vivo:keyword" "Keywords" true true)
         <table class="input-list">
             <tbody>
                 <tr class="item-input-display sortable-item">

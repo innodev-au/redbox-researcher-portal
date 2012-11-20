@@ -1,0 +1,224 @@
+#set($oid = $self.getFormData("oid"))
+#set($title = $self.getFormData("title"))
+#set($pageTitle = $title)
+<div class="grid_16" id="inputForms">
+    <p class="loading-data">Loading form data, please wait...</p>
+</div>
+<!-- Uncomment this line and add your API-KEY for Google Maps to work -->
+<!--<script id="google-api-key" src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={your-key-here}'></script>-->
+<script type="text/javascript" src="$portalPath/openlayers/OpenLayers.js"></script>
+<script type="text/javascript" src="$portalPath/openlayers/redbox.js"></script>
+<script type="text/javascript" src="$portalPath/js/autocomplete/lib/jquery.ajaxQueue.js"></script>
+<script type="text/javascript" src="$portalPath/js/autocomplete/lib/jquery.bgiframe.min.js"></script>
+<script type="text/javascript" src="$portalPath/js/autocomplete/jquery.autocomplete.pack.js"></script>
+<script type="text/javascript" src="$portalPath/js/jquery-wikitext-0.3.js"></script>
+<script type="text/javascript" src="$portalPath/js/jquery.jqEasyCharCounter.min.js"></script>
+<script type="text/javascript" src="$portalPath/javascript-widgets/widgets2.js"></script>
+<script type="text/javascript" src="$portalPath/javascript-widgets/nameLookup.js"></script>
+<script type="text/javascript">
+#set($defaultIternal = "internal:id")
+#set($iternalId = $systemConfig.getString($defaultIternal, "redbox.identity", "internalGrantString"))
+var INTERNAL_GRANT_ID = "$iternalId";
+var widgetTabs;
+var packageData = {
+    metaData: $self.getJsonMetadata().replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
+    attachedFiles: $self.getAttachedFiles(),
+    nextStageMessage: "$self.getNextStepAcceptMessage()",
+    andsDoiData: $self.getDoiMetadata()
+};
+
+var hideFundingBodyLabel = false;
+if('$self.getPresentationConfig('hide-funding-body-label')' == '') {
+	hideFundingBodyLabel = Boolean("$self.getPresentationConfig('hide-funding-body-label')");
+}
+
+function pad(s,len,c){
+    c = c || "0";
+    var ps = s.toString();
+    while(ps.length<len){ ps = c + ps; }
+    return ps;
+}
+function getDate(){
+    var d = new Date();
+    var s = d.getFullYear()+"-"+pad(d.getMonth()+1,2)+"-"+pad(d.getDate(),2);
+    return s;
+}
+function getDateTime(){
+    var d = new Date();
+    var s = getDate()+" "+pad(d.getHours(),2)+":"+pad(d.getMinutes(),2)+":"+pad(d.getSeconds(),2);
+    return s;
+}
+
+(function($){
+    // OpenLayers stylesheets
+    $('head').append('<link rel="stylesheet" type="text/css" id="openLayersCss1">');
+    $('#openLayersCss1').attr('href', '$portalPath/openlayers/theme/default/style.css');
+    $('head').append('<link rel="stylesheet" type="text/css" id="openLayersCss2">');
+    $('#openLayersCss2').attr('href', '$portalPath/openlayers/redbox.css');
+
+    $(function(){
+        function onContentLoaded(){
+            // OpenLayers init, store it globally so the Geonames lookup can hit it later
+          
+            //put in try catch as if hosting on https, browsers with mixed mode warnings may
+            //complain here and then break the tabs and everything else
+            try {
+            	window["openLayersMap"] = loadOpenLayers();
+            } catch (err) {
+            	
+            }
+            
+            widgetTabs = widgets.changeToTabLayout($(".inputscreens"));
+            widgetTabs.tabs({
+                select: function(event, ui){
+                    if(widgets.forms[0].hasChanges()){
+                        $(".form-fields-save:first").click();
+                    }
+                }
+            });
+            widgets.contentLoaded(function(){
+                try{
+                    widgets.formsById["main-form"].addListener("postOnRestore",
+                        function(ctx){
+                            nameLookup.init();
+                            // people
+                            ctx.findx(".lookup-show").each(function(){
+                                var e=$(this);
+                                e.find("a.nameLookup-lookup").text(e.find("input.nl").val()?" | change":"lookup");
+                                e.find(".identified-as-name").text(e.find("input.nl").val());
+                            });
+                            // grant numbers
+                            $(".internal-grant:checked").each(function() {
+                                var baseId = $(this).attr("id").replace(".redbox:internalGrant", "");
+                                $("input[id="+baseId+".dc:identifier]").unautocomplete();
+                                $("input[id="+baseId+".skos:prefLabel]").removeAttr("readonly").removeClass("label");
+                            });
+                            // geonames
+                            $(".autocomplete-geonames").each(function() {
+                                var baseId = $(this).attr("id").replace(".rdf:PlainLiteral", "");
+                                var uri = $("input[id='"+baseId+".dc:identifier']").val();
+                                if (uri != "") {
+                                    var east = $("input[id='"+baseId+".geo:long']").val();
+                                    var north = $("input[id='"+baseId+".geo:lat']").val();
+                                    var coordsElem = $("div[id='"+baseId+".coords']");
+                                    coordsElem.find(".east").text(east);
+                                    coordsElem.find(".north").text(north);
+                                    coordsElem.find(".map-link").attr("href", uri);
+                                    coordsElem.show();
+                                }
+                            });
+                            // insert date created if not exist
+                            var dcCreated = $("#dc\\:created");
+                            if(jQuery.trim(dcCreated.val())==""){
+                                dcCreated.val(getDate());
+                            }
+                            // extra submission request fields
+                            if(packageData.metaData["redbox:submissionProcess.dc:title"]){$(".submitTitle").removeClass("hidden");}
+                            if(packageData.metaData["redbox:submissionProcess.skos:note"]){$(".submitNotes").removeClass("hidden");}
+
+                            // Identifier, if not 'internal' or 'external' click() it
+                            var idOrigin = $("input[id=dc:identifier.redbox:origin]").val();
+                            if (idOrigin == "") {
+                                $("input[id=dc:identifier.checkbox]").click();
+                            }
+                        }
+                    );
+                    widgets.formsById["main-form"].restore(packageData.metaData);
+                    #if($self.getCurrentStep()=="retired")
+                    $(".inputscreens").find("input,select,textarea").each(function(c,e){
+                        if($(e).parents("#notes,#submit").length==0){
+                            $(e).attr("disabled", "disabled");
+                        }
+                    });
+                    $(".inputscreens").find(".input-list tfoot,.drop-down-location,.delete-item,.selection-add,.clear-item,.clear-link,.nameLookup-lookup,.add-attachment,.delete-attachment").each(function(c,e){
+                        if($(e).parents("#notes,#submit").length==0){
+                            $(e).hide();
+                        }
+                    });
+                    #end
+
+                    // Form data is ready, load features on the map
+                    try {
+                    	window["openLayersMap"].loadData();
+					} catch (err) {
+					
+					}
+                }catch(e){
+                    alert(e);
+                }
+            });
+            
+            //Hide the first date in the citations list, this one is reserved for Publication Date which has it's own field
+            var citationPublicationDateType = $("input[id='dc:biblioGraphicCitation.dc:hasPart.dc:date.1.dc:type.rdf:PlainLiteral']"); 
+            citationPublicationDateType.parent().parent().parent().hide();
+            citationPublicationDateType.val('publicationDate');
+            
+            $('#publication-date-citation').datepicker({dateFormat:"yy-mm-dd"});
+            $('#publication-date-citation').val($("input[id='dc:biblioGraphicCitation.dc:hasPart.dc:date.1.rdf:PlainLiteral']").val());
+            $('#publication-date-citation').change(function () {
+             $("input[id='dc:biblioGraphicCitation.dc:hasPart.dc:date.1.rdf:PlainLiteral']").val($(this).val());
+             $("input[id='dc:biblioGraphicCitation.dc:hasPart.dc:date.1.dc:type.rdf:PlainLiteral']").val('publicationDate');
+             
+            });
+            
+            if($("input[id='dc:biblioGraphicCitation.dc:hasPart.dc:hasVersion.rdf:PlainLiteral']").val() != '') {
+              $('#show-additional-citation-metadata').click();
+            }
+            
+            if($("input[id='dc:biblioGraphicCitation.dc:hasPart.dc:hasVersion.rdf:PlainLiteral']").val() != '') {
+              $('#show-additional-citation-metadata').click();
+            }
+            
+            if($("input[id='dc:biblioGraphicCitation.dc:hasPart.skos:scopeNote']").val() != '') {
+              $('#show-additional-citation-metadata').click();
+            }
+            
+            if($('td#citationDates').find('.date-type-prefId').size() ==2) {
+               //No non publication dates so add empty row for user
+            	$('.add-citation-date').click();
+            } else {
+               $('#show-additional-citation-metadata').click();
+            }
+            
+             
+        }
+
+        ## Do some version validation before we load the form
+        var newForm = packageData.metaData["redbox:newForm"];
+        var formVersion = packageData.metaData["redbox:formVersion"];
+        var currentVersion = "$systemConfig.getString("Unknown", "redbox.version.string")";
+        var loadForm = false;
+        var loadFormError = "Unknown error loading form. Please contact a System Administrator";
+        if (newForm == "true") {
+            ## First time loading
+            loadForm = true;
+        } else {
+            if (formVersion != currentVersion) {
+                ## Version mismatch, do not load
+                if (formVersion == null) {
+                    formVersion = "{NOT FOUND}";
+                }
+                loadForm = false;
+                loadFormError = "<p>This record appears to be from an older version of ReDBox. Please contact a System Administrator.</p>";
+                loadFormError += "<p>Expected version '"+currentVersion+"', but this record is '"+formVersion+"'.</p>";
+            } else {
+                ## Valid form load of existing data
+                loadForm = true;
+            }
+        }
+
+        if (loadForm) {
+            $("#inputForms").load("$portalPath/workflows/forms/dataset.ajax",
+                    {   oid: "$oid",
+                        portalPath: "$portalPath",
+                        stage: "$self.getCurrentStep()",
+                        stageLabel: "$self.getCurrentStepLabel()",
+                        nextStageMessage: "$self.getNextStepAcceptMessage()"
+                    },
+                    onContentLoaded);
+        } else {
+            $("#inputForms").html("<div class='box'><div class='block'><div class='login-error'>"+loadFormError+"</div></div></div>");
+        }
+    });
+})(jQuery);
+</script>

@@ -328,6 +328,7 @@ legend{
                 <tr class="item-input-display sortable-item">
                     <td class="sort-number"></td>
                     <td>
+                    	<label class="validation" for="dc:subject.vivo:keyword.0.rdf:PlainLiteral" data-validation-rule="test(notEmpty);when(submit);">A keyword is required!</label>
                         <input type="text" size="60" placeholder="keyword" id="dc:subject.vivo:keyword.0.rdf:PlainLiteral" class="vkeyword" />
                     </td>
                     <td class="delete-item"><a href="#">delete</a></td>

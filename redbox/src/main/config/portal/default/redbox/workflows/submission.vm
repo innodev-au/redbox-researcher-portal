@@ -38,7 +38,7 @@
 	</fieldset>
 #end
 
-#macro(mintSelectField $id $labelId $sourceUrl $idKey $labelKey $listKey $defaultValue)
+#macro(mintSelectFieldS $id $labelId $sourceUrl $idKey $labelKey $listKey $defaultValue)
     <span class="data-source-drop-down"
           data-json-source-url="$sourceUrl"
           data-id-key="$idKey"
@@ -91,7 +91,7 @@
     </table>
 #end
 
-#macro(relatedInfoField $id $placeholder $addLabel)
+#macro(relatedInfoFieldS $id $placeholder $addLabel)
     <table class="input-list">
         <thead>
             <tr>
@@ -310,7 +310,7 @@ legend{
 	#endfieldset
 			
 			
-	#fieldset("dc:subject.anzsrc:for" "Fields of Research" false true)
+	#fieldset("dc:subject.anzsrc:for" "Fields of Research" false "subsection-table")
         #mintMultiSelectFieldS("dc:subject.anzsrc:for.0.rdf:resource"
                               "dc:subject.anzsrc:for.0.skos:prefLabel"
                               "Add FOR"
@@ -367,7 +367,7 @@ legend{
 	
         #fieldTitleS("dc:accessRights.skos:prefLabel" "Access Rights" true)
         <p>
-            #mintSelectField("dc:accessRights.skos:prefLabel"
+            #mintSelectFieldS("dc:accessRights.skos:prefLabel"
                              "dc:accessRights.dc:RightsStatement.skos:prefLabel"
                              "$portalPath/workflows/forms/data/accessRights.json"
                              "id"
@@ -531,11 +531,11 @@ legend{
 	#endfieldset
 
     #fieldset("dc:relation.swrc:Publication" "Related Publications" false "subsection-table")
-		#relatedInfoField("dc:relation.swrc:Publication" "publication url" "Add publication")
+		#relatedInfoFieldS("dc:relation.swrc:Publication" "publication url" "Add publication")
 	#endfieldset
 
     #fieldset("dc:relation.bibo:Website" "Related Websites" false "subsection-table")
-        #relatedInfoField("dc:relation.bibo:Website" "website url" "Add website")
+        #relatedInfoFieldS("dc:relation.bibo:Website" "website url" "Add website")
 	#endfieldset
 	
 	

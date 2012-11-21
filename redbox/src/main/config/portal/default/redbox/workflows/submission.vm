@@ -323,12 +323,21 @@ legend{
 
 	
 	#fieldset("dc:subject.vivo:keyword" "Keywords" true true)
-        <table class="input-list">
+        <label for="dc:subject.vivo:keyword" class="validation-err-msg"
+            data-validation-rule="test(notEmpty);when(blur, change, submit);
+                                    jsTest(
+                                        var value = getReDBoxById('dc:subject.vivo:keyword.1.rdf:PlainLiteral').val();
+                                        value = jQ.trim(value); r = (value == '');
+                                    );
+                                    liveFor(.vkeyword);">
+            A keyword is required!
+        </label>
+		
+		<table class="input-list">
             <tbody>
                 <tr class="item-input-display sortable-item">
                     <td class="sort-number"></td>
                     <td>
-                    	<label class="validation" for="dc:subject.vivo:keyword.0.rdf:PlainLiteral" data-validation-rule="test(notEmpty);when(submit);">A keyword is required!</label>
                         <input type="text" size="60" placeholder="keyword" id="dc:subject.vivo:keyword.0.rdf:PlainLiteral" class="vkeyword" />
                     </td>
                     <td class="delete-item"><a href="#">delete</a></td>
@@ -610,6 +619,21 @@ function truncate(text, length, ellipsis) {
     if(text.length<length){ return text; }
     for(var i=length-1;text.charAt(i)!=" ";i--){ length--; }
     return text.substr(0,length)+(ellipsis||"...");
+}
+
+function cleanRdfToJs(input) {
+    var output = input.replace(/\./g, "\\.");
+    return output.replace(/\:/g, "\\:");
+}
+
+function getReDBoxById(redboxId) {
+    var cleanId = cleanRdfToJs(redboxId);
+    return $("#" + cleanId);
+}
+
+function getReDBoxByClass(redboxClass) {
+    var cleanClass = cleanRdfToJs(redboxClass);
+    return $("." + cleanClass);
 }
 
 /**

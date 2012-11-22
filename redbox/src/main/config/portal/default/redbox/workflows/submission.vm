@@ -821,6 +821,10 @@ $(function() {
                 }
             });
     }
+	
+	#set($defaultIternal = "internal:id")
+	#set($iternalId = $systemConfig.getString($defaultIternal, "redbox.identity", "internalGrantString"))
+	var INTERNAL_GRANT_ID = "$iternalId";
 
     $(".internal-grant").live("click", function() {
         var checked = $(this).is(":checked");

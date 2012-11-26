@@ -14,7 +14,11 @@
 				#if($page.authentication.has_role("researcher"))
 					<a id="notify-record" href="$portalPath/workflows/submission">Describe my data</a>
                 #else
+					<!-- Link to provide the full set of data for a new Collection record -->
 					<a id="new-record" href="#">Add a new dataset</a>
+
+					<!-- Link to provide the set of data that a Researcher would submit -->
+					<a id="notify-record" href="$portalPath/workflows/submission">Describe my data (researcher form)</a>
 				#end
 			</li>
         #end

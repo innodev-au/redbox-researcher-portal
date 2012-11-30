@@ -6,15 +6,16 @@ The fields available to Researchers are based on requirements analysis done at U
 
 [ANDS-funded development done as part of the Metadata Stores project.]
 
+Building and Running
+--------------------
+
 This project may be run in stand-alone mode (for testing purposes). Use the usual ReDBox project commands to do this, i.e.
 
 Build the project:
 
 	#> mvn -Pbuild-package install
 
-This will create the ReDBox run directories in $PROJECT_HOME.
-
-Next, run the project in the usual way:
+This will create the usual ReDBox directories in $PROJECT_HOME. So you can run the project in the usual way:
 
 	#> $PROJECT_HOME/server/tf.sh start
 
@@ -26,6 +27,8 @@ To create a release of the redbox-researcher-portal library (this creates a zip 
 
 The build artefact (library file) should then be hosted by an appropriate maven repository. The artefact file can be found in: $PROJECT_HOME/redbox/target/redbox-researcher-portal-${version}-redbox-config.zip
 
+Using the Researcher Portal
+---------------------------
 
 To include the Researcher Portal library in your ReDBox institutional build,
 add the following dependency to your pom.xml:

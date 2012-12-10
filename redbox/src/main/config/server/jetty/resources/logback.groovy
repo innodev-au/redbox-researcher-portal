@@ -76,7 +76,7 @@ appender("SOLR", RollingFileAppender) {
 }
 root(OFF)
 logger("com.googlecode.fascinator", DEBUG, ["SIFT"])
-logger("au.com.innodev.fascinator", TRACE, ["SIFT"])
+logger("au.edu.adelaide.fascinator", DEBUG, ["SIFT"])
 logger("org.jasig.cas", DEBUG, ["SIFT"])
 logger("org.apache.activemq", WARN, ["AMQ"])
 logger("org.apache.solr", INFO, ["SOLR"])

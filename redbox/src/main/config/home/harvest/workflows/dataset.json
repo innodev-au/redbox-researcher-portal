@@ -37,7 +37,7 @@
             "name": "inbox",
             "label": "Inbox",
             "description": "Potential records for investigation.",
-            "security": ["researcher"],
+            "security": ["researcher", "librarian", "reviewer", "admin"],
             "visibility": ["librarian", "reviewer", "admin"]
         },
         {

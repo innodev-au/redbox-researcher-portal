@@ -231,8 +231,9 @@ legend{
 </style>
 <h2 id="page-heading"><span>$pageTitle</span></h2>
 <div class="grid_16 widget-form inputscreen nameLookup-section" id="main-form"
-    data-form-fields="dc:subject.anzsrc:for.0.rdf:resource,dc:subject.anzsrc:for.0.skos:prefLabel,grants,foaf:fundedBy.vivo:Grant.0.redbox:internalGrant,foaf:fundedBy.vivo:Grant.0.redbox:grantNumber,foaf:fundedBy.vivo:Grant.0.dc:identifier,foaf:fundedBy.vivo:Grant.0.skos:prefLabel,dc:relation.swrc:Publication,dc:relation.bibo:Website,dc:relation.swrc:Publication.0.dc:identifier,dc:relation.swrc:Publication.0.dc:title,dc:relation.swrc:Publication.0.skos:note,dc:relation.bibo:Website.0.dc:identifier,dc:relation.bibo:Website.0.dc:title,dc:relation.bibo:Website.0.skos:note,dc:creator,dc:creator.foaf:Person.0.redbox:isCoPrimaryInvestigator,dc:creator.foaf:Person.0.redbox:isPrimaryInvestigator,dc:creator.foaf:Person.0.foaf:title,dc:creator.foaf:Person.0.foaf:givenName,dc:creator.foaf:Person.0.foaf:familyName,dc:accessRights.dc:identifier,dc:accessRights.skos:prefLabel,dc:accessRights.dc:RightsStatement.skos:prefLabel,vivo:Location.vivo:GeographicLocation.gn:name,bibo:Website.1.dc:identifier,dc:subject.anzsrc:for,dc:subject.vivo:keyword.0.rdf:PlainLiteral,title,description,location,dc:title,dc:extent,dc:description,redbox:submissionProcess.dc:title,dc:SizeOrDuration,dc:coverage.vivo:DateTimeInterval,dc:coverage.redbox:timePeriod,dc:coverage.vivo:GeographicLocation.0.rdf:PlainLiteral,dc:coverage.vivo:DateTimeInterval,dc:coverage.vivo:GeographicLocation.0.dc:type,dc:coverage.vivo:GeographicLocation.0.redbox:wktRaw,dc:coverage.vivo:DateTimeInterval.vivo:start,dc:coverage.vivo:DateTimeInterval.vivo:end,dc:subject.anzsrc:for,redbox:formVersion,redbox:newForm,redbox:submissionProcess.redbox:submitted,workflow_source,redbox:submissionProcess.dc:date,redbox:submissionProcess.dc:description,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone"
+    data-form-fields="dc:subject.anzsrc:for.0.rdf:resource,dc:subject.anzsrc:for.0.skos:prefLabel,grants,foaf:fundedBy.vivo:Grant.0.redbox:internalGrant,foaf:fundedBy.vivo:Grant.0.redbox:grantNumber,foaf:fundedBy.vivo:Grant.0.dc:identifier,foaf:fundedBy.vivo:Grant.0.skos:prefLabel,dc:relation.swrc:Publication,dc:relation.bibo:Website,dc:relation.swrc:Publication.0.dc:identifier,dc:relation.swrc:Publication.0.dc:title,dc:relation.swrc:Publication.0.skos:note,dc:relation.bibo:Website.0.dc:identifier,dc:relation.bibo:Website.0.dc:title,dc:relation.bibo:Website.0.skos:note,dc:creator,dc:creator.foaf:Person.0.redbox:isCoPrimaryInvestigator,dc:creator.foaf:Person.0.redbox:isPrimaryInvestigator,dc:creator.foaf:Person.0.foaf:title,dc:creator.foaf:Person.0.foaf:givenName,dc:creator.foaf:Person.0.foaf:familyName,dc:accessRights.dc:identifier,dc:accessRights.skos:prefLabel,dc:accessRights.dc:RightsStatement.skos:prefLabel,vivo:Location.vivo:GeographicLocation.gn:name,bibo:Website.1.dc:identifier,dc:subject.anzsrc:for,dc:subject.vivo:keyword.0.rdf:PlainLiteral,title,description,location,dc:title,dc:extent,dc:description,redbox:submissionProcess.dc:title,dc:SizeOrDuration,dc:coverage.vivo:DateTimeInterval,dc:coverage.redbox:timePeriod,dc:coverage.vivo:GeographicLocation.0.rdf:PlainLiteral,dc:coverage.vivo:DateTimeInterval,dc:coverage.vivo:GeographicLocation.0.dc:type,dc:coverage.vivo:GeographicLocation.0.redbox:wktRaw,dc:coverage.vivo:DateTimeInterval.vivo:start,dc:coverage.vivo:DateTimeInterval.vivo:end,dc:subject.anzsrc:for,redbox:formVersion,redbox:newForm,redbox:submissionProcess.redbox:submitted,workflow_source,redbox:submissionProcess.dc:date,redbox:submissionProcess.dc:description,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone,skos:note.0.dc:created,skos:note.0.foaf:name,skos:note.0.dc:description-timestampGroup,skos:note.0.dc:description"
     data-form-fields-readonly="metaList"
+    data-pre-submit-func="updateNotesMeta"
     data-submit-func="srSubmitFunc">
 	<input type="hidden" id="xmlns:vivo" value="http://vivoweb.org/ontology/core#" />
     <input type="hidden" id="redbox:formVersion" value="$systemConfig.getString("Unknown", "redbox.version.string")" />
@@ -722,6 +723,82 @@ legend{
 	#endfieldset
 	
 	
+
+## NOTES FIELD START
+
+#fieldset("skos:note.0.dc:description" "Notes" false "subsection-table")
+    <div class="help-content" id="help-skos:note.0">
+        Enter administrative notes as required.
+    </div>
+    <table class="input-list">
+        <thead>
+            <tr>
+                <th>Note</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="item-input-display notes">
+                <td width="100%">
+                	 <div class="group" style="display:none">
+                        Auto-generated values:
+                        <input type="text" id="skos:note.0.dc:created" class="datetime label-input" placeholder="date" readonly="readonly" size="25" />
+                        <input type="text" id="skos:note.0.foaf:name" class="username label-input" placeholder="username" readonly="readonly" />
+                    </div>
+                    <textarea style="width:100%" rows="4" placeholder="description" id="skos:note.0.dc:description" class="vnote"></textarea>                
+                </td>
+                <td style="vertical-align:middle;" class="delete-item"><a href="#">delete</a></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td><input type="button" class="button add-another-item add-note" value="Add note" /></td>
+            </tr>
+        </tfoot>
+    </table>
+	#endfieldset
+
+
+<script type="text/javascript">
+
+	function pad(s,len,c){
+	    c = c || "0";
+	    var ps = s.toString();
+	    while(ps.length<len){ ps = c + ps; }
+	    return ps;
+	}
+	function getDate(){
+	    var d = new Date();
+	    var s = d.getFullYear()+"-"+pad(d.getMonth()+1,2)+"-"+pad(d.getDate(),2);
+	    return s;
+	}
+	function getDateTime(){
+	    var d = new Date();
+	    var s = getDate()+" "+pad(d.getHours(),2)+":"+pad(d.getMinutes(),2)+":"+pad(d.getSeconds(),2);
+	    return s;
+	}
+
+    function updateNotesMeta() {
+    	var notesElements = $("tr.notes");
+    	for(var i = 0; i < notesElements.size(); i++) {
+    		var tr = $(notesElements[i]);
+    		var description = $($(tr).find('.vnote')[0]);
+    		var user = $($(tr).find('.username')[0]);
+    		var created = $($(tr).find('.datetime')[0]);
+    		if (description.val() == '') {
+    			user.val('');
+    			created.val('');
+    		} else {
+    			//let's hope we never meet Johnny "drop tables;
+    			user.val("$page.authentication.get_username()");
+    			created.val(getDateTime());
+    		}
+    	}
+    }
+
+</script>
+
+## NOTES FIELD ENDS
 	#fieldset("ContactDetails" "Contact Details" false true)
         <p>
             <label for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name">Contact Name <span class="required">*</span></label>
@@ -1157,8 +1234,7 @@ $(function() {
     $('head').append('<link rel="stylesheet" type="text/css" id="openLayersCss2">');
     $('#openLayersCss2').attr('href', '$portalPath/openlayers/redbox.css');
 
-window["openLayersMap"] = loadOpenLayers();
+	window["openLayersMap"] = loadOpenLayers();
 
    })(jQuery);
-
 </script>

@@ -726,7 +726,7 @@ legend{
 
 ## NOTES FIELD START
 
-#fieldset("skos:note.0.dc:description" "Notes" false "subsection-table")
+#fieldset("skos:note" "Notes" false "subsection-table")
     <div class="help-content" id="help-skos:note.0">
         Enter administrative notes as required.
     </div>

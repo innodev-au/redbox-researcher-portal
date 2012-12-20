@@ -1234,7 +1234,11 @@ $(function() {
     $('head').append('<link rel="stylesheet" type="text/css" id="openLayersCss2">');
     $('#openLayersCss2').attr('href', '$portalPath/openlayers/redbox.css');
 
-	window["openLayersMap"] = loadOpenLayers();
+	//window["openLayersMap"] = loadOpenLayers();
+	// for whatever reason delaying the loading of open maps makes it work
+	// seems to be a LOT going on when the page first loads, there's probably some kind of race condition
+	// that's avoided by this delay
+	window.setTimeout(function() { window["openLayersMap"] = loadOpenLayers(); }, 500);
 
    })(jQuery);
 </script>

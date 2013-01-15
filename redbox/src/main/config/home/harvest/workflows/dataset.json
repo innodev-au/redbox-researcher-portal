@@ -33,12 +33,20 @@
     },
 
     "stages": [
+    	{
+            "name": "unsubmitted",
+            "label": "Unsubmitted",
+            "description": "Records that are saved and not submitted.",
+            "security": ["researcher", "librarian", "reviewer", "admin"],
+            "visibility": ["librarian", "reviewer", "admin","researcher"]
+        },
         {
             "name": "inbox",
             "label": "Inbox",
             "description": "Potential records for investigation.",
-            "security": ["researcher", "librarian", "reviewer", "admin"],
-            "visibility": ["librarian", "reviewer", "admin"]
+            "security": ["researcher"],
+            "visibility": ["librarian", "reviewer", "admin"],
+            "template": "workflows/selfsubmission"
         },
         {
             "name": "investigation",

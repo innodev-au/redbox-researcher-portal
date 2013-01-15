@@ -1,0 +1,1308 @@
+#macro(requiredValidation $id $message)
+    <label class="validation-err-msg" for="$id"
+        data-validation-rule="when(blur,change,submit);test(notEmpty)">
+        $message
+    </label>
+#end
+
+#macro(fieldTitleS $id $label $required)
+	<label for="$id">$label#if($required)<span class="required">*</span>#end</label>
+    <span class="helpWidget" data-help-content-id="help-$id">
+        <img src="$portalPath/images/icons/help.png" alt="help" title="help"/>
+    </span>
+    
+    #set($helpFile = $id.replaceAll("^.*?[.]dc[:]","dc-").replaceAll("[.]1[.].*","").replaceAll("[.]|[:]","-"))
+    <div class="help-content" id="help-$id">
+        #parseTemplate("workflows/help/${helpFile}.vm")
+    </div>
+#end
+
+#macro(fieldset $id $label $required $css)
+	#set($showhelp = $id != 'Summary')
+	<fieldset name="$label" class="$css subsection">
+		<legend>$label#if($required)<span class="required">*</span>#end
+		#if($showhelp)
+    		<span class="helpWidget" data-help-content-id="help-$id">
+                <img src="$portalPath/images/icons/help.png" alt="help" title="help"/>
+            </span>
+		#end
+		</legend>
+		#if($showhelp)
+			#set($helpFile = $id.replaceAll("^.*?[.]dc[:]","dc-").replaceAll("[.]1[.].*","").replaceAll("[.]|[:]","-"))
+		    <div class="help-content" id="help-$id">
+		        #parseTemplate("workflows/help/${helpFile}.vm")
+		    </div>
+		#end
+#end
+#macro(endfieldset)
+	</fieldset>
+#end
+
+#macro(mintSelectFieldS $id $labelId $sourceUrl $idKey $labelKey $listKey $defaultValue)
+    <span class="data-source-drop-down"
+          data-json-source-url="$sourceUrl"
+          data-id-key="$idKey"
+          data-label-key="$labelKey"
+          data-list-key="$listKey"
+          #if("$!defaultValue"!="")data-default-value="$!defaultValue"#end>
+        <span class="selection-added">
+            <input type="hidden" class="selection-added-id" id="$id" name="$id" />
+            <input type="text" class="selection-added-label" readonly="readonly" id="$labelId" name="$labelId" />
+            <a href="#" class="clear-item">change</a>
+        </span>
+        <span class="drop-down-location">
+            <button class="selection-add add-unique-only" data-add-on-click="1">
+                Select
+            </button>
+        </span>
+    </span>
+#end
+
+#macro(mintMultiSelectFieldS $id $labelId $button $sourceUrl $idKey $labelKey $listKey $childrenKey)
+    <table class="input-list">
+        <tfoot>
+            <tr class="item-input">
+                <td>
+                    <span class="data-source-drop-down"
+                          data-json-source-url="$sourceUrl"
+                          data-top-level-id="top"
+                          data-id-key="$idKey"
+                          data-label-key="$labelKey"
+                          data-list-key="$listKey"
+                          data-children-key="$childrenKey">
+                        <input type="text" class="selection-added-label" id="$labelId" />
+                        <input type="text" class="selection-added-id" id="$id" />
+                    </span>
+                    <button class="item-add selection-add add-unique-only reset-on-add">
+                        $button
+                    </button>
+                </td>
+            </tr>
+        </tfoot>
+        <tbody>
+            <tr class="item-display">
+                <td>
+                    <span class="item-display-item"></span>
+                    <span class="item-display-item hidden"></span>
+                    <a class="delete-item" href="#">delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+#end
+
+#macro(relatedInfoFieldS $id $placeholder $addLabel)
+    <table class="input-list">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>URL</th>
+                <th>Title</th>
+                <th>Notes</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="item-input-display sortable-item">
+                <td class="sort-number"></td>
+                <td>
+                    <input type="text" style="width:100%;" placeholder="$placeholder" id="${id}.0.dc:identifier" />
+                </td>
+                <td>
+                    <input type="text" style="width:100%" placeholder="title" id="${id}.0.dc:title" />
+                </td>
+                <td>
+                    <input type="text" style="width:100%" placeholder="notes" id="${id}.0.skos:note" />
+                </td>
+                <td class="delete-item"><a href="#">delete</a></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td><input type="button" class="button add-another-item" value="$addLabel" /></td>
+                <td colspan="3"></td>
+            </tr>
+        </tfoot>
+    </table>
+#end
+
+#macro(inputList $id $placeholder $addLabel $requiredLabel)
+    #set($vid = $self.getCleanId($id))
+    <table class="input-list">
+        <tbody>
+            <tr class="item-input-display sortable-item">
+                <td class="sort-number"></td>
+                <td>
+                    <input type="text" size="60" placeholder="$placeholder" id="${id}.0" class="v${vid}" />
+                </td>
+                <td class="delete-item"><a href="#">delete</a></td>
+                <td style="width: 100%;">
+                    #if("$!requiredLabel" != "")
+                    <label for="${id}.0" class="validation-err-msg"
+                        data-validation-rule="test(notEmpty);when(blur,change,submit);liveFor(.v${vid});">
+                        $requiredLabel
+                    </label>
+                    #end
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td><input type="button" class="button add-another-item" value="$addLabel" /></td>
+                <td colspan="2"></td>
+            </tr>
+        </tfoot>
+    </table>
+#end
+
+
+
+#set($pageTitle = "Notify us about a dataset")
+<style type="text/css">
+fieldset p textarea { display:block; width: 98%; }
+fieldset {
+	border-radius:5px;
+	margin-top:30px;
+}
+.subsection {
+	width:600px;
+}
+.subsection-table {
+	max-width:1200px;
+	width:inherit !important;
+}
+fieldset label {
+	width:300px;
+}
+fieldset td {
+	background:inherit;
+}
+fieldset p input, fieldset p select {
+	width:400px;
+	display:block;
+}
+fieldset table {
+	border:0px;
+}
+legend {
+	position:relative;
+	width:150px;
+	border-radius: 5px;
+}
+legend .helpWidget {
+	position:absolute;
+	right:10px;
+}
+span.required {
+    color: red;
+    position:relative;
+    bottom:-3px;
+    font-weight:bold;
+    font-size:100%;
+}
+label.validation, .validation label {
+	color: red;
+	display: block;
+}
+a.plain-link {
+    font-weight: normal;
+    text-decoration: underline;
+}
+.introduction {
+	margin: 2em 3em;
+}
+
+/* IE hack fixes for fieldsets
+http://www.mattheerema.com/web-tech-design/2006/04/getting-fieldset-backgrounds-and-legends-to-behave-in-ie/
+*/
+fieldset{
+    position: relative;
+    padding-top:2em;
+    margin-top:10px;
+    margin-top:45px;
+    margin-bottom:40px;
+}
+legend{
+    position:absolute;
+    top: -1.5em;
+    left: .5em;
+}
+
+</style>
+<h2 id="page-heading"><span>$pageTitle</span></h2>
+<div class="grid_16 widget-form inputscreen nameLookup-section" id="main-form"
+    data-form-fields="dc:subject.anzsrc:for.0.rdf:resource,dc:subject.anzsrc:for.0.skos:prefLabel,grants,foaf:fundedBy.vivo:Grant.0.redbox:internalGrant,foaf:fundedBy.vivo:Grant.0.redbox:grantNumber,foaf:fundedBy.vivo:Grant.0.dc:identifier,foaf:fundedBy.vivo:Grant.0.skos:prefLabel,dc:relation.swrc:Publication,dc:relation.bibo:Website,dc:relation.swrc:Publication.0.dc:identifier,dc:relation.swrc:Publication.0.dc:title,dc:relation.swrc:Publication.0.skos:note,dc:relation.bibo:Website.0.dc:identifier,dc:relation.bibo:Website.0.dc:title,dc:relation.bibo:Website.0.skos:note,dc:creator,dc:creator.foaf:Person.0.redbox:isCoPrimaryInvestigator,dc:creator.foaf:Person.0.redbox:isPrimaryInvestigator,dc:creator.foaf:Person.0.foaf:title,dc:creator.foaf:Person.0.foaf:givenName,dc:creator.foaf:Person.0.foaf:familyName,dc:accessRights.dc:identifier,dc:accessRights.skos:prefLabel,dc:accessRights.dc:RightsStatement.skos:prefLabel,vivo:Location.vivo:GeographicLocation.gn:name,bibo:Website.1.dc:identifier,dc:subject.anzsrc:for,dc:subject.vivo:keyword.0.rdf:PlainLiteral,title,description,location,dc:title,dc:extent,dc:description,redbox:submissionProcess.dc:title,dc:SizeOrDuration,dc:coverage.vivo:DateTimeInterval,dc:coverage.redbox:timePeriod,dc:coverage.vivo:GeographicLocation.0.rdf:PlainLiteral,dc:coverage.vivo:DateTimeInterval,dc:coverage.vivo:GeographicLocation.0.dc:type,dc:coverage.vivo:GeographicLocation.0.redbox:wktRaw,dc:coverage.vivo:DateTimeInterval.vivo:start,dc:coverage.vivo:DateTimeInterval.vivo:end,dc:subject.anzsrc:for,redbox:formVersion,redbox:newForm,redbox:submissionProcess.redbox:submitted,workflow_source,redbox:submissionProcess.dc:date,redbox:submissionProcess.dc:description,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone,skos:note.0.dc:created,skos:note.0.foaf:name,skos:note.0.dc:description-timestampGroup,skos:note.0.dc:description"
+    data-form-fields-readonly="metaList"
+    data-pre-submit-func="updateNotesMeta"
+    data-submit-func="srSubmitFunc">
+	<input type="hidden" id="xmlns:vivo" value="http://vivoweb.org/ontology/core#" />
+    <input type="hidden" id="redbox:formVersion" value="$systemConfig.getString("Unknown", "redbox.version.string")" />
+    <input type="hidden" id="redbox:newForm" value="true" />
+    <input type="hidden" name="redbox:submissionProcess.redbox:submitted" value="true" />
+    <input type="hidden" name="workflow_source" value="Submission Request" />
+    <input type="hidden" name="metaList" value="[]" />
+	<input type="hidden" class="nameLookup-url" value="$portalPath/proxyGet?ns=Parties_People&qs=searchTerms%3D{searchTerms}" />
+    #if($page.authentication.has_role("admin") || $page.authentication.has_role("librarian") || $page.authentication.has_role("reviewer"))
+    <input type="hidden" class="nlaLookup-url" value="$portalPath/proxyGet?ns=NLA_SRU&qs={searchTerms}" />
+    #else
+    <input type="hidden" class="nlaLookup-url" value="" />
+    #end
+    <input type="hidden" class="nameLookup-value-ns" value="nl" />
+
+	#parseTemplate("workflows/submission/introduction.vm")
+	<div style="display:none" id="success-dialog-message">
+		#parseTemplate("workflows/submission/success-dialog.vm")
+	</div>
+
+	#fieldset("Summary" "Summary" false false "subsection-table")
+        <p>
+            <label for="redbox:submissionProcess.dc:date">Date Submitted</label>
+            <input id="redbox:submissionProcess.dc:date" type="text" size="40" value="$!self.getSubmitDate()" readonly="readonly" />
+        </p>
+		
+		#fieldTitleS("redbox:submissionProcess.dc:title" "Title" true)
+		<p>
+		<label class="validation" for="redbox:submissionProcess.dc:title" data-validation-rule="test(notEmpty);when(submit);">A title is required!</label>
+		<input id="redbox:submissionProcess.dc:title" type="text" size="40"/>
+		</p>
+
+		#fieldTitleS("redbox:submissionProcess.dc:description" "Description" true)
+        <p>
+        <label class="validation" for="redbox:submissionProcess.dc:description" data-validation-rule="test(notEmpty);when(submit);">A description is required!</label>
+        <textarea id="redbox:submissionProcess.dc:description" cols="40" rows="10"></textarea>
+        </p>
+		
+		#fieldTitleS("dc:extent" "Extent or Quantity" false)
+	    <p><input type="text" size="60" placeholder="quantity" id="dc:extent"/></p>
+	
+		#fieldTitleS("dc:SizeOrDuration" "Data Size" false)
+	    <p><input type="text" size="60" placeholder="size" id="dc:SizeOrDuration"/></p>
+	
+	#endfieldset
+
+	#fieldset("Coverage" "Coverage" false true)
+
+        #fieldTitleS("dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral" "Geographic Coverage" false)
+		<p>
+            <input id="dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral" type="text" size="40" />
+        </p>		
+
+        #fieldTitleS("dc:coverage.vivo:DateTimeInterval" "Date Coverage" false)
+        <p>
+            <input type="text" placeholder="Start" class="dateYMD" id="dc:coverage.vivo:DateTimeInterval.vivo:start" />
+            <label for="dc:coverage.vivo:DateTimeInterval.vivo:end"></label>
+            <input type="text" placeholder="End" class="dateYMD" id="dc:coverage.vivo:DateTimeInterval.vivo:end" />
+            <label class="validation-err-msg" for="dc:coverage.vivo:DateTimeInterval.vivo:start"
+                data-validation-rule="when(blur,change,submit);name(testCoverageFrom);
+                        test(/^[12]\d{3}([-\/]+(10|11|12|0?\d)([-\/]+(30|31|[012]?\d))?)?$/ or empty);">
+                A valid from date or year is required!
+            </label>
+            <label class="validation-err-msg" for="dc:coverage.vivo:DateTimeInterval.vivo:end"
+                data-validation-rule="when(blur,change,submit);name(testCoverageTo);
+                        test(/^[12]\d{3}([-\/]+(10|11|12|0?\d)([-\/]+(30|31|[012]?\d))?)?$/ or empty);">
+                A valid to date or year is required!
+            </label>
+        </p>
+
+		#fieldTitleS("dc:coverage.redbox:timePeriod" "Time Period" false)
+   	    <p>
+            <input type="text" id="dc:coverage.redbox:timePeriod" size="60"
+                placeholder="If dates cannot be quantified ie. 21st Century, WWII, The Depression, etc." />
+        </p>
+	#endfieldset
+			
+			
+	#fieldset("dc:subject.anzsrc:for" "Fields of Research" false "subsection-table")
+        #mintMultiSelectFieldS("dc:subject.anzsrc:for.0.rdf:resource"
+                              "dc:subject.anzsrc:for.0.skos:prefLabel"
+                              "Add FOR"
+                              "$portalPath/proxyGet?ns=ANZSRC_FOR&qs=count%3D999%26level%3D"
+                              "rdf:about"
+                              "skos:prefLabel"
+                              "results"
+                              "skos:narrower")
+	#endfieldset
+
+	
+	#fieldset("dc:subject.vivo:keyword" "Keywords" true true)
+        <label for="dc:subject.vivo:keyword" class="validation-err-msg"
+            data-validation-rule="test(notEmpty);when(blur, change, submit);
+                                    jsTest(
+                                        var value = getReDBoxById('dc:subject.vivo:keyword.1.rdf:PlainLiteral').val();
+                                        value = jQ.trim(value); r = (value == '');
+                                    );
+                                    liveFor(.vkeyword);">
+            A keyword is required!
+        </label>
+		
+		<table class="input-list">
+            <tbody>
+                <tr class="item-input-display sortable-item">
+                    <td class="sort-number"></td>
+                    <td>
+                        <input type="text" size="60" placeholder="keyword" id="dc:subject.vivo:keyword.0.rdf:PlainLiteral" class="vkeyword" />
+                    </td>
+                    <td class="delete-item"><a href="#">delete</a></td>
+                    <td style="width: 100%;"> </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td><input type="button" class="button add-another-item" value="Add keyword" /></td>
+                    <td colspan="2"></td>
+                </tr>
+            </tfoot>
+        </table>
+	#endfieldset
+	
+	#fieldset("th.location" "Location" false true)
+		<p>
+            <label for="vivo:Location.vivo:GeographicLocation.gn:name">Please enter a physical address <span class="required">*</span></label>
+            <label class="validation" for="vivo:Location.vivo:GeographicLocation.gn:name" data-validation-rule="test(notEmpty);when(submit);">A location is required!</label>
+            <input id="vivo:Location.vivo:GeographicLocation.gn:name" cols="40" rows="3" value="The University of Adelaide, Adelaide SA 5005"/>
+        </p>	
+        <p>
+            <label for="bibo:Website.1.dc:identifier">Please enter the electronic location of data if available </label>
+            <input id="bibo:Website.1.dc:identifier" type="text" size="40" />
+        </p>
+	#endfieldset
+
+
+######################
+#fieldset("dc:coverage.vivo:GeographicLocation" "Geospatial Location" false "subsection-table")
+<div id="coverage" class="inputscreen">
+    <div class="help-content" id="help-dc:coverage.vivo:GeographicLocation">
+        <p>
+            Geospatial location relevant to the research dataset/collection,
+            registry/repository, catalogue or index. This may describe a
+            geographical area where data was collected, a place which is the
+            subject of a collection, or a location which is the focus of an
+            activity, eg. coordinates or placename.
+        </p>
+        <p>
+            You may use the map to select an area, or manually enter a correctly
+            formatted set of coordinates or a value supported by a standard such
+            as a country code, a URL pointing to an XML based description of
+            spatial coverage or free text describing a location.
+        </p>
+        <p>
+            If you wish to generate a map display in Research Data Australia,
+            it is strongly advised that you use <b>DCMI Box</b> for shapes, or
+            <b>DCMI Point</b> for points.
+        </p>
+        <p>
+            Formats supported by the map widget:
+        </p>
+        <ul>
+            <li>
+                <a href="http://www.opengeospatial.org/standards/gml" target="_blank">GML</a>
+                - OpenGIS Geography Markup Language (GML) Encoding Standard
+            </li>
+            <li>
+                <a href="http://code.google.com/apis/kml/" target="_blank">KML</a>
+                - Keyhole Markup Language developed for use with Google Earth
+            </li>
+            <li>
+                <a href="http://dublincore.org/documents/dcmi-box" target="_blank">ISO19319dcmiBox</a>
+                - DCMI Box notation derived from bounding box metadata
+                conformant with the iso19139 schema
+            </li>
+            <li>
+                <a href="http://dublincore.org/documents/dcmi-point" target="_blank">DCMIPoint</a>
+                - spatial location information specified in DCMI Point notation
+            </li>
+        </ul>
+        <p>
+            When using the map to input shapes/points, only the above formats are
+            supported. You can use the 'Find location' feature to pan the map to
+            an area you are interested in, but you still need to select a map
+            region to store geospatial data.
+        </p>
+        <p>
+            Formats available for manual data entry:
+        </p>
+        <ul>
+            <li>
+                <a href="http://www.topografix.com/gpx.asp" target="_blank">GPX</a>
+                - the GPS Exchange Format
+            </li>
+            <li>
+                <a href="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" target="_blank">ISO3166</a>
+                - ISO 3166-1 Codes for the representation of names of countries
+                and their subdivisions - Part 1: Country codes
+            </li>
+            <li>
+                <a href="http://www.iso.org/iso/country-codes/background_on_iso_3166/iso_3166-2.htm" target="_blank">ISO31662</a>
+                - Codes for the representation of names of countries and their
+                subdivisions - Part 2: Country subdivision codes
+            </li>
+            <li>
+                <a href="http://code.google.com/apis/kml/" target="_blank">kmlPolyCoords</a>
+                - A set of KML long/lat co-ordinates defining a polygon as
+                described by the KML coordinates element
+            </li>
+            <li>
+                <a href="http://code.google.com/apis/kml/" target="_blank">gmlKmlPolyCoords</a>
+                - A set of KML long/lat co-ordinates derived from GML defining a
+                polygon as described by the KML coordinates element but without
+                the altitude component
+            </li>
+            <li>
+                <strong>Text</strong> - free-text representation of spatial
+                location. Use this to record place or region names where
+                geospatial notation is not available. In ReDBox this will
+                search against the Geonames database and return a latitude and
+                longitude value if selected. This will store as a DCMIPoint
+                which in future will display as a point on a Google Map in
+                Research Data Australia.
+            </li>
+        </ul>
+    </div>
+
+    <div class="openLayersHolder">
+        <div class="article">
+            <p class="meta attribution">Map Credits: <span id="attribution"></span></p>
+            <div id="polygonHelp" class="hidden">
+                <div><span class="ui-button-icon-primary ui-icon ui-icon-lightbulb"></span></div>
+                Use double-click to 'close' your polygon.
+            </div>
+            <div class="mapHolder">
+                <div id="panel" class="olControlEditingToolbar"></div>
+                <div id="map" class="smallmap"></div>
+            </div>
+            <div class="lookupHolder">
+                <label for="geonamesLookup">Find location: </label>
+                <input type="text" size="40" placeholder="Place name" id="geonamesLookup" />
+            </div>
+        </div>
+    </div>
+
+    <table class="input-list redboxGeoData">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Type</th>
+                <th>Value</th>
+                <th colspan="2"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="item-input-display redboxGeoDataRow">
+                <td class="sort-number"></td>
+                <td>
+                    <select class="locationType" id="dc:coverage.vivo:GeographicLocation.0.dc:type">
+                        <option value="" selected="selected">Please select one...</option>
+                        <option value="gml">OpenGIS Geography Markup Language</option>
+                        <option value="kml">Keyhole Markup Language</option>
+                        <option value="iso19139dcmiBox">DCMI Box notation (iso19139)</option>
+                        <option value="dcmiPoint">DCMI Point notation</option>
+                        <option value="gpx">GPS Exchange Format</option>
+                        <option value="iso31661">Country code (iso31661)</option>
+                        <option value="iso31662">Country subdivision code (iso31662)</option>
+                        <option value="kmlPolyCoords">KML long/lat co-ordinates</option>
+                        <option value="gmlKmlPolyCoords">KML long/lat co-ordinates derived from GML</option>
+                        <option value="text">Free text</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="hidden" class="redboxGeoDataFid" />
+                    <input type="hidden" class="redboxGeoDataWkt" id="dc:coverage.vivo:GeographicLocation.0.redbox:wktRaw" />
+                    <input type="text" class="redboxGeoDataOutput autocomplete-geonames" placeholder="eg. coordinates or placename"
+                        id="dc:coverage.vivo:GeographicLocation.0.rdf:PlainLiteral" size="60" />
+                    <input type="hidden" id="dc:coverage.vivo:GeographicLocation.0.dc:identifier" />
+                    <input type="hidden" id="dc:coverage.vivo:GeographicLocation.0.geo:long" />
+                    <input type="hidden" id="dc:coverage.vivo:GeographicLocation.0.geo:lat" />
+                    <div class="hidden coords" id="dc:coverage.vivo:GeographicLocation.0.coords">
+                        <a class="map-link" target="_blank" href="">map</a>
+                        @ longitude: <span class="east"> </span>
+                        , latitude: <span class="north"> </span>
+                        | <a class="clear-link" href="#">clear</a>
+                    </div>
+                </td>
+                <td class="delete-item"><a href="#">delete</a></td>
+                <td style="width: 100%;" />
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td><input type="button" class="button add-another-item" id="add-location" value="Add location" /></td>
+                <td colspan="3"></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+	#endfieldset
+##################
+
+
+
+
+
+	#fieldset("rights" "Rights" false true)
+		#fieldTitleS("dc:accessRights.dc:RightsStatement.skos:prefLabel" "Rights Statement" false)
+        <div>
+            <div>
+            <textarea style="width:560px;height:3em;border:0px;margin-top:3px" type="text" size="140" id="dc:accessRights.dc:RightsStatement.skos:prefLabel"
+				disabled="disabled">This data collection is subject to the intellectual property rights arrangements agreed for the project.</textarea>
+        </div>
+        </div>
+	
+        #fieldTitleS("dc:accessRights.skos:prefLabel" "Access Rights" true)
+        <p>
+            #mintSelectFieldS("dc:accessRights.skos:prefLabel"
+                             "dc:accessRights.dc:RightsStatement.skos:prefLabel"
+                             "$portalPath/workflows/forms/data/accessRights.json"
+                             "id"
+                             "label"
+                             "results"
+                             "")
+            #requiredValidation("dc:accessRights.skos:prefLabel" "An Access Rights statement is required!")
+        </p>
+    	
+         <p>
+            <input type="text" size="60" id="dc:accessRights.dc:identifier" 
+            <input type="text" size="60" id="dc:accessRights.dc:identifier" placeholder="Access Rights URI" />
+        </p>
+	#endfieldset
+
+    #fieldset("dc:creator" "Creators" true "subsection-table")
+        <table class="input-list sortable">
+            <thead>
+                <tr class="header-row">
+                    <th></th>
+                    <th>CI</th>
+                    <th>PI</th>
+                    <th>Display Name</th>
+                    <th>Name Authority</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="item-input-display sortable-item">
+                    <td class="valign-middle">
+                        <img class="facets-grip" src="$portalPath/images/icons/grippy.png" />
+                    </td>
+                    <td class="valign-middle">
+                        <input type="checkbox" id="dc:creator.foaf:Person.0.redbox:isCoPrimaryInvestigator" />
+                    </td>
+                    <td class="valign-middle">
+                        <input type="checkbox" id="dc:creator.foaf:Person.0.redbox:isPrimaryInvestigator" />
+                    </td>
+                    <td>
+                        <table class="lookup">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label for="dc:creator.foaf:Person.0.foaf:title">Title:</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" placeholder="title" size="5"
+                                               id="dc:creator.foaf:Person.0.foaf:title" />
+                                    </td>
+                                    <td>
+                                        <label for="dc:creator.foaf:Person.0.foaf:givenName">Given name:</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" placeholder="given name" size="25"
+                                               class="nameLookup-name creatorGivenName creatorName givenName"
+                                               id="dc:creator.foaf:Person.0.foaf:givenName" />
+                                    </td>
+                                    <td>
+                                        <label for="dc:creator.foaf:Person.0.foaf:familyName">Family name:</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" placeholder="family name" size="25"
+                                               class="nameLookup-name creatorFamilyName creatorName familyName"
+                                               id="dc:creator.foaf:Person.0.foaf:familyName" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="6">
+                                        <label class="validation-err-msg"
+                                            for="dc:creator.foaf:Person.0.foaf:givenName"
+                                            data-validation-rule="test(notEmpty);when(blur,change,submit);
+                                                                    jsTest(
+                                                                        var fid, gid, f, g;
+                                                                        fid=id.replace('given', 'family');
+                                                                        gid=id.replace('family', 'given');
+                                                                        f=ctx.find('input[id='+fid+']').val();
+                                                                        g=ctx.find('input[id='+gid+']').val();
+                                                                        f=jQ.trim(f); g=jQ.trim(g);
+                                                                        r=(g=='')&&(f=='');
+                                                                        id=gid;
+                                                                    );
+                                                                    liveFor(.creatorName);">
+                                            A creator is required!
+                                        </label>
+                                    </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </td>
+                    <td>
+                        <span class="lookup-show">
+                            <span class="identified-as-name"></span>
+                            <a href="#" class="nameLookup-lookup" data-selected-func="lookupDone"
+                                data-cleared-func="lookupCleared">lookup</a>
+                            <span class="nameLookup-progress hidden">
+                                <img src="$portalPath/images/icons/loading.gif" />
+                            </span>
+                            <input id="dc:creator.foaf:Person.0.foaf:name"
+                                   type="hidden"
+                                   class="nl nl-rdfs:label nlLabel" readonly="readonly"/>
+                            <input type="hidden" id="dc:creator.foaf:Person.0.dc:identifier"
+                                   class="nl nl-dc:identifier nlId" />
+                        </span>
+                    </td>
+                    <td class="valign-middle"><a class="delete-item" href="#">delete</a></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3"></td>
+                    <td colspan="6">
+                        <input type="button" class="button add-another-item" value="Add person" />
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+	#endfieldset
+
+
+    #fieldset("grants" "Related Projects" false "subsection-table")
+        <table class="input-list">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Internal?</th>
+                    <th>Grant</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="item-input-display sortable-item">
+                    <td class="sort-number"></td>
+                    <td><input type="checkbox" id="foaf:fundedBy.vivo:Grant.0.redbox:internalGrant" class="internal-grant"/></td>
+                    <td style="width:100%">
+                        <table class="inner-table">
+                            <tr>
+                                <td>
+                                    <input type="text" size="20" id="foaf:fundedBy.vivo:Grant.0.redbox:grantNumber"
+                                        placeholder="grant number" class="autocomplete-grant" />
+                                    <input type="hidden" id="foaf:fundedBy.vivo:Grant.0.dc:identifier" />
+                                </td>
+                                <td style="width:100%">
+                                    <input type="text" size="60" id="foaf:fundedBy.vivo:Grant.0.skos:prefLabel"
+                                        readonly="readonly" placeholder="grant description"
+                                        class="autocomplete-grant-label label" style="width:100%" />
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="delete-item" style="text-align:right;width:100%;"><a href="#">delete</a></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td colspan="3"><input type="button" class="button add-another-item" value="Add grant" /></td>
+                </tr>
+            </tfoot>
+        </table>
+	#endfieldset
+
+    #fieldset("dc:relation.swrc:Publication" "Related Publications" false "subsection-table")
+		#relatedInfoFieldS("dc:relation.swrc:Publication" "publication url" "Add publication")
+	#endfieldset
+
+    #fieldset("dc:relation.bibo:Website" "Related Websites" false "subsection-table")
+        #relatedInfoFieldS("dc:relation.bibo:Website" "website url" "Add website")
+	#endfieldset
+	
+	
+
+## NOTES FIELD START
+
+#fieldset("skos:note" "Notes" false "subsection-table")
+    <div class="help-content" id="help-skos:note.0">
+        Enter administrative notes as required.
+    </div>
+    <table class="input-list">
+        <thead>
+            <tr>
+                <th>Note</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="item-input-display notes">
+                <td width="100%">
+                	 <div class="group" style="display:none">
+                        Auto-generated values:
+                        <input type="text" id="skos:note.0.dc:created" class="datetime label-input" placeholder="date" readonly="readonly" size="25" />
+                        <input type="text" id="skos:note.0.foaf:name" class="username label-input" placeholder="username" readonly="readonly" />
+                    </div>
+                    <textarea style="width:100%" rows="4" placeholder="description" id="skos:note.0.dc:description" class="vnote"></textarea>                
+                </td>
+                <td style="vertical-align:middle;" class="delete-item"><a href="#">delete</a></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td><input type="button" class="button add-another-item add-note" value="Add note" /></td>
+            </tr>
+        </tfoot>
+    </table>
+	#endfieldset
+	
+	
+
+<script type="text/javascript">
+
+	function pad(s,len,c){
+	    c = c || "0";
+	    var ps = s.toString();
+	    while(ps.length<len){ ps = c + ps; }
+	    return ps;
+	}
+	function getDate(){
+	    var d = new Date();
+	    var s = d.getFullYear()+"-"+pad(d.getMonth()+1,2)+"-"+pad(d.getDate(),2);
+	    return s;
+	}
+	function getDateTime(){
+	    var d = new Date();
+	    var s = getDate()+" "+pad(d.getHours(),2)+":"+pad(d.getMinutes(),2)+":"+pad(d.getSeconds(),2);
+	    return s;
+	}
+
+    function updateNotesMeta() {
+    	var notesElements = $("tr.notes");
+    	for(var i = 0; i < notesElements.size(); i++) {
+    		var tr = $(notesElements[i]);
+    		var description = $($(tr).find('.vnote')[0]);
+    		var user = $($(tr).find('.username')[0]);
+    		var created = $($(tr).find('.datetime')[0]);
+    		if (description.val() == '') {
+    			user.val('');
+    			created.val('');
+    		} else {
+    			//let's hope we never meet Johnny "drop tables;
+    			user.val("$page.authentication.get_username()");
+    			created.val(getDateTime());
+    		}
+    	}
+    }
+
+</script>
+
+## NOTES FIELD ENDS
+	#fieldset("ContactDetails" "Contact Details" false true)
+        <p>
+            <label for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name">Contact Name <span class="required">*</span></label>
+            <label class="validation" for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name" data-validation-rule="test(notEmpty);when(submit);">A contact name is required!</label>
+            <input id="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name" type="text" size="40" />
+        </p>
+        <p>
+            <label for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone">Phone Number <span class="required">*</span></label>
+            <label class="validation" for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone" data-validation-rule="test(notEmpty);when(submit);">A phone number is required!</label>
+            <input id="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone" type="text" size="40" />
+        </p>
+        <p>
+            <label for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox">Email Address <span class="required">*</span></label>
+            <label class="validation" for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox" data-validation-rule="test(email);when(submit);">A valid email address is required!</label>
+            <input id="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox" type="text" size="40" />
+        </p>
+		<button class="button form-fields-submit" id="saveButton2">Save</button>
+        <button class="button form-fields-submit" id="submitButton">Submit</button>
+        <button class="button form-fields-cancel" id="cancelButton">Cancel</button>
+        <span class="hidden" id="loading">
+            Please wait while submitting <img src="$portalPath/images/icons/loading.gif" />
+        </span>
+	#endfieldset
+</div>
+<div class="clear"></div>
+
+<script type="text/javascript" src="$portalPath/javascript-widgets/widgets2.js"></script>
+<script type="text/javascript" src="$portalPath/js/autocomplete/jquery.autocomplete.pack.js"></script>
+<script type="text/javascript" src="$portalPath/js/jquery.scrollto.min.js"></script>
+<script type="text/javascript" src="$portalPath/javascript-widgets/nameLookup.js"></script>
+
+<script type="text/javascript" src="$portalPath/openlayers/redbox.js"></script>
+<script type="text/javascript" src="$portalPath/openlayers/OpenLayers.js"></script>
+<script type="text/javascript" src="$portalPath/js/autocomplete/lib/jquery.ajaxQueue.js"></script>
+<script type="text/javascript" src="$portalPath/js/autocomplete/lib/jquery.bgiframe.min.js"></script>
+<script type="text/javascript" src="$portalPath/js/jquery.jqEasyCharCounter.min.js"></script>
+
+
+	
+	
+<div class="clear"></div>
+<script type="text/javascript">
+
+(function($){
+    $(function(){
+        widgets.contentLoaded();
+        $("#cancelButton").click(function(){
+            window.location.href = "$portalPath/home";
+        });
+
+		var saveButton2Pressed = false;
+		$("#saveButton2").click(function(){
+            saveButton2Pressed = true;
+			srSubmitSave();
+		})
+		
+        var hello = function() {
+        	alert('hello');
+        };
+       	
+		var submit = $(".form-fields-submit");
+       	// if there are visible error messages after the initial validation
+       	// scroll to the fieldset containg first one (or just above the first one if it's
+       	// not in a fieldset for some reason), and bounce the error message
+       	var focusFirstError = function() {
+			if (saveButton2Pressed == false) {			
+           		var firstError = $('.validation:visible, .validation-err-msg:visible').first();
+           		if (firstError.size() > 0) {
+    	       		var fieldset = firstError.parents('fieldset');
+    	       		if (fieldset.size() > 0) {
+    	       			fieldset.ScrollTo();
+    	       		} else {
+    	       			firstError.ScrollTo();
+    	       			window.scrollBy(0,-25);
+    	       		}
+    	       		firstError.effect("bounce", { times:2 }, 300);
+           		}
+			};
+       	};
+       	
+        $(".form-fields-submit").click(focusFirstError);
+        
+    });
+})(jQuery);
+
+function truncate(text, length, ellipsis) {
+    length=length||25;
+    if(text.length<length){ return text; }
+    for(var i=length-1;text.charAt(i)!=" ";i--){ length--; }
+    return text.substr(0,length)+(ellipsis||"...");
+}
+
+function cleanRdfToJs(input) {
+    var output = input.replace(/\./g, "\\.");
+    return output.replace(/\:/g, "\\:");
+}
+
+function getReDBoxById(redboxId) {
+    var cleanId = cleanRdfToJs(redboxId);
+    return $("#" + cleanId);
+}
+
+function getReDBoxByClass(redboxClass) {
+    var cleanClass = cleanRdfToJs(redboxClass);
+    return $("." + cleanClass);
+}
+
+/**
+ * A little hack to allow you to put formatted HTML into a message box
+ * the current version in widgets2 only allows you to set message txt
+ */
+widgets.htmlMessageBox = function(html, callback, title) {
+	widgets.messageBox('...',callback,title);
+	widgets.messageBox.msgBox.dialog("option","close", callback);
+	widgets.messageBox.msgBox.find("span:first").html(html);
+};
+
+function srSubmitFunc(widgetForm,formData){
+    function failed(msg){
+        widgets.messageBox(
+            "Sorry, an error occurred processing your request. Please try again."+(msg?"\n"+msg:""),
+            function(){
+                $("#submitButton,#cancelButton").removeAttr("disabled");
+                $("#loading").hide();
+            },
+            "Error");
+    }
+    if(widgetForm.validator.isOkToSubmit()){
+        $("#submitButton,#cancelButton").attr("disabled", "disabled");
+        $("#loading").show();
+        var title = formData["redbox:submissionProcess.dc:title"];
+        var description = formData["redbox:submissionProcess.dc:description"];
+        var postData = jQuery.extend(formData,{
+            ajax: true,
+            func: "update-package-meta-deposit",
+            packageType: "dataset",
+            title: title,
+            description: description,
+			"dc:title": title,
+			"dc:description": description,
+			"dc:coverage.vivo:GeographicLocation.1.dc:type": "text",
+			oid: "$self.oid"
+        });
+        jQuery.ajax({
+            type: "POST",
+            url: "$portalPath/actions/workflow.ajax",
+            data: postData,
+            dataType: "json",
+            success: function(workflowData){
+                
+				if(workflowData.ok){
+					$("#submitButton,#cancelButton").removeAttr("disabled");
+					$("#loading").hide();
+					widgets.htmlMessageBox(
+						$('#success-dialog-message').html(),
+						function(){ window.location.href="$portalPath/home"; },
+						"Submitted");
+				}else{
+					failed(workflowData.error);
+				}			
+                
+            },
+            error: function(req){
+                failed(req.responseText);
+            }
+        });
+    }
+}
+
+function srSubmitSave() {
+	var formData = {};
+	
+	var myDiv = document.getElementById('main-form');
+	var inputElements = myDiv.getElementsByTagName('input');
+	
+	var metalist = new Array();
+	var arrayCount = 0;
+	for (var i=0; i < inputElements.length; i++) {
+		if (inputElements[i].id.length != 0) {			
+			formData[inputElements[i].id] = inputElements[i].value;
+			metalist[arrayCount] = inputElements[i].id;
+			arrayCount++;
+		}
+	}
+	
+	function failed(msg){
+        widgets.messageBox(
+            "Sorry, an error occurred processing your request. Please try again."+(msg?"\n"+msg:""),
+            function(){
+                $("#submitButton,#cancelButton").removeAttr("disabled");
+                $("#loading").hide();
+            },
+            "Error");
+    }
+	
+	var title = formData["redbox:submissionProcess.dc:title"];
+    var description = formData["redbox:submissionProcess.dc:description"];
+	
+    var postData = jQuery.extend(formData,{
+        ajax: true,
+        func: "update-package-meta-deposit-save",
+        packageType: "dataset",
+		oid: "$self.oid",
+		metaList: metalist,
+		
+        title: title,
+        description: description,
+		"dc:title": title,
+		"dc:description": description,
+		"dc:coverage.vivo:GeographicLocation.1.dc:type": "text",
+		oid: "$self.oid"
+    });
+    jQuery.ajax({
+        type: "POST",
+        url: "$portalPath/actions/workflow.ajax",
+        data: postData,
+        dataType: "json",
+        success: function(workflowData){
+            
+			if(workflowData.ok){
+				$("#submitButton,#cancelButton").removeAttr("disabled");
+				$("#loading").hide();
+				widgets.htmlMessageBox(
+					$('#success-dialog-message').html(),
+					function(){ window.location.href="$portalPath/home"; },
+					"Submitted");
+			}else{
+				failed(workflowData.error);
+			}			
+            
+        },
+        error: function(req){
+            failed(req.responseText);
+        }
+    });
+}
+
+
+
+
+$(function(){
+    $(".vkeyword").live("focus", function(){
+        var elem=$(this);
+        elem.unautocomplete();
+        elem.autocomplete("$portalPath/actions/keywords.ajax", { width: "32em" });
+    });
+});
+
+function lookupDone(target,data){
+    var p=target.parent();
+    target.text(" | change");
+    var displayName = p.find(".identified-as-name");
+    displayName.text(p.find("input.nl").val());
+
+    // fill in the fields
+    // National Library of Australia
+    var nlaId = data["nlaId"];
+    if (nlaId != null) {
+        displayName.append(" (<a href=\""+nlaId+"\" target=\"_blank\">NLA</a>)");
+        var baseId = p.find("input[id$=\\.foaf\\:name]").attr("id").replace(".foaf:name", "");
+        $("input[id='"+baseId+".foaf:title']").val("");
+        $("input[id='"+baseId+".foaf:givenName']").val(data["firstName"]);
+        $("input[id='"+baseId+".foaf:familyName']").val(data["surname"]);
+
+    // Mint Identity
+    } else {
+        var lookupData=data["result-metadata"].all;
+        var baseId=p.find("input[id$=\\.foaf\\:name]").attr("id").replace(".foaf:name", "");
+        $("input[id='"+baseId+".foaf:title']").val(lookupData["Honorific"]);
+        $("input[id='"+baseId+".foaf:givenName']").val(lookupData["Given_Name"]);
+        $("input[id='"+baseId+".foaf:familyName']").val(lookupData["Family_Name"]);
+        $("input[id='"+baseId+".foaf:Organization.dc:identifier']").parents("td").find("option").each(function(c,e){
+            var option=$(e);
+            if (jQuery.trim(option.val()) == lookupData["primary_group_id"]){
+                $("input[id='"+baseId+".foaf:Organization.dc:identifier']")
+                    .val(option.val()).trigger("onDataChanged");
+                $("input[id='"+baseId+".foaf:Organization.skos:prefLabel']")
+                    .val(option.text()).trigger("onDataChanged");
+                return;
+            }
+        });
+    }
+}
+
+function lookupCleared(target,data){
+    var p = target.parent();
+    target.text("lookup");
+    p.find(".identified-as-name").text("");
+    p.find("input.nl").val("");
+}
+
+function pcLookupDone(target,data){
+    lookupDone(target,data);
+    var metadata = data["result-metadata"];
+    if (metadata != null) {
+        $("#locrel\\:prc\\.foaf\\:Person\\.foaf\\:email").val(metadata.all["Email"]);
+    }
+}
+
+function pcLookupCleared(target,data){
+    lookupCleared(target,data);
+    $("#locrel\\:prc\\.foaf\\:Person\\.foaf\\:email").val("");
+}	
+
+$(function() {
+    function splitGrantData(row) {
+        var items = row[0].split("::");
+        var id = items[0];
+        var uri = items[3];
+        var label = items[1];
+        var source = items[2];
+        return {
+            id: id,
+            uri: uri,
+            label: label,
+            source: source,
+            display: "[" + id + "] (" + source + ") " + label
+        };
+    }
+
+    function addAutocompleteGrant(elem) {
+        elem.autocomplete(
+            "$portalPath/proxyGet?ns=Activities&autocomplete=true&fields=grant_number,dc:title,repository_name,dc:identifier",
+            {
+                extraParams: {
+                    qs: function() { return "count=25&searchTerms=" + escape(elem.val().toLowerCase()); }
+                },
+                formatItem: function(row) { return splitGrantData(row).display; },
+                formatResult: function(row) { return splitGrantData(row).id; },
+                mustMatch: true,
+                width: "40em"
+            }).result(function(event, row) {
+                var uri = $(this).next();
+                var label = $(this).parent().next().find(".autocomplete-grant-label")
+                if (row) {
+                    var data = splitGrantData(row);
+                    label.val("(" + data.source + ") " + data.label);
+                    uri.val(data.uri);
+                }
+            });
+    }
+	
+	#set($defaultIternal = "internal:id")
+	#set($iternalId = $systemConfig.getString($defaultIternal, "redbox.identity", "internalGrantString"))
+	var INTERNAL_GRANT_ID = "$iternalId";
+
+    $(".internal-grant").live("click", function() {
+        var checked = $(this).is(":checked");
+        var baseId = $(this).attr("id").replace(".redbox:internalGrant", "");
+        var idElem = $("input[id=" + baseId + ".redbox:grantNumber]");
+        var labelElem = $("input[id=" + baseId + ".skos:prefLabel]");
+        var uriElem = $("input[id=" + baseId + ".dc:identifier]");
+        var uri = uriElem.val();
+        if (uri == INTERNAL_GRANT_ID) {
+            if (labelElem.val() == "" ||
+                    confirm("The selected grant will be cleared.\nAre you sure you want to change it to an external grant?")) {
+                idElem.val("");
+                addAutocompleteGrant(idElem);
+                labelElem
+                    .addClass("label")
+                    .attr("readonly", "readonly")
+                    .val("");
+                uriElem.val("");
+                return true;
+            }
+        } else {
+            if (uri == "" ||
+                    confirm("The selected grant will be cleared.\nAre you sure you want to change it to an internal grant?")) {
+                idElem.unautocomplete().val("");
+                labelElem
+                    .removeClass("label")
+                    .removeAttr("readonly")
+                    .val("");
+                uriElem.val(INTERNAL_GRANT_ID);
+                return true;
+            }
+        }
+        return false;
+    });
+
+
+    $(".autocomplete-grant").live("focus", function() {
+        var baseId = $(this).attr("id").replace(".redbox:grantNumber", "");
+        if (!$("input[id=" + baseId + ".redbox:internalGrant]").is(":checked")) {
+            $(this).unautocomplete();
+            addAutocompleteGrant($(this));
+        }
+    });
+
+    function splitFundingData(row) {
+        var items = row[0].split("::");
+        return {
+            uri: items[0],
+            label: items[1]
+        };
+    }
+
+    $(".autocomplete-funding").live("focus", function() {
+        var elem = $(this);
+        $(this).unautocomplete();
+        $(this).autocomplete(
+            "$portalPath/proxyGet?ns=Funding_Bodies&autocomplete=true&fields=dc:identifier,dc:title",
+            {
+                extraParams: {
+                    qs: function() { return "count=25&searchTerms=" + escape(elem.val().toLowerCase()); }
+                },
+                formatItem: function(row) { return splitFundingData(row).label; },
+                formatResult: function(row) { return splitFundingData(row).label; },
+                width: "40em"
+            }).result(function(event, row) {
+                var trElem = $(this).parent().parent();
+                var uriElem = trElem.find(".funding-body-id");
+                var labelElem = trElem.find(".funding-body-id-label");
+                if (row) {
+                    var uri = splitFundingData(row).uri;
+                    uriElem.val(uri);
+                    labelElem.html("ID: '"+uri+"'");
+                } else {
+                    uriElem.val("urn:uon:internal");
+                    labelElem.html("ID: 'urn:uon:internal'");
+                }
+                labelElem.show();
+                var clearElem = trElem.find(".clear-funding-body-id");
+                clearElem.show();
+            })
+        }).live("blur", function() {
+            $(this).search();
+        });
+    $(".funding-body-id").live("onDataChanged", function() {
+            var elem = $(this);
+            var value = elem.val();
+            if (value != null && value != "") {
+                var trElem = $(this).parent().parent();
+                var linkElem = trElem.find(".clear-funding-body-id");
+                var labelElem = trElem.find(".funding-body-id-label");
+                linkElem.show();
+                labelElem.html("ID: '"+value+"'");
+                labelElem.show();
+            }
+        });
+    $(".clear-funding-body-id").live("click", function() {
+        var elem = $(this);
+        elem.hide();
+        var trElem = $(this).parent().parent();
+        var uriElem = trElem.find(".funding-body-id");
+        uriElem.val("");
+        var nameElem = trElem.find(".autocomplete-funding");
+        nameElem.val("");
+        var labelElem = trElem.find(".funding-body-id-label");
+        labelElem.html("");
+        labelElem.hide();
+        return false;
+    });
+
+    function styleIdentifier(isChecked, idInput, originInput) {
+        if (isChecked) {
+            idInput.attr("readonly", "readonly");
+            idInput.addClass("strike");
+            originInput.val("internal");
+        } else {
+            idInput.removeAttr("readonly");
+            idInput.removeClass("strike");
+            originInput.val("external");
+        }
+    }
+
+    $("input[id=dc:identifier.checkbox]").change(function() {
+        styleIdentifier(
+            $(this).is(":checked"),
+            $("input[id=dc:identifier.rdf:PlainLiteral]"),
+            $("input[id=dc:identifier.redbox:origin]"));
+    });
+
+    $("input[id=dc:identifier.redbox:origin]").live("onDataChanged", function() {
+        var value = $(this).val();
+        var checked = true;
+        if (value == "internal" || value == "") {
+            $("input[id=dc:identifier.checkbox]").attr('checked','checked');
+        } else {
+            $("input[id=dc:identifier.checkbox]").removeAttr('checked');
+            checked = false;
+        }
+        styleIdentifier(checked, $("input[id=dc:identifier.rdf:PlainLiteral]"), $(this));
+    });
+});
+</script>
+<script type="text/javascript" src="$portalPath/openlayers/dcCoverageEditor.js"></script>
+<script>
+// geo location stuff
+(function($){
+    // OpenLayers stylesheets
+    $('head').append('<link rel="stylesheet" type="text/css" id="openLayersCss1">');
+    $('#openLayersCss1').attr('href', '$portalPath/openlayers/theme/default/style.css');
+    $('head').append('<link rel="stylesheet" type="text/css" id="openLayersCss2">');
+    $('#openLayersCss2').attr('href', '$portalPath/openlayers/redbox.css');
+
+	//window["openLayersMap"] = loadOpenLayers();
+	// for whatever reason delaying the loading of open maps makes it work
+	// seems to be a LOT going on when the page first loads, there's probably some kind of race condition
+	// that's avoided by this delay
+	window.setTimeout(function() { window["openLayersMap"] = loadOpenLayers(); }, 500);
+
+   })(jQuery);
+</script>

@@ -35,6 +35,7 @@ class HomeData:
         self.__alerts = None
         self.__result = None
         self.__stages = None
+        self.__mySavedRecords = None
         self.__search()
 
     # Get from velocity context
@@ -99,10 +100,21 @@ class HomeData:
         indexer.search(req, out)
         self.__result = SolrResult(ByteArrayInputStream(out.toByteArray()))
 
-        req.addParam("fq", "workflow_step:%s" % stages[0].getName())
+        req.addParam("fq", "workflow_step:%s" % stages[1].getName())
         out = ByteArrayOutputStream()
         indexer.search(req, out)
         self.__alerts = SolrResult(ByteArrayInputStream(out.toByteArray()))
+
+        # Search for the user's saved requests (unsubmitted records)
+        req = SearchRequest("*:*")
+        req.setParam("fq", 'item_type:"object"')
+        req.addParam("fq", "workflow_step:%s" % stages[0].getName())
+        req.addParam("fq", owner_query)
+        req.setParam("rows", "25")
+        req.setParam("sort", "last_modified desc, f_dc_title asc");
+        out = ByteArrayOutputStream()
+        indexer.search(req, out)
+        self.__mySavedRecords = SolrResult(ByteArrayInputStream(out.toByteArray()))
 
         req = SearchRequest("last_modified:[NOW-1MONTH TO *] AND workflow_step:live")
         req.setParam("fq", 'item_type:"object"')
@@ -125,6 +137,9 @@ class HomeData:
 
     def getAlerts(self):
         return self.__alerts.getResults()
+
+    def getMySavedRecords(self):
+        return self.__mySavedRecords.getResults()
 
     def getItemCount(self):
         return self.__result.getNumFound()

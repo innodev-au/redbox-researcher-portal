@@ -1,0 +1,29 @@
+#set($menuTitle = "Saved Records")
+#parseTemplate("wrapping/info-box-open.vm")
+<div class="block">
+    #if($self.mySavedRecords.isEmpty())
+		<p>No saved records.</p>
+    #else
+        <p>Saved records for editing and submission:</p>
+        <table>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Creation Date</th>
+            </tr>
+            </thead>
+            #foreach($savedRec in $self.mySavedRecords)
+                #set($oid = $savedRec.get("id"))
+                #set($title = $savedRec.getFirst("dc_title"))
+                #set($cdate = $savedRec.getFirst("redbox:submissionProcess.dc:date"))
+                <tr>
+                    <td>$velocityCount</td>
+                    <td width="50%"><a class="titleText" href="$portalPath/workflow/$oid">$page.escapeHtml($title)</a></td>
+                    <td>$!cdate</td>
+                </tr>
+            #end
+        </table>
+    #end
+</div>
+#parseTemplate("wrapping/info-box-close.vm")

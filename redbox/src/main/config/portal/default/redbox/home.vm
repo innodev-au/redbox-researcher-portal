@@ -32,13 +32,20 @@
 <!-- IE7 needs a blank div here, class="prefix_4" doesn't work -->
 <div class="grid_4">&nbsp;</div>
 
-#if($page.authentication.is_logged_in() and (not $page.authentication.has_role("researcher")))
-    <div class="grid_6">
-        #parseTemplate("home/stages.vm")
-        ##parseTemplate("menus/home-new-items.vm")
-    </div>
-    <div class="grid_6">
-        #parseTemplate("home/alerts.vm")
-    </div>
-    <div class="clear"></div>
+#if($page.authentication.is_logged_in())
+	#if($page.authentication.has_role("researcher"))
+        <div class="grid_6">
+            #parseTemplate("home/myunsubmitted.vm")
+        </div>
+	#else
+        <div class="grid_6">
+            #parseTemplate("home/stages.vm")
+            ##parseTemplate("menus/home-new-items.vm")
+        </div>
+        <div class="grid_6">
+            #parseTemplate("home/alerts.vm")
+        </div>
+	#end
+
+	<div class="clear"></div>
 #end

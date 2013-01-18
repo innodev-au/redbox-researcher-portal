@@ -934,6 +934,7 @@ function srSubmitFunc(widgetForm,formData){
         $("#loading").show();
         var title = formData["redbox:submissionProcess.dc:title"];
         var description = formData["redbox:submissionProcess.dc:description"];
+		
         var postData = jQuery.extend(formData,{
             ajax: true,
             func: "update-package-meta-deposit",
@@ -971,19 +972,58 @@ function srSubmitFunc(widgetForm,formData){
     }
 }
 
+function contains(array, value) {
+	var contains = false;;
+	for (var i = 0; i < array.length; i++) {
+		if (array[i] == value) {
+			contains = true
+			break;
+		}
+	}
+	return contains;
+}
+
 function srSubmitSave() {
+
 	var formData = {};
 	
 	var myDiv = document.getElementById('main-form');
-	var inputElements = myDiv.getElementsByTagName('input');
+	var formFields = myDiv.getAttribute("data-form-fields");
+	var formFieldsArray = formFields.split(',');
+	
+	
+	var allElements = myDiv.getElementsByTagName('*');
+	
+	for (var i=0; i < allElements.length; i++) {
+		if (allElements[i] != null && allElements[i].id != null && allElements[i].id != "" &&  
+				allElements[i].value != null && allElements[i].value != "") {
+				
+			var formFieldElement = allElements[i];	
+			formData[formFieldElement.id] = formFieldElement.value;
+		}
+	}
 	
 	var metalist = new Array();
-	var arrayCount = 0;
-	for (var i=0; i < inputElements.length; i++) {
-		if (inputElements[i].id.length != 0) {			
-			formData[inputElements[i].id] = inputElements[i].value;
-			metalist[arrayCount] = inputElements[i].id;
-			arrayCount++;
+	var metaListCount = 0;
+	
+	for (var i=0; i < formFieldsArray.length; i++) {
+		var formFieldId = formFieldsArray[i];
+		
+		if (!contains(formFieldId, metalist)) {
+			metalist[metaListCount] = formFieldId;
+			metaListCount = metaListCount + 1;
+		}
+		
+		var formFieldElement = document.getElementById(formFieldId);
+		
+		if (formFieldElement != null) {
+		
+			var formFieldElementValue = formFieldElement.value;
+			if (formFieldElementValue == null) {
+				formFieldElementValue = "";
+			}
+		
+			formData[formFieldElement.id] = formFieldElement.value;
 		}
 	}
 	

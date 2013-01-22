@@ -11,13 +11,16 @@ class SelfsubmissionData:
     def __activate__(self, context):
         self.__services = context["Services"]
         self.__formData = context["formData"]
+        self.log = context["log"]
         self.__auth = context["page"].authentication
         self.__oid = self.__formData.get("oid")
         self.__object = self.__getObject()
         self.__errorMessage = None
         self.packagePid = None
+        self.__tfpackage = None
+        self.metadata = self.getJsonMetadata()
         pidList = self.__object.getPayloadIdList()
-
+        
         for pid in pidList:
             if pid.endswith(".tfpackage"):
                 self.packagePid = pid
@@ -40,6 +43,66 @@ class SelfsubmissionData:
             writer.close()
         if self.__errorMessage:
             print "Error: %s" % self.__errorMessage
+            
+            
+        ### Supports form rendering, not involved in AJAX
+    def getJsonMetadata(self):
+        package = self._getTFPackage()
+        ## Look for a title
+        title = package.getString("", ["dc:title"])
+        title = package.getString(title, ["title"])
+        ## And a description
+        description = package.getString("", ["dc:abstract"])
+        description = package.getString(description, ["description"])
+        ## Make sure we have the fields we need
+        json = package.getJsonObject()
+        json.put("dc:title", title)
+        json.put("dc:abstract", description)
+        ## fix newlines
+        ignoreFields = ["metaList", "relationships", "responses"]
+        for key in json:
+            if key not in ignoreFields:
+                value = json.get(key)
+                if value and value.find("\n"):
+                    value = value.replace("\n", "\\n")
+                    json.put(key, value)
+                    ##self.log.info("****** %s=%s" % (key,value))
+        jsonStr = package.toString(True)
+        return jsonStr
+
+    def _getTFPackage(self):
+        if self.__tfpackage is None:
+            payload = None
+            inStream = None
+
+            # We don't need to worry about close() calls here
+            try:
+                object = self.__getObject()
+                sourceId = object.getSourceId()
+                
+                payload = None
+                if sourceId is None or not sourceId.endswith(".tfpackage"):
+                    # The package is not the source... look for it
+                    for pid in object.getPayloadIdList():
+                        if pid.endswith(".tfpackage"):
+                            payload = object.getPayload(pid)
+                            payload.setType(PayloadType.Source)
+                else:
+                    payload = object.getPayload(sourceId)
+                inStream = payload.open()
+            
+            except Exception, e:
+                self.log.error("Error during package access", e)
+                return None
+
+            # The input stream has now been opened, it MUST be closed
+            try:
+                self.__tfpackage = JsonSimple(inStream)
+            except Exception, e:
+                self.log.error("Error parsing package contents", e)
+            payload.close()
+            
+        return self.__tfpackage
 
     def getFormData(self, field):
         return StringEscapeUtils.escapeHtml(self.__formData.get(field, ""))

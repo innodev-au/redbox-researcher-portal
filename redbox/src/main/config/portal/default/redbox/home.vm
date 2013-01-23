@@ -37,6 +37,8 @@
         <div class="grid_6">
             #parseTemplate("home/myunsubmitted.vm")
         </div>
+	#elseif($page.authentication.has_role("guest"))
+		## nothing displayed here for guest users
 	#else
         <div class="grid_6">
             #parseTemplate("home/stages.vm")

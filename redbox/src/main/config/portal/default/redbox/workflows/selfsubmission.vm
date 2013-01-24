@@ -228,6 +228,14 @@ legend{
     left: .5em;
 }
 
+.form-fields-save-close, .form-fields-save {
+	vertical-align: inherit;
+}
+
+textarea {
+	font-family: inherit;
+}
+
 </style>
 <h2 id="page-heading"><span>$pageTitle</span></h2>
 
@@ -258,7 +266,7 @@ legend{
 
 	#fieldset("Summary" "Summary" false false "subsection-table")
         <p>
-            <label for="redbox:submissionProcess.dc:date">Date Submitted</label>
+            <label for="redbox:submissionProcess.dc:date">Date Record Created</label>
             <input id="redbox:submissionProcess.dc:date" type="text" size="40" value="$!self.getSubmitDate()" readonly="readonly" />
         </p>
 		
@@ -840,7 +848,7 @@ legend{
 <script type="text/javascript" src="$portalPath/js/jquery.jqEasyCharCounter.min.js"></script>
 
 
-	
+<script type="text/javascript" src="$portalPath/openlayers/dcCoverageEditor.js"></script>
 	
 <div class="clear"></div>
 <script type="text/javascript">
@@ -912,12 +920,6 @@ $(document).ready(function() {
                 });
                 #end
 
-                // Form data is ready, load features on the map
-                try {
-                	window["openLayersMap"].loadData();
-				} catch (err) {
-				
-				}
             }catch(e){
                 alert(e);
             }
@@ -957,16 +959,10 @@ $(document).ready(function() {
 	}
 
    // widgets.contentLoaded();
-	
+	onContentLoaded();
     $("#cancelButton").click(function(){
         window.location.href = "$portalPath/home";
     });
-
-	var saveButton2Pressed = false;
-	$("#saveButton2").click(function(){
-        saveButton2Pressed = true;
-		//srSubmitSave();
-	})
 	
     var hello = function() {
     	alert('hello');
@@ -976,25 +972,23 @@ $(document).ready(function() {
    	// if there are visible error messages after the initial validation
    	// scroll to the fieldset containg first one (or just above the first one if it's
    	// not in a fieldset for some reason), and bounce the error message
-   	var focusFirstError = function() {
-		if (saveButton2Pressed == false) {			
-       		var firstError = $('.validation:visible, .validation-err-msg:visible').first();
-       		if (firstError.size() > 0) {
-	       		var fieldset = firstError.parents('fieldset');
-	       		if (fieldset.size() > 0) {
-	       			fieldset.ScrollTo();
-	       		} else {
-	       			firstError.ScrollTo();
-	       			window.scrollBy(0,-25);
-	       		}
-	       		firstError.effect("bounce", { times:2 }, 300);
-       		}
-		};
+   	var focusFirstError = function() {		
+       	var firstError = $('.validation:visible, .validation-err-msg:visible').first();
+       	if (firstError.size() > 0) {
+	       	var fieldset = firstError.parents('fieldset');
+	       	if (fieldset.size() > 0) {
+	       		fieldset.ScrollTo();
+	       	} else {
+	       		firstError.ScrollTo();
+	       		window.scrollBy(0,-25);
+	   		}
+	   		firstError.effect("bounce", { times:2 }, 300);
+       	}
    	};
    	
     $(".form-fields-submit").click(focusFirstError);
 
-	onContentLoaded();
+	
 });
 
 
@@ -1094,50 +1088,8 @@ function contains(array, value) {
 	return contains;
 }
 
-function srSubmitSave() {
+function srSubmitSave(widgetForm,formData) {
 
-	var formData = {};
-	
-	var myDiv = document.getElementById('main-form');
-	var formFields = myDiv.getAttribute("data-form-fields");
-	var formFieldsArray = formFields.split(',');
-	
-	
-	var allElements = myDiv.getElementsByTagName('*');
-	
-	for (var i=0; i < allElements.length; i++) {
-		if (allElements[i] != null && allElements[i].id != null && allElements[i].id != "" &&  
-				allElements[i].value != null && allElements[i].value != "") {
-				
-			var formFieldElement = allElements[i];	
-			formData[formFieldElement.id] = formFieldElement.value;
-		}
-	}
-	
-	var metalist = new Array();
-	var metaListCount = 0;
-	
-	for (var i=0; i < formFieldsArray.length; i++) {
-		var formFieldId = formFieldsArray[i];
-		
-		if (!contains(formFieldId, metalist)) {
-			metalist[metaListCount] = formFieldId;
-			metaListCount = metaListCount + 1;
-		}
-		
-		var formFieldElement = document.getElementById(formFieldId);
-		
-		if (formFieldElement != null) {
-		
-			var formFieldElementValue = formFieldElement.value;
-			if (formFieldElementValue == null) {
-				formFieldElementValue = "";
-			}
-		
-			formData[formFieldElement.id] = formFieldElement.value;
-		}
-	}
-	
 	function failed(msg){
         widgets.messageBox(
             "Sorry, an error occurred processing your request. Please try again."+(msg?"\n"+msg:""),
@@ -1148,46 +1100,50 @@ function srSubmitSave() {
             "Error");
     }
 	
-	var title = formData["redbox:submissionProcess.dc:title"];
-    var description = formData["redbox:submissionProcess.dc:description"];
 	
-    var postData = jQuery.extend(formData,{
-        ajax: true,
-        func: "update-package-meta-deposit-save",
-        packageType: "dataset",
-		oid: "$self.oid",
-		metaList: metalist,
-		
-        title: title,
-        description: description,
-		"dc:title": title,
-		"dc:description": description,
-		"dc:coverage.vivo:GeographicLocation.1.dc:type": "text",
-		oid: "$self.oid"
-    });
-    jQuery.ajax({
-        type: "POST",
-        url: "$portalPath/actions/workflow.ajax",
-        data: postData,
-        dataType: "json",
-        success: function(workflowData){
-            
-			if(workflowData.ok){
-				$("#submitButton,#cancelButton").removeAttr("disabled");
-				$("#loading").hide();
-				widgets.htmlMessageBox(
-					$('#success-dialog-message').html(),
-					function(){ window.location.href="$portalPath/home"; },
-					"Submitted");
-			}else{
-				failed(workflowData.error);
-			}			
-            
-        },
-        error: function(req){
-            failed(req.responseText);
-        }
-    });
+	if(widgetForm.validator.isOkToSave()){
+	
+    	var title = formData["redbox:submissionProcess.dc:title"];
+        var description = formData["redbox:submissionProcess.dc:description"];
+    	
+        var postData = jQuery.extend(formData,{
+            ajax: true,
+            func: "update-package-meta-deposit-save",
+            packageType: "dataset",
+    		//oid: "$self.oid",
+    		//metaList: metalist,
+    		
+            title: title,
+            description: description,
+    		"dc:title": title,
+    		"dc:description": description,
+    		"dc:coverage.vivo:GeographicLocation.1.dc:type": "text",
+    		oid: "$self.oid"
+        });
+        jQuery.ajax({
+            type: "POST",
+            url: "$portalPath/actions/workflow.ajax",
+            data: postData,
+            dataType: "json",
+            success: function(workflowData){
+                
+    			if(workflowData.ok){
+    				$("#submitButton,#cancelButton").removeAttr("disabled");
+    				$("#loading").hide();
+    				widgets.htmlMessageBox(
+    					$('#success-dialog-message').html(),
+    					function(){ window.location.href="$portalPath/home"; },
+    					"Submitted");
+    			}else{
+    				failed(workflowData.error);
+    			}			
+                
+            },
+            error: function(req){
+                failed(req.responseText);
+            }
+        });
+	}
 }
 
 
@@ -1256,6 +1212,12 @@ function pcLookupCleared(target,data){
     lookupCleared(target,data);
     $("#locrel\\:prc\\.foaf\\:Person\\.foaf\\:email").val("");
 }	
+
+function getDate(){
+    var d = new Date();
+    var s = d.getFullYear()+"-"+pad(d.getMonth()+1,2)+"-"+pad(d.getDate(),2);
+    return s;
+}
 
 $(function() {
     function splitGrantData(row) {
@@ -1453,7 +1415,10 @@ $(function() {
 	// for whatever reason delaying the loading of open maps makes it work
 	// seems to be a LOT going on when the page first loads, there's probably some kind of race condition
 	// that's avoided by this delay
-	window.setTimeout(function() { window["openLayersMap"] = loadOpenLayers();},500);
+	window.setTimeout(function() {
+		window["openLayersMap"] = loadOpenLayers();
+		window["openLayersMap"].loadData();
+		},500);
 
    })(jQuery);
 </script>

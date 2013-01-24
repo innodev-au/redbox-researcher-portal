@@ -4,6 +4,7 @@ from com.googlecode.fascinator.api.storage import StorageException
 from java.io import ByteArrayInputStream
 from org.apache.commons.lang import StringEscapeUtils
 
+
 def truncate(s, maxLength):
     return s[:maxLength] + (s[maxLength:] and "...")
 
@@ -18,7 +19,6 @@ class SelfsubmissionData:
         self.__errorMessage = None
         self.packagePid = None
         self.__tfpackage = None
-        self.metadata = self.getJsonMetadata()
         pidList = self.__object.getPayloadIdList()
         
         for pid in pidList:
@@ -121,6 +121,9 @@ class SelfsubmissionData:
 
     def getErrorMessage(self):
         return self.__errorMessage
+    
+    def getSubmitDate(self):
+        return time.strftime("%Y-%m-%d %I:%M:%S %p")
 
     def __getJsonData(self, pid):
         data = None

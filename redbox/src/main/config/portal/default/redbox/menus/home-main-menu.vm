@@ -11,14 +11,14 @@
         #end
         #if($page.authentication.is_logged_in())
 			<li>
-				#if($page.authentication.has_role("researcher"))
-					<a id="researcher-submission" href="#">Describe my data</a>
-                #else
+				#if($page.authentication.has_role("librarian") || $page.authentication.has_role("reviewer") || $page.authentication.has_role("admin"))
 					<!-- Link to provide the full set of data for a new Collection record -->
 					<a id="new-record" href="#">Add a new dataset</a>
 
 					<!-- Link to provide the set of data that a Researcher would submit -->
 					<a id="notify-record" href="$portalPath/workflows/submission">Describe my data (researcher form)</a>
+				#elseif($page.authentication.has_role("researcher"))
+					<a id="researcher-submission" href="#">Describe my data</a>
 				#end
 			</li>
         #end

@@ -159,7 +159,7 @@
 			</plugin>
 
 
-            <!-- 1st - Unpack Generic Mint setup -->
+            <!-- 1st - Unpack Generic ReDBox setup -->
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.1</version>

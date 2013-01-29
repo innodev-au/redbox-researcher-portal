@@ -33,7 +33,7 @@
 <div class="grid_4">&nbsp;</div>
 
 #if($page.authentication.is_logged_in())
-	#if($page.authentication.has_role("librarian") || $page.authentication.has_role("reviewer") || $page.authentication.has_role("admin"))
+	#if($page.authentication.has_role("librarian") || $page.authentication.has_role("reviewer") || $page.authentication.is_admin())
 		## only display workflow stage and record counts for privileged users (above researcher)
         <div class="grid_6">
             #parseTemplate("home/stages.vm")

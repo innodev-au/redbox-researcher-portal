@@ -198,6 +198,7 @@ class IndexData:
             pageTitle = "Metadata Record"
             displayType = "package-dataset"
             if isReseracherSubmission == True :
+                pageTitle = "Notify us about a dataset"
                 initialStep = 0
             else :
                 initialStep = 2

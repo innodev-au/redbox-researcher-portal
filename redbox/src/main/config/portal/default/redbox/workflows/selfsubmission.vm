@@ -157,7 +157,6 @@
     </table>
 #end
 
-#set($pageTitle = "Notify us about a dataset")
 <style type="text/css">
 fieldset p textarea { display:block; width: 98%; }
 fieldset {
@@ -237,7 +236,6 @@ textarea {
 }
 
 </style>
-<h2 id="page-heading"><span>$pageTitle</span></h2>
 
 <div class="grid_16 widget-form inputscreen nameLookup-section" id="main-form"
     data-form-fields="dc:subject.anzsrc:for.0.rdf:resource,dc:subject.anzsrc:for.0.skos:prefLabel,grants,foaf:fundedBy.vivo:Grant.0.redbox:internalGrant,foaf:fundedBy.vivo:Grant.0.redbox:grantNumber,foaf:fundedBy.vivo:Grant.0.dc:identifier,foaf:fundedBy.vivo:Grant.0.skos:prefLabel,dc:relation.swrc:Publication,dc:relation.bibo:Website,dc:relation.swrc:Publication.0.dc:identifier,dc:relation.swrc:Publication.0.dc:title,dc:relation.swrc:Publication.0.skos:note,dc:relation.bibo:Website.0.dc:identifier,dc:relation.bibo:Website.0.dc:title,dc:relation.bibo:Website.0.skos:note,dc:creator,dc:creator.foaf:Person.0.redbox:isCoPrimaryInvestigator,dc:creator.foaf:Person.0.redbox:isPrimaryInvestigator,dc:creator.foaf:Person.0.foaf:title,dc:creator.foaf:Person.0.foaf:givenName,dc:creator.foaf:Person.0.foaf:familyName,dc:accessRights.dc:identifier,dc:accessRights.skos:prefLabel,dc:accessRights.dc:RightsStatement.skos:prefLabel,vivo:Location.vivo:GeographicLocation.gn:name,bibo:Website.1.dc:identifier,dc:subject.anzsrc:for,dc:subject.vivo:keyword.0.rdf:PlainLiteral,title,description,location,dc:title,dc:extent,dc:description,redbox:submissionProcess.dc:title,dc:SizeOrDuration,dc:coverage.vivo:DateTimeInterval,dc:coverage.redbox:timePeriod,dc:coverage.vivo:GeographicLocation.0.rdf:PlainLiteral,dc:coverage.vivo:DateTimeInterval,dc:coverage.vivo:GeographicLocation.0.dc:type,dc:coverage.vivo:GeographicLocation.0.redbox:wktRaw,dc:coverage.vivo:DateTimeInterval.vivo:start,dc:coverage.vivo:DateTimeInterval.vivo:end,dc:subject.anzsrc:for,redbox:formVersion,redbox:newForm,redbox:submissionProcess.redbox:submitted,workflow_source,redbox:submissionProcess.dc:date,redbox:submissionProcess.dc:description,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone,skos:note.0.dc:created,skos:note.0.foaf:name,skos:note.0.dc:description-timestampGroup,skos:note.0.dc:description"
@@ -262,6 +260,10 @@ textarea {
 	#parseTemplate("workflows/submission/introduction.vm")
 	<div style="display:none" id="success-dialog-message">
 		#parseTemplate("workflows/submission/success-dialog.vm")
+	</div>
+	
+	<div style="display:none" id="save-dialog-message">
+		#parseTemplate("workflows/submission/save-dialog.vm")
 	</div>
 
 	#fieldset("Summary" "Summary" false false "subsection-table")
@@ -325,7 +327,7 @@ textarea {
 	#fieldset("dc:subject.anzsrc:for" "Fields of Research" false "subsection-table")
         #mintMultiSelectFieldS("dc:subject.anzsrc:for.0.rdf:resource"
                               "dc:subject.anzsrc:for.0.skos:prefLabel"
-                              "Add FOR"
+                              "Select this FOR"
                               "$portalPath/proxyGet?ns=ANZSRC_FOR&qs=count%3D999%26level%3D"
                               "rdf:about"
                               "skos:prefLabel"
@@ -1099,8 +1101,7 @@ function srSubmitSave(widgetForm,formData) {
             },
             "Error");
     }
-	
-	
+		
 	if(widgetForm.validator.isOkToSave()){
 	
     	var title = formData["redbox:submissionProcess.dc:title"];
@@ -1131,9 +1132,9 @@ function srSubmitSave(widgetForm,formData) {
     				$("#submitButton,#cancelButton").removeAttr("disabled");
     				$("#loading").hide();
     				widgets.htmlMessageBox(
-    					$('#success-dialog-message').html(),
+    					$('#save-dialog-message').html(),
     					function(){ window.location.href="$portalPath/home"; },
-    					"Submitted");
+    					"Saved");
     			}else{
     				failed(workflowData.error);
     			}			

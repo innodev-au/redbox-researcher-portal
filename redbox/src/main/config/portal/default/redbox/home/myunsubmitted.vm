@@ -2,7 +2,7 @@
 #parseTemplate("wrapping/info-box-open.vm")
 <div class="block">
     #if($self.mySavedRecords.isEmpty())
-		<p>No saved records.</p>
+		<p>You have no saved records.</p>
     #else
         <p>Saved records for editing and submission:</p>
         <table>

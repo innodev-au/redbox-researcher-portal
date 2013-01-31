@@ -989,6 +989,7 @@ $(document).ready(function() {
    	};
    	
     $(".form-fields-submit").click(focusFirstError);
+	$(".form-fields-save").click(focusFirstError);
 
 	
 });

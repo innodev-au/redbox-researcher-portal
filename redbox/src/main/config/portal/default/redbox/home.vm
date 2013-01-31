@@ -40,6 +40,7 @@
             ##parseTemplate("menus/home-new-items.vm")
         </div>
         <div class="grid_6">
+            #parseTemplate("home/myunsubmitted.vm")
             #parseTemplate("home/alerts.vm")
         </div>
 	#elseif($page.authentication.has_role("researcher"))

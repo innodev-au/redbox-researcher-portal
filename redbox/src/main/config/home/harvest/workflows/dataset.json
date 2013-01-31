@@ -36,7 +36,7 @@
     	{
             "name": "unsubmitted",
             "label": "Unsubmitted",
-            "description": "Records that are saved and not submitted.",
+            "description": "Saved records that have not been submitted.",
             "security": ["researcher", "librarian", "reviewer", "admin"],
             "visibility": ["researcher", "librarian", "reviewer", "admin"]
         },

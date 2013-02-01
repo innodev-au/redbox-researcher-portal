@@ -45,12 +45,12 @@
           data-label-key="$labelKey"
           data-list-key="$listKey"
           #if("$!defaultValue"!="")data-default-value="$!defaultValue"#end>
-        <span class="selection-added">
+        <span class="selection-added" id="access-rights-text">
             <input type="hidden" class="selection-added-id" id="$id" name="$id" />
             <input type="text" class="selection-added-label" readonly="readonly" id="$labelId" name="$labelId" />
             <a href="#" class="clear-item">change</a>
         </span>
-        <span class="drop-down-location">
+        <span class="drop-down-location" id="access-rights-dropdown">
             <button class="selection-add add-unique-only" data-add-on-click="1">
                 Select
             </button>
@@ -990,6 +990,23 @@ $(document).ready(function() {
    	
     $(".form-fields-submit").click(focusFirstError);
 	$(".form-fields-save").click(focusFirstError);
+	
+	var accessRightsField = document.getElementById("dc:accessRights.skos:prefLabel")
+	var accessRightsDropdown = document.getElementById("access-rights-dropdown");
+	var accessRightsText = document.getElementById("access-rights-text");
+
+	if (accessRightsField != null && accessRightsDropdown != null && accessRightsText != null) {
+		if (accessRightsField.value == "") {
+        	accessRightsDropdown.setAttribute('style', "display:inline;");
+        	accessRightsText.setAttribute('style', "display:none;");
+            
+        	//Non Standards based IE browser
+			if (typeof(accessRightsDropdown.style.setAttribute) === "function") { 
+                accessRightsDropdown.style.setAttribute('cssText', "display:inline;");
+            	accessRightsText.style.setAttribute('cssText', "display:none;");
+			}
+		}
+	}
 
 	
 });

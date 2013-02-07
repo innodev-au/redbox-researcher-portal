@@ -37,8 +37,9 @@
             "name": "unsubmitted",
             "label": "Unsubmitted",
             "description": "Saved records that have not been submitted.",
-            "security": ["researcher", "librarian", "reviewer", "admin"],
-            "visibility": ["researcher", "librarian", "reviewer", "admin"]
+            "security": ["librarian", "reviewer", "admin"],
+            "visibility": ["librarian", "reviewer", "admin"],
+            "owner_edit_allowed": true
         },
         {
             "name": "inbox",

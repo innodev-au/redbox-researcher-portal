@@ -238,7 +238,7 @@ textarea {
 </style>
 
 <div class="grid_16 widget-form inputscreen nameLookup-section" id="main-form"
-    data-form-fields="dc:subject.anzsrc:for.0.rdf:resource,dc:subject.anzsrc:for.0.skos:prefLabel,grants,foaf:fundedBy.vivo:Grant.0.redbox:internalGrant,foaf:fundedBy.vivo:Grant.0.redbox:grantNumber,foaf:fundedBy.vivo:Grant.0.dc:identifier,foaf:fundedBy.vivo:Grant.0.skos:prefLabel,dc:relation.swrc:Publication,dc:relation.bibo:Website,dc:relation.swrc:Publication.0.dc:identifier,dc:relation.swrc:Publication.0.dc:title,dc:relation.swrc:Publication.0.skos:note,dc:relation.bibo:Website.0.dc:identifier,dc:relation.bibo:Website.0.dc:title,dc:relation.bibo:Website.0.skos:note,dc:creator,dc:creator.foaf:Person.0.redbox:isCoPrimaryInvestigator,dc:creator.foaf:Person.0.redbox:isPrimaryInvestigator,dc:creator.foaf:Person.0.foaf:title,dc:creator.foaf:Person.0.foaf:givenName,dc:creator.foaf:Person.0.foaf:familyName,dc:accessRights.dc:identifier,dc:accessRights.skos:prefLabel,dc:accessRights.dc:RightsStatement.skos:prefLabel,vivo:Location.vivo:GeographicLocation.gn:name,bibo:Website.1.dc:identifier,dc:subject.anzsrc:for,dc:subject.vivo:keyword.0.rdf:PlainLiteral,title,description,location,dc:title,dc:extent,dc:description,redbox:submissionProcess.dc:title,dc:SizeOrDuration,dc:coverage.vivo:DateTimeInterval,dc:coverage.redbox:timePeriod,dc:coverage.vivo:GeographicLocation.0.rdf:PlainLiteral,dc:coverage.vivo:DateTimeInterval,dc:coverage.vivo:GeographicLocation.0.dc:type,dc:coverage.vivo:GeographicLocation.0.redbox:wktRaw,dc:coverage.vivo:DateTimeInterval.vivo:start,dc:coverage.vivo:DateTimeInterval.vivo:end,dc:subject.anzsrc:for,redbox:formVersion,redbox:newForm,redbox:submissionProcess.redbox:submitted,workflow_source,redbox:submissionProcess.dc:date,redbox:submissionProcess.dc:description,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone,skos:note.0.dc:created,skos:note.0.foaf:name,skos:note.0.dc:description-timestampGroup,skos:note.0.dc:description"
+    data-form-fields="dc:subject.anzsrc:for.0.rdf:resource,dc:subject.anzsrc:for.0.skos:prefLabel,grants,foaf:fundedBy.vivo:Grant.0.redbox:internalGrant,foaf:fundedBy.vivo:Grant.0.redbox:grantNumber,foaf:fundedBy.vivo:Grant.0.dc:identifier,foaf:fundedBy.vivo:Grant.0.skos:prefLabel,dc:relation.swrc:Publication,dc:relation.bibo:Website,dc:relation.swrc:Publication.0.dc:identifier,dc:relation.swrc:Publication.0.dc:title,dc:relation.swrc:Publication.0.skos:note,dc:relation.bibo:Website.0.dc:identifier,dc:relation.bibo:Website.0.dc:title,dc:relation.bibo:Website.0.skos:note,dc:creator,dc:creator.foaf:Person.0.redbox:isCoPrimaryInvestigator,dc:creator.foaf:Person.0.redbox:isPrimaryInvestigator,dc:creator.foaf:Person.0.foaf:title,dc:creator.foaf:Person.0.foaf:givenName,dc:creator.foaf:Person.0.foaf:familyName,dc:accessRights.dc:identifier,dc:accessRights.skos:prefLabel,dc:accessRights.dc:RightsStatement.skos:prefLabel,vivo:Location.vivo:GeographicLocation.gn:name,bibo:Website.1.dc:identifier,dc:subject.anzsrc:for,dc:subject.vivo:keyword.0.rdf:PlainLiteral,location,dc:title,dc:extent,dc:description,redbox:submissionProcess.dc:title,dc:SizeOrDuration,dc:coverage.vivo:DateTimeInterval,dc:coverage.redbox:timePeriod,dc:coverage.vivo:GeographicLocation.0.rdf:PlainLiteral,dc:coverage.vivo:DateTimeInterval,dc:coverage.vivo:GeographicLocation.0.dc:type,dc:coverage.vivo:GeographicLocation.0.redbox:wktRaw,dc:coverage.vivo:DateTimeInterval.vivo:start,dc:coverage.vivo:DateTimeInterval.vivo:end,dc:subject.anzsrc:for,redbox:formVersion,redbox:newForm,redbox:submissionProcess.redbox:submitted,workflow_source,redbox:submissionProcess.dc:date,redbox:submissionProcess.dc:description,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone,skos:note.0.dc:created,skos:note.0.foaf:name,skos:note.0.dc:description-timestampGroup,skos:note.0.dc:description"
     data-form-fields-readonly="metaList"
     data-pre-submit-func="updateNotesMeta"
     data-submit-func="srSubmitFunc"
@@ -272,16 +272,16 @@ textarea {
             <input id="redbox:submissionProcess.dc:date" type="text" size="40" value="$!self.getSubmitDate()" readonly="readonly" />
         </p>
 		
-		#fieldTitleS("redbox:submissionProcess.dc:title" "Title" true)
+		#fieldTitleS("dc:title" "Title" true)
 		<p>
-		<label class="validation" for="redbox:submissionProcess.dc:title" data-validation-rule="test(notEmpty);when(submit,save);">A title is required!</label>
-		<input id="redbox:submissionProcess.dc:title" type="text" size="40"/>
+		<label class="validation" for="dc:title" data-validation-rule="test(notEmpty);when(submit,save);">A title is required!</label>
+		<input id="dc:title" type="text" size="40"/>
 		</p>
 
-		#fieldTitleS("redbox:submissionProcess.dc:description" "Description" true)
+		#fieldTitleS("dc:description" "Description" true)
         <p>
-        <label class="validation" for="redbox:submissionProcess.dc:description" data-validation-rule="test(notEmpty);when(submit,save);">A description is required!</label>
-        <textarea id="redbox:submissionProcess.dc:description" cols="40" rows="10"></textarea>
+        <label class="validation" for="dc:description" data-validation-rule="test(notEmpty);when(submit,save);">A description is required!</label>
+        <textarea id="dc:description" cols="40" rows="10"></textarea>
         </p>
 		
 		#fieldTitleS("dc:extent" "Extent or Quantity" false)
@@ -909,19 +909,7 @@ $(document).ready(function() {
                     }
                 );
                 widgets.formsById["main-form"].restore(packageData.metaData);
-                #if($self.getCurrentStep()=="retired")
-                $(".inputscreens").find("input,select,textarea").each(function(c,e){
-                    if($(e).parents("#notes,#submit").length==0){
-                        $(e).attr("disabled", "disabled");
-                    }
-                });
-                $(".inputscreens").find(".input-list tfoot,.drop-down-location,.delete-item,.selection-add,.clear-item,.clear-link,.nameLookup-lookup,.add-attachment,.delete-attachment").each(function(c,e){
-                    if($(e).parents("#notes,#submit").length==0){
-                        $(e).hide();
-                    }
-                });
-                #end
-
+               
             }catch(e){
                 alert(e);
             }
@@ -1057,8 +1045,8 @@ function srSubmitFunc(widgetForm,formData){
     if(widgetForm.validator.isOkToSubmit()){
         $("#submitButton,#cancelButton").attr("disabled", "disabled");
         $("#loading").show();
-        var title = formData["redbox:submissionProcess.dc:title"];
-        var description = formData["redbox:submissionProcess.dc:description"];
+        var title = formData["dc:title"];
+        var description = formData["dc:description"];
 		
         var postData = jQuery.extend(formData,{
             ajax: true,
@@ -1066,10 +1054,11 @@ function srSubmitFunc(widgetForm,formData){
             packageType: "dataset",
             title: title,
             description: description,
-			"dc:title": title,
-			"dc:description": description,
 			"dc:coverage.vivo:GeographicLocation.1.dc:type": "text",
-			oid: "$self.oid"
+			oid: "$self.oid",
+			"redbox:submissionProcess.dc:title": "",
+			"redbox:submissionProcess.dc:description":""
+			
         });
         jQuery.ajax({
             type: "POST",
@@ -1122,23 +1111,21 @@ function srSubmitSave(widgetForm,formData) {
 		
 	if(widgetForm.validator.isOkToSave()){
 	
-    	var title = formData["redbox:submissionProcess.dc:title"];
-        var description = formData["redbox:submissionProcess.dc:description"];
-    	
+    	var title = formData["dc:title"];
+        var description = formData["dc:description"];
         var postData = jQuery.extend(formData,{
             ajax: true,
             func: "update-package-meta-deposit-save",
             packageType: "dataset",
-    		//oid: "$self.oid",
-    		//metaList: metalist,
     		
             title: title,
             description: description,
-    		"dc:title": title,
-    		"dc:description": description,
     		"dc:coverage.vivo:GeographicLocation.1.dc:type": "text",
-    		oid: "$self.oid"
+    		oid: "$self.oid",
+			"redbox:submissionProcess.dc:title": "",
+			"redbox:submissionProcess.dc:description" : ""
         });
+		
         jQuery.ajax({
             type: "POST",
             url: "$portalPath/actions/workflow.ajax",

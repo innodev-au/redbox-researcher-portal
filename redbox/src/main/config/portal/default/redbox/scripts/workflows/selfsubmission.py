@@ -167,8 +167,8 @@ class SelfsubmissionData:
                 else :
                      data.put(formField, self.__formData.get(formField))
                 
-            description = self.__formData.get("redbox:submissionProcess.dc:description", "[No description]")
-            submitTitle = self.__formData.get("redbox:submissionProcess.dc:title", None)
+            description = self.__formData.get("dc:description", "[No description]")
+            submitTitle = self.__formData.get("dc:title", None)
             if submitTitle:
                 data.put("title", submitTitle)
             else:

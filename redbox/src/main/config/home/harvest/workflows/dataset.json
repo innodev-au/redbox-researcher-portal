@@ -52,7 +52,7 @@
             "name": "investigation",
             "label": "Investigation",
             "description": "Records under investigation.",
-            "security": ["researcher", "librarian", "reviewer", "admin"],
+            "security": ["librarian", "reviewer", "admin"],
             "visibility": ["librarian", "reviewer", "admin"],
             "template": "workflows/inbox"
         },

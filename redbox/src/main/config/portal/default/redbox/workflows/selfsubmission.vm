@@ -1057,7 +1057,7 @@ function srSubmitFunc(widgetForm,formData){
 			"dc:coverage.vivo:GeographicLocation.1.dc:type": "text",
 			oid: "$self.oid",
 			"redbox:submissionProcess.dc:title": "",
-			"redbox:submissionProcess.dc:description":""
+			"redbox:submissionProcess.dc:description":description
 			
         });
         jQuery.ajax({

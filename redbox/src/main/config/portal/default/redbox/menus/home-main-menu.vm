@@ -79,7 +79,7 @@ $(function() {
                 func: "create-new",
                 packageType: "dataset",
                 metaList: ["title", "description", "redbox:newForm", "redbox:formVersion","researcherSubmission"],
-                title: "[Untitled]",
+                title: "",
                 description: "",
                 "redbox:newForm": "true",
                 "redbox:formVersion": "$systemConfig.getString("", "redbox.version.string")",

@@ -995,6 +995,12 @@ $(document).ready(function() {
 			}
 		}
 	}
+	
+	var geoWebsiteValue = packageData.metaData["bibo:Website.1.dc:identifier"];
+	if (geoWebsiteValue != null) {
+		var geoWebsiteInput = document.getElementById("bibo:Website.1.dc:identifier")
+		geoWebsiteInput.value = geoWebsiteValue;
+	}
 
 	
 });

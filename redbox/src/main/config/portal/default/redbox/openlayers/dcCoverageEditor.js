@@ -33,9 +33,10 @@
 
     $("#geonamesLookup").live("focus", function(){
         var elem = $(this);
+        var portalPath = $('#portalPath').val();
         elem.unautocomplete();
             elem.autocomplete(
-                "$portalPath/proxyGet?ns=Geonames&autocomplete=true&fields=id,geonames_uri,display,latitude,longitude",
+                portalPath + "/proxyGet?ns=Geonames&autocomplete=true&fields=id,geonames_uri,display,latitude,longitude",
                 {
                     extraParams: {
                         qs: function() {

@@ -518,6 +518,7 @@ textarea {
                     </select>
                 </td>
                 <td>
+					<input type="hidden" id="portalPath" value="$portalPath"/>
                     <input type="hidden" class="redboxGeoDataFid" />
                     <input type="hidden" class="redboxGeoDataWkt" id="dc:coverage.vivo:GeographicLocation.0.redbox:wktRaw" />
                     <input type="text" class="redboxGeoDataOutput autocomplete-geonames" placeholder="eg. coordinates or placename"
@@ -848,7 +849,6 @@ textarea {
 <script type="text/javascript" src="$portalPath/js/autocomplete/lib/jquery.ajaxQueue.js"></script>
 <script type="text/javascript" src="$portalPath/js/autocomplete/lib/jquery.bgiframe.min.js"></script>
 <script type="text/javascript" src="$portalPath/js/jquery.jqEasyCharCounter.min.js"></script>
-
 
 <script type="text/javascript" src="$portalPath/openlayers/dcCoverageEditor.js"></script>
 	
@@ -1406,9 +1406,7 @@ $(function() {
         styleIdentifier(checked, $("input[id=dc:identifier.rdf:PlainLiteral]"), $(this));
     });
 });
-</script>
-<script type="text/javascript" src="$portalPath/openlayers/dcCoverageEditor.js"></script>
-<script>
+
 // geo location stuff
 (function($){
     // OpenLayers stylesheets

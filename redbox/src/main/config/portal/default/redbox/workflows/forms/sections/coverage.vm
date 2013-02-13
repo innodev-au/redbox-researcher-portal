@@ -170,6 +170,7 @@
                     </select>
                 </td>
                 <td>
+					<input type="hidden" id="portalPath" value="$portalPath"/>
                     <input type="hidden" class="redboxGeoDataFid" />
                     <input type="hidden" class="redboxGeoDataWkt" id="dc:coverage.vivo:GeographicLocation.0.redbox:wktRaw" />
                     <input type="text" class="redboxGeoDataOutput autocomplete-geonames" placeholder="eg. coordinates or placename"

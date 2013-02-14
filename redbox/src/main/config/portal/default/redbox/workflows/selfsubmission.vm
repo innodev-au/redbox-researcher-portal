@@ -831,7 +831,6 @@ textarea {
         </p>
 		<button class="button form-fields-save" id="saveButton2">Save</button>
         <button class="button form-fields-submit" id="submitButton">Submit</button>
-        <button class="button form-fields-cancel" id="cancelButton">Cancel</button>
         <span class="hidden" id="loading">
             Please wait while submitting <img src="$portalPath/images/icons/loading.gif" />
         </span>
@@ -950,9 +949,6 @@ $(document).ready(function() {
 
    // widgets.contentLoaded();
 	onContentLoaded();
-    $("#cancelButton").click(function(){
-        window.location.href = "$portalPath/home";
-    });
 	
     var hello = function() {
     	alert('hello');
@@ -1043,13 +1039,13 @@ function srSubmitFunc(widgetForm,formData){
         widgets.messageBox(
             "Sorry, an error occurred processing your request. Please try again."+(msg?"\n"+msg:""),
             function(){
-                $("#submitButton,#cancelButton").removeAttr("disabled");
+                $("#submitButton,#saveButton2").removeAttr("disabled");
                 $("#loading").hide();
             },
             "Error");
     }
     if(widgetForm.validator.isOkToSubmit()){
-        $("#submitButton,#cancelButton").attr("disabled", "disabled");
+        $("#submitButton,#saveButton2").attr("disabled", "disabled");
         $("#loading").show();
         var title = formData["dc:title"];
         var description = formData["dc:description"];
@@ -1074,7 +1070,7 @@ function srSubmitFunc(widgetForm,formData){
             success: function(workflowData){
                 
 				if(workflowData.ok){
-					$("#submitButton,#cancelButton").removeAttr("disabled");
+					$("#submitButton,#saveButton2").removeAttr("disabled");
 					$("#loading").hide();
 					widgets.htmlMessageBox(
 						$('#success-dialog-message').html(),
@@ -1109,7 +1105,7 @@ function srSubmitSave(widgetForm,formData) {
         widgets.messageBox(
             "Sorry, an error occurred processing your request. Please try again."+(msg?"\n"+msg:""),
             function(){
-                $("#submitButton,#cancelButton").removeAttr("disabled");
+                $("#submitButton,#saveButton2").removeAttr("disabled");
                 $("#loading").hide();
             },
             "Error");
@@ -1140,7 +1136,7 @@ function srSubmitSave(widgetForm,formData) {
             success: function(workflowData){
                 
     			if(workflowData.ok){
-    				$("#submitButton,#cancelButton").removeAttr("disabled");
+    				$("#submitButton,#saveButton2").removeAttr("disabled");
     				$("#loading").hide();
     				widgets.htmlMessageBox(
     					$('#save-dialog-message').html(),

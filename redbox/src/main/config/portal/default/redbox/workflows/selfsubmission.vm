@@ -284,8 +284,11 @@ textarea {
         <textarea id="dc:description" cols="40" rows="10"></textarea>
         </p>
 		
-		#fieldTitleS("dc:extent" "Extent or Quantity" false)
-	    <p><input type="text" size="60" placeholder="quantity" id="dc:extent"/></p>
+		#fieldTitleS("dc:extent" "Extent or Quantity" true)
+	    <p>
+        <label class="validation" for="dc:extent" data-validation-rule="test(notEmpty);when(submit);">Extent or Quantity is required!</label>
+		<input type="text" size="60" placeholder="quantity" id="dc:extent"/>
+		</p>
 	
 		#fieldTitleS("dc:SizeOrDuration" "Data Size" false)
 	    <p><input type="text" size="60" placeholder="size" id="dc:SizeOrDuration"/></p>

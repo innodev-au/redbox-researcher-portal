@@ -238,7 +238,7 @@ textarea {
 </style>
 
 <div class="grid_16 widget-form inputscreen nameLookup-section" id="main-form"
-    data-form-fields="dc:subject.anzsrc:for.0.rdf:resource,dc:subject.anzsrc:for.0.skos:prefLabel,grants,foaf:fundedBy.vivo:Grant.0.redbox:internalGrant,foaf:fundedBy.vivo:Grant.0.redbox:grantNumber,foaf:fundedBy.vivo:Grant.0.dc:identifier,foaf:fundedBy.vivo:Grant.0.skos:prefLabel,dc:relation.swrc:Publication,dc:relation.bibo:Website,dc:relation.swrc:Publication.0.dc:identifier,dc:relation.swrc:Publication.0.dc:title,dc:relation.swrc:Publication.0.skos:note,dc:relation.bibo:Website.0.dc:identifier,dc:relation.bibo:Website.0.dc:title,dc:relation.bibo:Website.0.skos:note,dc:creator,dc:creator.foaf:Person.0.redbox:isCoPrimaryInvestigator,dc:creator.foaf:Person.0.redbox:isPrimaryInvestigator,dc:creator.foaf:Person.0.foaf:title,dc:creator.foaf:Person.0.foaf:givenName,dc:creator.foaf:Person.0.foaf:familyName,dc:accessRights.dc:identifier,dc:accessRights.skos:prefLabel,dc:accessRights.dc:RightsStatement.skos:prefLabel,vivo:Location.vivo:GeographicLocation.gn:name,bibo:Website.1.dc:identifier,dc:subject.anzsrc:for,dc:subject.vivo:keyword.0.rdf:PlainLiteral,location,dc:title,dc:extent,dc:description,redbox:submissionProcess.dc:title,dc:SizeOrDuration,dc:coverage.vivo:DateTimeInterval,dc:coverage.redbox:timePeriod,dc:coverage.vivo:GeographicLocation.0.rdf:PlainLiteral,dc:coverage.vivo:DateTimeInterval,dc:coverage.vivo:GeographicLocation.0.dc:type,dc:coverage.vivo:GeographicLocation.0.redbox:wktRaw,dc:coverage.vivo:DateTimeInterval.vivo:start,dc:coverage.vivo:DateTimeInterval.vivo:end,dc:subject.anzsrc:for,redbox:formVersion,redbox:newForm,redbox:submissionProcess.redbox:submitted,workflow_source,redbox:submissionProcess.dc:date,redbox:submissionProcess.dc:description,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone,skos:note.0.dc:created,skos:note.0.foaf:name,skos:note.0.dc:description-timestampGroup,skos:note.0.dc:description,dc:creator.foaf:Person.0.dc:identifier,dc:creator.foaf:Person.0.foaf:name"
+    data-form-fields="dc:subject.anzsrc:for.0.rdf:resource,dc:subject.anzsrc:for.0.skos:prefLabel,grants,foaf:fundedBy.vivo:Grant.0.redbox:internalGrant,foaf:fundedBy.vivo:Grant.0.redbox:grantNumber,foaf:fundedBy.vivo:Grant.0.dc:identifier,foaf:fundedBy.vivo:Grant.0.skos:prefLabel,dc:relation.swrc:Publication,dc:relation.bibo:Website,dc:relation.swrc:Publication.0.dc:identifier,dc:relation.swrc:Publication.0.dc:title,dc:relation.swrc:Publication.0.skos:note,dc:relation.bibo:Website.0.dc:identifier,dc:relation.bibo:Website.0.dc:title,dc:relation.bibo:Website.0.skos:note,dc:creator,dc:creator.foaf:Person.0.redbox:isCoPrimaryInvestigator,dc:creator.foaf:Person.0.redbox:isPrimaryInvestigator,dc:creator.foaf:Person.0.foaf:title,dc:creator.foaf:Person.0.foaf:givenName,dc:creator.foaf:Person.0.foaf:familyName,dc:accessRights.dc:identifier,dc:accessRights.skos:prefLabel,dc:accessRights.dc:RightsStatement.skos:prefLabel,vivo:Location.vivo:GeographicLocation.gn:name,bibo:Website.1.dc:identifier,dc:subject.anzsrc:for,dc:subject.vivo:keyword.0.rdf:PlainLiteral,location,dc:title,redbox:retentionPeriod,dc:extent,dc:description,redbox:submissionProcess.dc:title,dc:SizeOrDuration,dc:coverage.vivo:DateTimeInterval,dc:coverage.redbox:timePeriod,dc:coverage.vivo:GeographicLocation.0.rdf:PlainLiteral,dc:coverage.vivo:DateTimeInterval,dc:coverage.vivo:GeographicLocation.0.dc:type,dc:coverage.vivo:GeographicLocation.0.redbox:wktRaw,dc:coverage.vivo:DateTimeInterval.vivo:start,dc:coverage.vivo:DateTimeInterval.vivo:end,dc:subject.anzsrc:for,redbox:formVersion,redbox:newForm,redbox:submissionProcess.redbox:submitted,workflow_source,redbox:submissionProcess.dc:date,redbox:submissionProcess.dc:description,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone,skos:note.0.dc:created,skos:note.0.foaf:name,skos:note.0.dc:description-timestampGroup,skos:note.0.dc:description,dc:creator.foaf:Person.0.dc:identifier,dc:creator.foaf:Person.0.foaf:name"
     data-form-fields-readonly="metaList"
     data-pre-submit-func="updateNotesMeta"
     data-submit-func="srSubmitFunc"
@@ -274,20 +274,26 @@ textarea {
 		
 		#fieldTitleS("dc:title" "Title" true)
 		<p>
-		<label class="validation" for="dc:title" data-validation-rule="test(notEmpty);when(submit,save);">A title is required!</label>
-		<input id="dc:title" type="text" size="40"/>
+    		<label class="validation" for="dc:title" data-validation-rule="test(notEmpty);when(submit,save);">A title is required!</label>
+    		<input id="dc:title" type="text" size="40"/>
 		</p>
 
 		#fieldTitleS("dc:description" "Description" true)
         <p>
-        <label class="validation" for="dc:description" data-validation-rule="test(notEmpty);when(submit,save);">A description is required!</label>
-        <textarea id="dc:description" cols="40" rows="10"></textarea>
+            <label class="validation" for="dc:description" data-validation-rule="test(notEmpty);when(submit,save);">A description is required!</label>
+            <textarea id="dc:description" cols="40" rows="10"></textarea>
         </p>
-		
+
+        #fieldTitleS("redbox:retentionPeriod" "Retention Period" true)
+        <p>
+            <label class="validation" for="redbox:retentionPeriod" data-validation-rule="test(notEmpty);when(submit);">Retention Period is required!</label>
+            <input type="text" size="60" placeholder="retention period" id="redbox:retentionPeriod" />
+        </p>
+
 		#fieldTitleS("dc:extent" "Extent or Quantity" true)
 	    <p>
-        <label class="validation" for="dc:extent" data-validation-rule="test(notEmpty);when(submit);">Extent or Quantity is required!</label>
-		<input type="text" size="60" placeholder="quantity" id="dc:extent"/>
+            <label class="validation" for="dc:extent" data-validation-rule="test(notEmpty);when(submit);">Extent or Quantity is required!</label>
+            <input type="text" size="60" placeholder="quantity" id="dc:extent"/>
 		</p>
 	
 		#fieldTitleS("dc:SizeOrDuration" "Data Size" false)

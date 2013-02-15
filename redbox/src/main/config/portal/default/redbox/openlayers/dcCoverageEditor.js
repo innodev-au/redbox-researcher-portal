@@ -68,10 +68,11 @@
         var elem = $(this);
         var baseId = elem.attr("id").replace(".rdf:PlainLiteral", "");
         var wktElem = getReDBoxById(baseId+".redbox:wktRaw");
+        var portalPath = $('#portalPath').val();
         elem.unautocomplete();
         if(getReDBoxById(baseId+".dc:type").val() == "text" && wktElem.val() == ""){
             elem.autocomplete(
-                "$portalPath/proxyGet?ns=Geonames&autocomplete=true&fields=id,geonames_uri,display,latitude,longitude",
+           		portalPath + "/proxyGet?ns=Geonames&autocomplete=true&fields=id,geonames_uri,display,latitude,longitude",
                 {
                     extraParams: {
                         qs: function() {

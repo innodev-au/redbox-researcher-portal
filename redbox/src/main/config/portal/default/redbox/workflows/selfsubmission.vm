@@ -294,11 +294,6 @@ textarea {
 
 	#fieldset("Coverage" "Coverage" false true)
 
-        #fieldTitleS("dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral" "Geographic Coverage" false)
-		<p>
-            <input id="dc:coverage.vivo:GeographicLocation.1.rdf:PlainLiteral" type="text" size="40" />
-        </p>		
-
         #fieldTitleS("dc:coverage.vivo:DateTimeInterval" "Date Coverage" false)
         <p>
             <input type="text" placeholder="Start" class="dateYMD" id="dc:coverage.vivo:DateTimeInterval.vivo:start" />
@@ -321,6 +316,165 @@ textarea {
             <input type="text" id="dc:coverage.redbox:timePeriod" size="60"
                 placeholder="If dates cannot be quantified ie. 21st Century, WWII, The Depression, etc." />
         </p>
+
+###################### start of map widget
+
+		#fieldTitleS("dc:coverage.vivo:GeographicLocation" "Geographic Coverage" false)
+
+    	<div id="coverage" class="inputscreen">
+            <div class="help-content" id="help-dc:coverage.vivo:GeographicLocation">
+                <p>
+                    You may use the map to select an area, or manually enter a correctly
+                    formatted set of coordinates or a value supported by a standard such
+                    as a country code, a URL pointing to an XML based description of
+                    spatial coverage or free text describing a location.
+                </p>
+                <p>
+                    If you wish to generate a map display, use <b>DCMI Box</b> for shapes,
+                    or <b>DCMI Point</b> for points in the Type drop-down menu.
+                </p>
+                <p>
+                    When using the map to input shapes/points, only the following Types are
+                    supported. Use the 'Find location' search box to locate places on the map,
+        			however you will still need to select a region or point on the map.
+                </p>
+                <ul>
+                    <li>
+                        <a href="http://www.opengeospatial.org/standards/gml" target="_blank">GML</a>
+                        - OpenGIS Geography Markup Language (GML) Encoding Standard
+                    </li>
+                    <li>
+                        <a href="http://code.google.com/apis/kml/" target="_blank">KML</a>
+                        - Keyhole Markup Language developed for use with Google Earth
+                    </li>
+                    <li>
+                        <a href="http://dublincore.org/documents/dcmi-box" target="_blank">ISO19319dcmiBox</a>
+                        - DCMI Box notation derived from bounding box metadata
+                        conformant with the iso19139 schema
+                    </li>
+                    <li>
+                        <a href="http://dublincore.org/documents/dcmi-point" target="_blank">DCMIPoint</a>
+                        - spatial location information specified in DCMI Point notation
+                    </li>
+                </ul>
+        
+                <p>
+                    Other Types available (for manual data entry):
+                </p>
+                <ul>
+                    <li>
+                        <a href="http://www.topografix.com/gpx.asp" target="_blank">GPX</a>
+                        - the GPS Exchange Format
+                    </li>
+                    <li>
+                        <a href="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" target="_blank">ISO3166</a>
+                        - ISO 3166-1 Codes for the representation of names of countries
+                        and their subdivisions - Part 1: Country codes
+                    </li>
+                    <li>
+                        <a href="http://www.iso.org/iso/country-codes/background_on_iso_3166/iso_3166-2.htm" target="_blank">ISO31662</a>
+                        - Codes for the representation of names of countries and their
+                        subdivisions - Part 2: Country subdivision codes
+                    </li>
+                    <li>
+                        <a href="http://code.google.com/apis/kml/" target="_blank">kmlPolyCoords</a>
+                        - A set of KML long/lat co-ordinates defining a polygon as
+                        described by the KML coordinates element
+                    </li>
+                    <li>
+                        <a href="http://code.google.com/apis/kml/" target="_blank">gmlKmlPolyCoords</a>
+                        - A set of KML long/lat co-ordinates derived from GML defining a
+                        polygon as described by the KML coordinates element but without
+                        the altitude component
+                    </li>
+                    <li>
+                        <strong>Text</strong> - free-text representation of spatial
+                        location. Use this to record place or region names where
+                        geospatial notation is not available. In ReDBox this will
+                        search against the Geonames database and return a latitude and
+                        longitude value if selected. This will store as a DCMIPoint
+                        which in future will display as a point on a Google Map in
+                        Research Data Australia.
+                    </li>
+                </ul>
+            </div>
+        
+            <div class="openLayersHolder">
+                <div class="article">
+                    <p class="meta attribution">Map Credits: <span id="attribution"></span></p>
+                    <div id="polygonHelp" class="hidden">
+                        <div><span class="ui-button-icon-primary ui-icon ui-icon-lightbulb"></span></div>
+                        Use double-click to 'close' your polygon.
+                    </div>
+                    <div class="mapHolder">
+                        <div id="panel" class="olControlEditingToolbar"></div>
+                        <div id="map" class="smallmap"></div>
+                    </div>
+                    <div class="lookupHolder">
+                        <label for="geonamesLookup">Find location: </label>
+                        <input type="text" size="40" placeholder="Place name" id="geonamesLookup" />
+                    </div>
+                </div>
+            </div>
+        
+            <table class="input-list redboxGeoData">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Type</th>
+                        <th>Value</th>
+                        <th colspan="2"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="item-input-display redboxGeoDataRow">
+                        <td class="sort-number"></td>
+                        <td>
+                            <select class="locationType" id="dc:coverage.vivo:GeographicLocation.0.dc:type">
+                                <option value="" selected="selected">Please select one...</option>
+                                <option value="gml">OpenGIS Geography Markup Language</option>
+                                <option value="kml">Keyhole Markup Language</option>
+                                <option value="iso19139dcmiBox">DCMI Box notation (iso19139)</option>
+                                <option value="dcmiPoint">DCMI Point notation</option>
+                                <option value="gpx">GPS Exchange Format</option>
+                                <option value="iso31661">Country code (iso31661)</option>
+                                <option value="iso31662">Country subdivision code (iso31662)</option>
+                                <option value="kmlPolyCoords">KML long/lat co-ordinates</option>
+                                <option value="gmlKmlPolyCoords">KML long/lat co-ordinates derived from GML</option>
+                                <option value="text">Free text</option>
+                            </select>
+                        </td>
+                        <td>
+        					<input type="hidden" id="portalPath" value="$portalPath"/>
+                            <input type="hidden" class="redboxGeoDataFid" />
+                            <input type="hidden" class="redboxGeoDataWkt" id="dc:coverage.vivo:GeographicLocation.0.redbox:wktRaw" />
+                            <input type="text" class="redboxGeoDataOutput autocomplete-geonames" placeholder="eg. coordinates or placename"
+                                id="dc:coverage.vivo:GeographicLocation.0.rdf:PlainLiteral" size="60" />
+                            <input type="hidden" id="dc:coverage.vivo:GeographicLocation.0.dc:identifier" />
+                            <input type="hidden" id="dc:coverage.vivo:GeographicLocation.0.geo:long" />
+                            <input type="hidden" id="dc:coverage.vivo:GeographicLocation.0.geo:lat" />
+                            <div class="hidden coords" id="dc:coverage.vivo:GeographicLocation.0.coords">
+                                <a class="map-link" target="_blank" href="">map</a>
+                                @ longitude: <span class="east"> </span>
+                                , latitude: <span class="north"> </span>
+                                | <a class="clear-link" href="#">clear</a>
+                            </div>
+                        </td>
+                        <td class="delete-item"><a href="#">delete</a></td>
+                        <td style="width: 100%;" />
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td><input type="button" class="button add-another-item" id="add-location" value="Add location" /></td>
+                        <td colspan="3"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+################## end of map widget
+
 	#endfieldset
 			
 			
@@ -379,179 +533,6 @@ textarea {
             <input id="bibo:Website.1.dc:identifier" type="text" size="40" />
         </p>
 	#endfieldset
-
-
-######################
-#fieldset("dc:coverage.vivo:GeographicLocation" "Geospatial Location" false "subsection-table")
-<div id="coverage" class="inputscreen">
-    <div class="help-content" id="help-dc:coverage.vivo:GeographicLocation">
-        <p>
-            Geospatial location relevant to the research dataset/collection,
-            registry/repository, catalogue or index. This may describe a
-            geographical area where data was collected, a place which is the
-            subject of a collection, or a location which is the focus of an
-            activity, eg. coordinates or placename.
-        </p>
-        <p>
-            You may use the map to select an area, or manually enter a correctly
-            formatted set of coordinates or a value supported by a standard such
-            as a country code, a URL pointing to an XML based description of
-            spatial coverage or free text describing a location.
-        </p>
-        <p>
-            If you wish to generate a map display in Research Data Australia,
-            it is strongly advised that you use <b>DCMI Box</b> for shapes, or
-            <b>DCMI Point</b> for points.
-        </p>
-        <p>
-            Formats supported by the map widget:
-        </p>
-        <ul>
-            <li>
-                <a href="http://www.opengeospatial.org/standards/gml" target="_blank">GML</a>
-                - OpenGIS Geography Markup Language (GML) Encoding Standard
-            </li>
-            <li>
-                <a href="http://code.google.com/apis/kml/" target="_blank">KML</a>
-                - Keyhole Markup Language developed for use with Google Earth
-            </li>
-            <li>
-                <a href="http://dublincore.org/documents/dcmi-box" target="_blank">ISO19319dcmiBox</a>
-                - DCMI Box notation derived from bounding box metadata
-                conformant with the iso19139 schema
-            </li>
-            <li>
-                <a href="http://dublincore.org/documents/dcmi-point" target="_blank">DCMIPoint</a>
-                - spatial location information specified in DCMI Point notation
-            </li>
-        </ul>
-        <p>
-            When using the map to input shapes/points, only the above formats are
-            supported. You can use the 'Find location' feature to pan the map to
-            an area you are interested in, but you still need to select a map
-            region to store geospatial data.
-        </p>
-        <p>
-            Formats available for manual data entry:
-        </p>
-        <ul>
-            <li>
-                <a href="http://www.topografix.com/gpx.asp" target="_blank">GPX</a>
-                - the GPS Exchange Format
-            </li>
-            <li>
-                <a href="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" target="_blank">ISO3166</a>
-                - ISO 3166-1 Codes for the representation of names of countries
-                and their subdivisions - Part 1: Country codes
-            </li>
-            <li>
-                <a href="http://www.iso.org/iso/country-codes/background_on_iso_3166/iso_3166-2.htm" target="_blank">ISO31662</a>
-                - Codes for the representation of names of countries and their
-                subdivisions - Part 2: Country subdivision codes
-            </li>
-            <li>
-                <a href="http://code.google.com/apis/kml/" target="_blank">kmlPolyCoords</a>
-                - A set of KML long/lat co-ordinates defining a polygon as
-                described by the KML coordinates element
-            </li>
-            <li>
-                <a href="http://code.google.com/apis/kml/" target="_blank">gmlKmlPolyCoords</a>
-                - A set of KML long/lat co-ordinates derived from GML defining a
-                polygon as described by the KML coordinates element but without
-                the altitude component
-            </li>
-            <li>
-                <strong>Text</strong> - free-text representation of spatial
-                location. Use this to record place or region names where
-                geospatial notation is not available. In ReDBox this will
-                search against the Geonames database and return a latitude and
-                longitude value if selected. This will store as a DCMIPoint
-                which in future will display as a point on a Google Map in
-                Research Data Australia.
-            </li>
-        </ul>
-    </div>
-
-    <div class="openLayersHolder">
-        <div class="article">
-            <p class="meta attribution">Map Credits: <span id="attribution"></span></p>
-            <div id="polygonHelp" class="hidden">
-                <div><span class="ui-button-icon-primary ui-icon ui-icon-lightbulb"></span></div>
-                Use double-click to 'close' your polygon.
-            </div>
-            <div class="mapHolder">
-                <div id="panel" class="olControlEditingToolbar"></div>
-                <div id="map" class="smallmap"></div>
-            </div>
-            <div class="lookupHolder">
-                <label for="geonamesLookup">Find location: </label>
-                <input type="text" size="40" placeholder="Place name" id="geonamesLookup" />
-            </div>
-        </div>
-    </div>
-
-    <table class="input-list redboxGeoData">
-        <thead>
-            <tr>
-                <th></th>
-                <th>Type</th>
-                <th>Value</th>
-                <th colspan="2"></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="item-input-display redboxGeoDataRow">
-                <td class="sort-number"></td>
-                <td>
-                    <select class="locationType" id="dc:coverage.vivo:GeographicLocation.0.dc:type">
-                        <option value="" selected="selected">Please select one...</option>
-                        <option value="gml">OpenGIS Geography Markup Language</option>
-                        <option value="kml">Keyhole Markup Language</option>
-                        <option value="iso19139dcmiBox">DCMI Box notation (iso19139)</option>
-                        <option value="dcmiPoint">DCMI Point notation</option>
-                        <option value="gpx">GPS Exchange Format</option>
-                        <option value="iso31661">Country code (iso31661)</option>
-                        <option value="iso31662">Country subdivision code (iso31662)</option>
-                        <option value="kmlPolyCoords">KML long/lat co-ordinates</option>
-                        <option value="gmlKmlPolyCoords">KML long/lat co-ordinates derived from GML</option>
-                        <option value="text">Free text</option>
-                    </select>
-                </td>
-                <td>
-					<input type="hidden" id="portalPath" value="$portalPath"/>
-                    <input type="hidden" class="redboxGeoDataFid" />
-                    <input type="hidden" class="redboxGeoDataWkt" id="dc:coverage.vivo:GeographicLocation.0.redbox:wktRaw" />
-                    <input type="text" class="redboxGeoDataOutput autocomplete-geonames" placeholder="eg. coordinates or placename"
-                        id="dc:coverage.vivo:GeographicLocation.0.rdf:PlainLiteral" size="60" />
-                    <input type="hidden" id="dc:coverage.vivo:GeographicLocation.0.dc:identifier" />
-                    <input type="hidden" id="dc:coverage.vivo:GeographicLocation.0.geo:long" />
-                    <input type="hidden" id="dc:coverage.vivo:GeographicLocation.0.geo:lat" />
-                    <div class="hidden coords" id="dc:coverage.vivo:GeographicLocation.0.coords">
-                        <a class="map-link" target="_blank" href="">map</a>
-                        @ longitude: <span class="east"> </span>
-                        , latitude: <span class="north"> </span>
-                        | <a class="clear-link" href="#">clear</a>
-                    </div>
-                </td>
-                <td class="delete-item"><a href="#">delete</a></td>
-                <td style="width: 100%;" />
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td></td>
-                <td><input type="button" class="button add-another-item" id="add-location" value="Add location" /></td>
-                <td colspan="3"></td>
-            </tr>
-        </tfoot>
-    </table>
-</div>
-	#endfieldset
-##################
-
-
-
-
 
 	#fieldset("rights" "Rights" false true)
 		#fieldTitleS("dc:accessRights.dc:RightsStatement.skos:prefLabel" "Rights Statement" false)

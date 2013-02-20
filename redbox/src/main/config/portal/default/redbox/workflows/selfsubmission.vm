@@ -235,6 +235,10 @@ textarea {
 	font-family: inherit;
 }
 
+.ui-datepicker {
+	z-index: 1010;
+}
+
 </style>
 
 <div class="grid_16 widget-form inputscreen nameLookup-section" id="main-form"

@@ -336,11 +336,14 @@ textarea {
                     You may use the map to select an area, or manually enter a correctly
                     formatted set of coordinates or a value supported by a standard such
                     as a country code, a URL pointing to an XML based description of
-                    spatial coverage or free text describing a location.
+                    spatial coverage or free text describing a location. 
                 </p>
                 <p>
-                    If you wish to generate a map display, use <b>DCMI Box</b> for shapes,
-                    or <b>DCMI Point</b> for points in the Type drop-down menu.
+                    Use the Type drop-down menu to specify the format of the geographic
+					coverage. If you wish to generate a map display, use <b>DCMI Box</b>
+					for shapes, or <b>DCMI Point</b> for points in the Type drop-down menu.
+##					If you wish to generate a map display, use <b>DCMI Box</b> for shapes,
+##                    or <b>DCMI Point</b> for points in the Type drop-down menu.
                 </p>
                 <p>
                     When using the map to input shapes/points, only the following Types are
@@ -397,13 +400,16 @@ textarea {
                         the altitude component
                     </li>
                     <li>
-                        <strong>Text</strong> - free-text representation of spatial
-                        location. Use this to record place or region names where
-                        geospatial notation is not available. In ReDBox this will
-                        search against the Geonames database and return a latitude and
-                        longitude value if selected. This will store as a DCMIPoint
-                        which in future will display as a point on a Google Map in
-                        Research Data Australia.
+                        <strong>Free Text</strong> - This will search against the Geonames
+						database and display as a latitude and longitude value, if available
+						(this will store as a DCMIPoint).
+##						<strong>Text</strong> - free-text representation of spatial
+##                        location. Use this to record place or region names where
+##                        geospatial notation is not available. In ReDBox this will
+##                        search against the Geonames database and return a latitude and
+##                        longitude value if selected. This will store as a DCMIPoint
+##                        which in future will display as a point on a Google Map in
+##                        Research Data Australia.
                     </li>
                 </ul>
             </div>
@@ -699,7 +705,7 @@ textarea {
                                 </td>
                                 <td style="width:100%">
                                     <input type="text" size="60" id="foaf:fundedBy.vivo:Grant.0.skos:prefLabel"
-                                        readonly="readonly" placeholder="grant description"
+                                        readonly="readonly" placeholder="project title"
                                         class="autocomplete-grant-label label" style="width:100%" />
                                 </td>
                             </tr>
@@ -711,14 +717,14 @@ textarea {
             <tfoot>
                 <tr>
                     <td></td>
-                    <td colspan="3"><input type="button" class="button add-another-item" value="Add grant" /></td>
+                    <td colspan="3"><input type="button" class="button add-another-item" value="Add project" /></td>
                 </tr>
             </tfoot>
         </table>
 	#endfieldset
 
     #fieldset("dc:relation.swrc:Publication" "Related Publications" false "subsection-table")
-		#relatedInfoFieldS("dc:relation.swrc:Publication" "publication url" "Add publication")
+		#relatedInfoFieldS("dc:relation.swrc:Publication" "persistent publication url" "Add publication")
 	#endfieldset
 
     #fieldset("dc:relation.bibo:Website" "Related Websites" false "subsection-table")
@@ -819,9 +825,11 @@ textarea {
             <label class="validation" for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox" data-validation-rule="test(email);when(submit);">A valid email address is required!</label>
             <input id="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox" type="text" size="40" />
         </p>
-		<button class="button form-fields-save" id="saveButton2">Save</button>
+
+		<button class="button form-fields-save" id="saveButton2">Save and Close</button>
         <button class="button form-fields-submit" id="submitButton">Submit</button>
-        <span class="hidden" id="loading">
+
+		<span class="hidden" id="loading">
             Please wait while submitting <img src="$portalPath/images/icons/loading.gif" />
         </span>
 	#endfieldset

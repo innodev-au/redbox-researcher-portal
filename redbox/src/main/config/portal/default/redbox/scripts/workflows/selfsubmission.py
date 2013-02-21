@@ -182,7 +182,7 @@ class SelfsubmissionData:
                 wf = self.__workflowData.getJsonObject()
                 wf.put("step", "investigation")
                 wf.put("label", "Investigation")
-                wf.put("pageTitle", "Notify us about a dataset")
+                wf.put("pageTitle", "Describe my data")
                 self.__updatePayload("workflow.metadata", wf)
                 # update ownership to the one who accepted the submission
                 self.__object.getMetadata().setProperty("owner", self.__auth.get_username())

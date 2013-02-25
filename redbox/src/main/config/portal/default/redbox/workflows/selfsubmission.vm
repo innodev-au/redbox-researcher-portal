@@ -51,7 +51,7 @@
             <a href="#" class="clear-item">change</a>
         </span>
         <span class="drop-down-location" id="access-rights-dropdown">
-            <button class="selection-add add-unique-only" data-add-on-click="1">
+            <button style="display:none" class="selection-add add-unique-only" data-add-on-click="1">
                 Select
             </button>
         </span>

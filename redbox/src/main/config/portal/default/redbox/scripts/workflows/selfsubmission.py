@@ -2,6 +2,7 @@ import time
 from com.googlecode.fascinator.common import JsonSimple
 from com.googlecode.fascinator.api.storage import StorageException
 from java.io import ByteArrayInputStream
+from java.lang import String
 from org.apache.commons.lang import StringEscapeUtils
 
 
@@ -19,8 +20,8 @@ class SelfsubmissionData:
         self.__errorMessage = None
         self.packagePid = None
         self.__tfpackage = None
+
         pidList = self.__object.getPayloadIdList()
-        
         for pid in pidList:
             if pid.endswith(".tfpackage"):
                 self.packagePid = pid
@@ -196,4 +197,6 @@ class SelfsubmissionData:
         return result
 
     def __updatePayload(self, pid, data):
-        self.__object.updatePayload(pid, ByteArrayInputStream(data.toString()))
+        jsonString = String(data.toString())
+        jsonData = jsonString.getBytes("UTF-8")
+        self.__object.updatePayload(pid, ByteArrayInputStream(jsonData))

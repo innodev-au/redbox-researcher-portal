@@ -170,6 +170,10 @@ fieldset {
 	max-width:1200px;
 	width:inherit !important;
 }
+.extended-subsection {
+	max-width:800px;
+	width:inherit !important;
+}
 fieldset label {
 	width:300px;
 }
@@ -177,7 +181,6 @@ fieldset td {
 	background:inherit;
 }
 fieldset p input, fieldset p select {
-	width:400px;
 	display:block;
 }
 fieldset table {
@@ -305,7 +308,7 @@ textarea {
 	
 	#endfieldset
 
-	#fieldset("Coverage" "Coverage" false true)
+	#fieldset("Coverage" "Coverage" false "extended-subsection")
 
         #fieldTitleS("dc:coverage.vivo:DateTimeInterval" "Date Coverage" false)
         <p>
@@ -509,7 +512,7 @@ textarea {
 	#endfieldset
 
 	
-	#fieldset("dc:subject.vivo:keyword" "Keywords" true true)
+	#fieldset("dc:subject.vivo:keyword" "Keywords" true "")
         <label for="dc:subject.vivo:keyword" class="validation-err-msg"
             data-validation-rule="test(notEmpty);when(blur, change, submit);
                                     jsTest(
@@ -541,7 +544,7 @@ textarea {
         </table>
 	#endfieldset
 	
-	#fieldset("th.location" "Location" false true)
+	#fieldset("th.location" "Location" false "")
 		<p>
             <label for="vivo:Location.vivo:GeographicLocation.gn:name">Please enter a physical address <span class="required">*</span></label>
             <label class="validation" for="vivo:Location.vivo:GeographicLocation.gn:name" data-validation-rule="test(notEmpty);when(submit);">A location is required!</label>
@@ -553,13 +556,13 @@ textarea {
         </p>
 	#endfieldset
 
-	#fieldset("rights" "Rights" false true)
+	#fieldset("rights" "Rights" false "extended-subsection")
 		#fieldTitleS("dc:accessRights.dc:RightsStatement.skos:prefLabel" "Rights Statement" false)
         <div>
             <div>
-            <textarea style="width:560px;height:3em;border:0px;margin-top:3px" type="text" size="140" id="dc:accessRights.dc:RightsStatement.skos:prefLabel"
-				disabled="disabled">This data collection is subject to the intellectual property rights arrangements agreed for the project.</textarea>
-        </div>
+				<textarea style="width:560px;height:3em;border:0px;margin-top:3px" type="text" size="140" id="dc:accessRights.dc:RightsStatement.skos:prefLabel"
+					disabled="disabled">This data collection is subject to the intellectual property rights arrangements agreed for the project.</textarea>
+			</div>
         </div>
 	
         #fieldTitleS("dc:accessRights.skos:prefLabel" "Access Rights" true)
@@ -575,7 +578,6 @@ textarea {
         </p>
     	
          <p>
-            <input type="text" size="60" id="dc:accessRights.dc:identifier" 
             <input type="text" size="60" id="dc:accessRights.dc:identifier" placeholder="Access Rights URI" />
         </p>
 	#endfieldset
@@ -813,7 +815,7 @@ textarea {
 </script>
 
 ## NOTES FIELD ENDS
-	#fieldset("ContactDetails" "Contact Details" false true)
+	#fieldset("ContactDetails" "Contact Details" false "")
         <p>
             <label for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name">Contact Name <span class="required">*</span></label>
             <label class="validation" for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name" data-validation-rule="test(notEmpty);when(submit);">A contact name is required!</label>
@@ -1051,7 +1053,7 @@ function srSubmitFunc(widgetForm,formData){
         $("#loading").show();
         var title = formData["dc:title"];
         var description = formData["dc:description"];
-		
+
         var postData = jQuery.extend(formData,{
             ajax: true,
             func: "update-package-meta-deposit",
@@ -1121,7 +1123,6 @@ function srSubmitSave(widgetForm,formData) {
             ajax: true,
             func: "update-package-meta-deposit-save",
             packageType: "dataset",
-    		
             title: title,
             description: description,
     		"dc:coverage.vivo:GeographicLocation.1.dc:type": "text",

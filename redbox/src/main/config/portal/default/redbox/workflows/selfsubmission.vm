@@ -489,7 +489,7 @@ textarea {
                 <tfoot>
                     <tr>
                         <td></td>
-                        <td><input type="button" class="button add-another-item" id="add-location" value="Add location" /></td>
+                        <td><input type="button" class="button add-another-item" id="add-location" value="Add another location" /></td>
                         <td colspan="3"></td>
                     </tr>
                 </tfoot>
@@ -537,7 +537,7 @@ textarea {
             <tfoot>
                 <tr>
                     <td></td>
-                    <td><input type="button" class="button add-another-item" value="Add keyword" /></td>
+                    <td><input type="button" class="button add-another-item" value="Add another keyword" /></td>
                     <td colspan="2"></td>
                 </tr>
             </tfoot>
@@ -679,7 +679,7 @@ textarea {
                 <tr>
                     <td colspan="3"></td>
                     <td colspan="6">
-                        <input type="button" class="button add-another-item" value="Add person" />
+                        <input type="button" class="button add-another-item" value="Add another person" />
                     </td>
                 </tr>
             </tfoot>
@@ -723,18 +723,18 @@ textarea {
             <tfoot>
                 <tr>
                     <td></td>
-                    <td colspan="3"><input type="button" class="button add-another-item" value="Add project" /></td>
+                    <td colspan="3"><input type="button" class="button add-another-item" value="Add another project" /></td>
                 </tr>
             </tfoot>
         </table>
 	#endfieldset
 
     #fieldset("dc:relation.swrc:Publication" "Related Publications" false "subsection-table")
-		#relatedInfoFieldS("dc:relation.swrc:Publication" "persistent publication url" "Add publication")
+		#relatedInfoFieldS("dc:relation.swrc:Publication" "persistent publication url" "Add another publication")
 	#endfieldset
 
     #fieldset("dc:relation.bibo:Website" "Related Websites" false "subsection-table")
-        #relatedInfoFieldS("dc:relation.bibo:Website" "website url" "Add website")
+        #relatedInfoFieldS("dc:relation.bibo:Website" "website url" "Add another website")
 	#endfieldset
 	
 	
@@ -767,7 +767,7 @@ textarea {
         </tbody>
         <tfoot>
             <tr>
-                <td><input type="button" class="button add-another-item add-note" value="Add note" /></td>
+                <td><input type="button" class="button add-another-item add-note" value="Add another note" /></td>
             </tr>
         </tfoot>
     </table>

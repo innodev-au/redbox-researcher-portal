@@ -242,6 +242,11 @@ textarea {
 	z-index: 1010;
 }
 
+.short-date {
+	display:inline;
+	width: 180px;
+}
+
 </style>
 
 <div class="grid_16 widget-form inputscreen nameLookup-section" id="main-form"
@@ -312,9 +317,9 @@ textarea {
 
         #fieldTitleS("dc:coverage.vivo:DateTimeInterval" "Date Coverage" false)
         <p>
-            <input type="text" placeholder="Start" class="dateYMD" id="dc:coverage.vivo:DateTimeInterval.vivo:start" />
-            <label for="dc:coverage.vivo:DateTimeInterval.vivo:end"></label>
-            <input type="text" placeholder="End" class="dateYMD" id="dc:coverage.vivo:DateTimeInterval.vivo:end" />
+            <input type="text" placeholder="Start" class="dateYMD short-date" id="dc:coverage.vivo:DateTimeInterval.vivo:start" />
+            <label for="dc:coverage.vivo:DateTimeInterval.vivo:end">&nbsp;&nbsp;to&nbsp;&nbsp;</label>
+            <input type="text" placeholder="End" class="dateYMD short-date" id="dc:coverage.vivo:DateTimeInterval.vivo:end" />
             <label class="validation-err-msg" for="dc:coverage.vivo:DateTimeInterval.vivo:start"
                 data-validation-rule="when(blur,change,submit);name(testCoverageFrom);
                         test(/^[12]\d{3}([-\/]+(10|11|12|0?\d)([-\/]+(30|31|[012]?\d))?)?$/ or empty);">
@@ -578,7 +583,8 @@ textarea {
         </p>
     	
          <p>
-            <input type="text" size="60" id="dc:accessRights.dc:identifier" placeholder="Access Rights URI" />
+			<label for="dc:accessRights.dc:identifier">URL</label>
+            <input type="text" size="60" id="dc:accessRights.dc:identifier" placeholder="Access Rights URL" />
         </p>
 	#endfieldset
 
@@ -711,7 +717,7 @@ textarea {
                                 </td>
                                 <td style="width:100%">
                                     <input type="text" size="60" id="foaf:fundedBy.vivo:Grant.0.skos:prefLabel"
-                                        readonly="readonly" placeholder="project title"
+                                        readonly="readonly" placeholder="grant title"
                                         class="autocomplete-grant-label label" style="width:100%" />
                                 </td>
                             </tr>

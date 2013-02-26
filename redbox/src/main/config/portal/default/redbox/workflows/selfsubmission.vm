@@ -741,39 +741,38 @@ textarea {
 
 ## NOTES FIELD START
 
-#fieldset("skos:note" "Notes" false "subsection-table")
-    <div class="help-content" id="help-skos:note.0">
-        Enter administrative notes as required.
-    </div>
-    <table class="input-list">
-        <thead>
-            <tr>
-                <th>Note</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="item-input-display notes">
-                <td width="100%">
-                	 <div class="group" style="display:none">
-                        Auto-generated values:
-                        <input type="text" id="skos:note.0.dc:created" class="datetime label-input" placeholder="date" readonly="readonly" size="25" />
-                        <input type="text" id="skos:note.0.foaf:name" class="username label-input" placeholder="username" readonly="readonly" />
-                    </div>
-                    <textarea style="width:100%" rows="4" placeholder="description" id="skos:note.0.dc:description" class="vnote"></textarea>                
-                </td>
-                <td style="vertical-align:middle;" class="delete-item"><a href="#">delete</a></td>
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td><input type="button" class="button add-another-item add-note" value="Add another note" /></td>
-            </tr>
-        </tfoot>
-    </table>
+	#fieldset("skos:note" "Notes" false "subsection-table")
+        <div class="help-content" id="help-skos:note.0">
+            Enter administrative notes as required.
+        </div>
+        <table class="input-list">
+            <thead>
+                <tr>
+                    <th>Note</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="item-input-display notes">
+                    <td width="100%">
+                    	 <div class="group" style="display:none">
+                            Auto-generated values:
+                            <input type="text" id="skos:note.0.dc:created" class="datetime label-input" placeholder="date" readonly="readonly" size="25" />
+                            <input type="text" id="skos:note.0.foaf:name" class="username label-input" placeholder="username" readonly="readonly" />
+                        </div>
+                        <textarea style="width:100%" rows="4" placeholder="description" id="skos:note.0.dc:description" class="vnote"></textarea>                
+                    </td>
+                    <td style="vertical-align:middle;" class="delete-item"><a href="#">delete</a></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td><input type="button" class="button add-another-item add-note" value="Add another note" /></td>
+                </tr>
+            </tfoot>
+        </table>
 	#endfieldset
-	
-	
+
 
 <script type="text/javascript">
 
@@ -815,6 +814,8 @@ textarea {
 </script>
 
 ## NOTES FIELD ENDS
+
+
 	#fieldset("ContactDetails" "Contact Details" false "")
         <p>
             <label for="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name">Contact Name <span class="required">*</span></label>

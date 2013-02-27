@@ -103,16 +103,16 @@
             </tr>
         </thead>
         <tbody>
-            <tr class="item-input-display sortable-item">
+            <tr class="item-input-display sortable-item valign-top-items">
                 <td class="sort-number"></td>
                 <td>
                     <input type="text" style="width:100%;" placeholder="$placeholder" id="${id}.0.dc:identifier" />
                 </td>
                 <td>
-                    <input type="text" style="width:100%" placeholder="title" id="${id}.0.dc:title" />
+                    <textarea style="width:100%" rows="2" cols="20" placeholder="title" id="${id}.0.dc:title"></textarea>
                 </td>
                 <td>
-                    <input type="text" style="width:100%" placeholder="notes" id="${id}.0.skos:note" />
+                    <textarea style="width:100%" rows="2" cols="20" placeholder="notes" id="${id}.0.skos:note"></textarea>
                 </td>
                 <td class="delete-item"><a href="#">delete</a></td>
             </tr>
@@ -120,8 +120,7 @@
         <tfoot>
             <tr>
                 <td></td>
-                <td><input type="button" class="button add-another-item" value="$addLabel" /></td>
-                <td colspan="3"></td>
+                <td colspan="4"><input type="button" class="button add-another-item" value="$addLabel" /></td>
             </tr>
         </tfoot>
     </table>
@@ -245,6 +244,10 @@ textarea {
 .short-date {
 	display:inline;
 	width: 180px;
+}
+
+.valign-top-items td {
+	vertical-align: middle;
 }
 
 </style>

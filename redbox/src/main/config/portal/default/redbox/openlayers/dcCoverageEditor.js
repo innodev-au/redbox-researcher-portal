@@ -45,7 +45,8 @@
                             if(commaPos!=-1){
                                 userInput = userInput.substring(0,commaPos);
                             }
-                            return "func=search&format=json&rows=25&q=" + escape(userInput);
+                            var trimmedInput = $.trim(userInput);
+                            return "func=search&format=json&rows=25&q=" + escape(trimmedInput);
                         }
                     },
                     formatItem: function(row) { return splitGeonamesData(row).display; },

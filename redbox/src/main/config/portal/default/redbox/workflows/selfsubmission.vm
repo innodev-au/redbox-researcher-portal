@@ -873,6 +873,12 @@ var packageData = {
 }
 
 $(document).ready(function() {
+	// don't reload form data from cache
+    $(document).ready(function () {
+        var allInputs = $(":input");
+        $(allInputs).attr('autocomplete', 'off');
+    });
+
 	function onContentLoaded(){
         widgets.contentLoaded(function(){
             try{

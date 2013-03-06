@@ -157,49 +157,54 @@
 #end
 
 <style type="text/css">
-fieldset p textarea { display:block; width: 98%; }
+fieldset p textarea {
+	display: block;
+	width: 98%; 
+}
 fieldset {
-	border-radius:5px;
-	margin-top:30px;
+	border-radius: 5px;
+	margin-top: 30px;
 }
 .subsection {
-	width:600px;
+	width: 600px;
 }
 .subsection-table {
-	max-width:1200px;
-	width:inherit !important;
+	max-width: 1200px;
+	width: inherit !important;
 }
 .extended-subsection {
-	max-width:800px;
-	width:inherit !important;
+	max-width: 800px;
+	width: inherit !important;
 }
 fieldset label {
-	width:300px;
+	width: 300px;
 }
 fieldset td {
-	background:inherit;
+	background: inherit;
 }
 fieldset p input, fieldset p select {
-	display:block;
+	display: block;
 }
 fieldset table {
-	border:0px;
+	border: 0px;
 }
 legend {
-	position:relative;
-	width:150px;
+	width: 150px;
 	border-radius: 5px;
+    position: absolute;
+    top: -1.5em;
+    left: .5em;
 }
 legend .helpWidget {
-	position:absolute;
-	right:10px;
+	position: absolute;
+	right: 10px;
 }
 span.required {
     color: red;
-    position:relative;
-    bottom:-3px;
-    font-weight:bold;
-    font-size:100%;
+    position: relative;
+    bottom: -3px;
+    font-weight: bold;
+    font-size: 100%;
 }
 label.validation, .validation label {
 	color: red;
@@ -216,38 +221,32 @@ a.plain-link {
 /* IE hack fixes for fieldsets
 http://www.mattheerema.com/web-tech-design/2006/04/getting-fieldset-backgrounds-and-legends-to-behave-in-ie/
 */
-fieldset{
+fieldset {
     position: relative;
-    padding-top:2em;
-    margin-top:10px;
-    margin-top:45px;
-    margin-bottom:40px;
+    padding-top: 2em;
+    margin-top: 10px;
+    margin-top: 45px;
+    margin-bottom: 40px;
 }
-legend{
-    position:absolute;
-    top: -1.5em;
-    left: .5em;
-}
-
 .form-fields-save-close, .form-fields-save {
 	vertical-align: inherit;
 }
-
 textarea {
 	font-family: inherit;
 }
-
 .ui-datepicker {
 	z-index: 1010;
 }
-
 .short-date {
-	display:inline;
+	display: inline;
 	width: 180px;
 }
-
 .valign-top-items td {
 	vertical-align: middle;
+}
+.button-right {
+	float: right;
+	margin-right: 0.5em;
 }
 
 </style>
@@ -255,9 +254,10 @@ textarea {
 <div class="grid_16 widget-form inputscreen nameLookup-section" id="main-form"
     data-form-fields="dc:subject.anzsrc:for.0.rdf:resource,dc:subject.anzsrc:for.0.skos:prefLabel,grants,foaf:fundedBy.vivo:Grant.0.redbox:internalGrant,foaf:fundedBy.vivo:Grant.0.redbox:grantNumber,foaf:fundedBy.vivo:Grant.0.dc:identifier,foaf:fundedBy.vivo:Grant.0.skos:prefLabel,dc:relation.swrc:Publication,dc:relation.bibo:Website,dc:relation.swrc:Publication.0.dc:identifier,dc:relation.swrc:Publication.0.dc:title,dc:relation.swrc:Publication.0.skos:note,dc:relation.bibo:Website.0.dc:identifier,dc:relation.bibo:Website.0.dc:title,dc:relation.bibo:Website.0.skos:note,dc:creator,dc:creator.foaf:Person.0.redbox:isCoPrimaryInvestigator,dc:creator.foaf:Person.0.redbox:isPrimaryInvestigator,dc:creator.foaf:Person.0.foaf:title,dc:creator.foaf:Person.0.foaf:givenName,dc:creator.foaf:Person.0.foaf:familyName,dc:accessRights.dc:identifier,dc:accessRights.skos:prefLabel,dc:accessRights.dc:RightsStatement.skos:prefLabel,vivo:Location.vivo:GeographicLocation.gn:name,bibo:Website.1.dc:identifier,dc:subject.anzsrc:for,dc:subject.vivo:keyword.0.rdf:PlainLiteral,location,dc:title,redbox:retentionPeriod,dc:extent,dc:description,redbox:submissionProcess.dc:title,dc:SizeOrDuration,dc:coverage.vivo:DateTimeInterval,dc:coverage.redbox:timePeriod,dc:coverage.vivo:GeographicLocation.0.rdf:PlainLiteral,dc:coverage.vivo:DateTimeInterval,dc:coverage.vivo:GeographicLocation.0.dc:type,dc:coverage.vivo:GeographicLocation.0.redbox:wktRaw,dc:coverage.vivo:DateTimeInterval.vivo:start,dc:coverage.vivo:DateTimeInterval.vivo:end,dc:subject.anzsrc:for,redbox:formVersion,redbox:newForm,redbox:submissionProcess.redbox:submitted,workflow_source,redbox:submissionProcess.dc:date,redbox:submissionProcess.dc:description,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:name,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox,redbox:submissionProcess.locrel:prc.foaf:Person.foaf:phone,skos:note.0.dc:created,skos:note.0.foaf:name,skos:note.0.dc:description-timestampGroup,skos:note.0.dc:description,dc:creator.foaf:Person.0.dc:identifier,dc:creator.foaf:Person.0.foaf:name"
     data-form-fields-readonly="metaList"
+    data-pre-save-func="preSave"
     data-pre-submit-func="updateNotesMeta"
     data-submit-func="srSubmitFunc"
-	data-save-func="srSubmitSave">
+	data-save-func="srSaveFunc">
 	<input type="hidden" id="xmlns:vivo" value="http://vivoweb.org/ontology/core#" />
     <input type="hidden" id="redbox:formVersion" value="$systemConfig.getString("Unknown", "redbox.version.string")" />
     <input type="hidden" id="redbox:newForm" value="true" />
@@ -842,8 +842,10 @@ textarea {
             <input id="redbox:submissionProcess.locrel:prc.foaf:Person.foaf:mbox" type="text" size="40" />
         </p>
 
-		<button class="button form-fields-save" id="saveButton2">Save and Close</button>
-        <button class="button form-fields-submit" id="submitButton">Submit</button>
+		<button class="button form-fields-save" id="saveButton2">Save</button>
+		<button class="button form-fields-save-close" id="saveCloseButton2">Save and Close</button>
+        <span class="saved-result"></span>
+		<button class="button form-fields-submit button-right" id="submitButton">Submit</button>
 
 		<span class="hidden" id="loading">
             Please wait while submitting <img src="$portalPath/images/icons/loading.gif" />
@@ -867,7 +869,7 @@ textarea {
 	
 <div class="clear"></div>
 <script type="text/javascript">
-
+var saveAndClose = false;
 var packageData = {
     metaData: $self.getJsonMetadata().replaceAll("<", "&lt;").replaceAll(">", "&gt;")
 }
@@ -879,14 +881,14 @@ $(document).ready(function() {
         $(allInputs).attr('autocomplete', 'off');
     });
 
-	function onContentLoaded(){
-        widgets.contentLoaded(function(){
+	function onContentLoaded() {
+        widgets.contentLoaded(function() {
             try{
                 widgets.formsById["main-form"].addListener("postOnRestore",
-                    function(ctx){
+                    function(ctx) {
                         nameLookup.init();
                         // people
-                        ctx.findx(".lookup-show").each(function(){
+                        ctx.findx(".lookup-show").each(function() {
                             var e=$(this);
                             e.find("a.nameLookup-lookup").text(e.find("input.nl").val()?" | change":"lookup");
 							e.find(".identified-as-name").text(e.find("input.nl").val());
@@ -913,12 +915,12 @@ $(document).ready(function() {
                         });
                         // insert date created if not exist
                         var dcCreated = $("#dc\\:created");
-                        if(jQuery.trim(dcCreated.val())==""){
+                        if (jQuery.trim(dcCreated.val())=="") {
                             dcCreated.val(getDate());
                         }
                         // extra submission request fields
-                        if(packageData.metaData["redbox:submissionProcess.dc:title"]){$(".submitTitle").removeClass("hidden");}
-                        if(packageData.metaData["redbox:submissionProcess.skos:note"]){$(".submitNotes").removeClass("hidden");}
+                        if (packageData.metaData["redbox:submissionProcess.dc:title"]){$(".submitTitle").removeClass("hidden");}
+                        if (packageData.metaData["redbox:submissionProcess.skos:note"]){$(".submitNotes").removeClass("hidden");}
 
                         // Identifier, if not 'internal' or 'external' click() it
                         var idOrigin = $("input[id=dc:identifier.redbox:origin]").val();
@@ -929,12 +931,12 @@ $(document).ready(function() {
                 );
                 widgets.formsById["main-form"].restore(packageData.metaData);
                
-            }catch(e){
+            }catch(e) {
                 alert(e);
             }
         });
         
-        //Hide the first date in the citations list, this one is reserved for Publication Date which has it's own field
+        // Hide the first date in the citations list, this one is reserved for Publication Date which has it's own field
         var citationPublicationDateType = $("input[id='dc:biblioGraphicCitation.dc:hasPart.dc:date.1.dc:type.rdf:PlainLiteral']"); 
         citationPublicationDateType.parent().parent().parent().hide();
         citationPublicationDateType.val('publicationDate');
@@ -942,40 +944,36 @@ $(document).ready(function() {
         $('#publication-date-citation').datepicker({dateFormat:"yy-mm-dd"});
         $('#publication-date-citation').val($("input[id='dc:biblioGraphicCitation.dc:hasPart.dc:date.1.rdf:PlainLiteral']").val());
         $('#publication-date-citation').change(function () {
-         $("input[id='dc:biblioGraphicCitation.dc:hasPart.dc:date.1.rdf:PlainLiteral']").val($(this).val());
-         $("input[id='dc:biblioGraphicCitation.dc:hasPart.dc:date.1.dc:type.rdf:PlainLiteral']").val('publicationDate');
-         
+			$("input[id='dc:biblioGraphicCitation.dc:hasPart.dc:date.1.rdf:PlainLiteral']").val($(this).val());
+			$("input[id='dc:biblioGraphicCitation.dc:hasPart.dc:date.1.dc:type.rdf:PlainLiteral']").val('publicationDate');
         });
         
-        if($("input[id='dc:biblioGraphicCitation.dc:hasPart.dc:hasVersion.rdf:PlainLiteral']").val() != '') {
-          $('#show-additional-citation-metadata').click();
+        if ($("input[id='dc:biblioGraphicCitation.dc:hasPart.dc:hasVersion.rdf:PlainLiteral']").val() != '') {
+        	$('#show-additional-citation-metadata').click();
         }
         
-        if($("input[id='dc:biblioGraphicCitation.dc:hasPart.dc:hasVersion.rdf:PlainLiteral']").val() != '') {
-          $('#show-additional-citation-metadata').click();
+        if ($("input[id='dc:biblioGraphicCitation.dc:hasPart.dc:hasVersion.rdf:PlainLiteral']").val() != '') {
+        	$('#show-additional-citation-metadata').click();
         }
         
-        if($("input[id='dc:biblioGraphicCitation.dc:hasPart.skos:scopeNote']").val() != '') {
-          $('#show-additional-citation-metadata').click();
+        if ($("input[id='dc:biblioGraphicCitation.dc:hasPart.skos:scopeNote']").val() != '') {
+        	$('#show-additional-citation-metadata').click();
         }
         
-        if($('td#citationDates').find('.date-type-prefId').size() ==2) {
-           //No non publication dates so add empty row for user
-        	$('.add-citation-date').click();
+        if ($('td#citationDates').find('.date-type-prefId').size() ==2) {
+          	// No non publication dates so add empty row for user
+          	$('.add-citation-date').click();
         } else {
-           $('#show-additional-citation-metadata').click();
+          	$('#show-additional-citation-metadata').click();
         }
 	}
 
-   // widgets.contentLoaded();
+    // widgets.contentLoaded();
 	onContentLoaded();
-	
-    var hello = function() {
-    	alert('hello');
-    };
-   	
+
 	var submit = $(".form-fields-submit");
-   	// if there are visible error messages after the initial validation
+
+	// if there are visible error messages after the initial validation
    	// scroll to the fieldset containg first one (or just above the first one if it's
    	// not in a fieldset for some reason), and bounce the error message
    	var focusFirstError = function() {		
@@ -994,7 +992,12 @@ $(document).ready(function() {
    	
     $(".form-fields-submit").click(focusFirstError);
 	$(".form-fields-save").click(focusFirstError);
-	
+
+	$(".form-fields-save-close").click(function() {
+        saveAndClose = true;
+        $(".form-fields-save").click();
+    });
+
 	var accessRightsField = document.getElementById("dc:accessRights.skos:prefLabel")
 	var accessRightsDropdown = document.getElementById("access-rights-dropdown");
 	var accessRightsText = document.getElementById("access-rights-text");
@@ -1004,7 +1007,7 @@ $(document).ready(function() {
         	accessRightsDropdown.setAttribute('style', "display:inline;");
         	accessRightsText.setAttribute('style', "display:none;");
             
-        	//Non Standards based IE browser
+        	// Non Standards based IE browser
 			if (typeof(accessRightsDropdown.style.setAttribute) === "function") { 
                 accessRightsDropdown.style.setAttribute('cssText', "display:inline;");
             	accessRightsText.style.setAttribute('cssText', "display:none;");
@@ -1024,8 +1027,8 @@ $(document).ready(function() {
 
 function truncate(text, length, ellipsis) {
     length=length||25;
-    if(text.length<length){ return text; }
-    for(var i=length-1;text.charAt(i)!=" ";i--){ length--; }
+    if (text.length<length){ return text; }
+    for (var i=length-1;text.charAt(i)!=" ";i--){ length--; }
     return text.substr(0,length)+(ellipsis||"...");
 }
 
@@ -1055,22 +1058,21 @@ widgets.htmlMessageBox = function(html, callback, title) {
 };
 
 function srSubmitFunc(widgetForm,formData){
-    function failed(msg){
+    function failed(msg) {
         widgets.messageBox(
             "Sorry, an error occurred processing your request. Please try again."+(msg?"\n"+msg:""),
             function(){
-                $("#submitButton,#saveButton2").removeAttr("disabled");
+                $("#submitButton,#saveButton2,#saveCloseButton2").removeAttr("disabled");
                 $("#loading").hide();
             },
             "Error");
     }
-    if(widgetForm.validator.isOkToSubmit()){
-        $("#submitButton,#saveButton2").attr("disabled", "disabled");
+    if (widgetForm.validator.isOkToSubmit()) {
+        $("#submitButton,#saveButton2,#saveCloseButton2").attr("disabled", "disabled");
         $("#loading").show();
         var title = formData["dc:title"];
         var description = formData["dc:description"];
-
-        var postData = jQuery.extend(formData,{
+        var postData = jQuery.extend(formData, {
             ajax: true,
             func: "update-package-meta-deposit",
             packageType: "dataset",
@@ -1087,21 +1089,21 @@ function srSubmitFunc(widgetForm,formData){
             url: "$portalPath/actions/workflow.ajax",
             data: postData,
             dataType: "json",
-            success: function(workflowData){
+            success: function(workflowData) {
                 
-				if(workflowData.ok){
-					$("#submitButton,#saveButton2").removeAttr("disabled");
+				if (workflowData.ok) {
+					$("#submitButton,#saveButton2,#saveCloseButton2").removeAttr("disabled");
 					$("#loading").hide();
 					widgets.htmlMessageBox(
 						$('#success-dialog-message').html(),
-						function(){ window.location.href="$portalPath/home"; },
+						function() { window.location.href="$portalPath/home"; },
 						"Submitted");
-				}else{
+				} else {
 					failed(workflowData.error);
 				}			
                 
             },
-            error: function(req){
+            error: function(req) {
                 failed(req.responseText);
             }
         });
@@ -1119,20 +1121,18 @@ function contains(array, value) {
 	return contains;
 }
 
-function srSubmitSave(widgetForm,formData) {
-
+function srSaveFunc(widgetForm,formData) {
 	function failed(msg){
         widgets.messageBox(
             "Sorry, an error occurred processing your request. Please try again."+(msg?"\n"+msg:""),
-            function(){
-                $("#submitButton,#saveButton2").removeAttr("disabled");
+            function() {
+                $("#submitButton,#saveButton2,#saveCloseButton2").removeAttr("disabled");
                 $("#loading").hide();
             },
             "Error");
     }
 		
-	if(widgetForm.validator.isOkToSave()){
-	
+	if (widgetForm.validator.isOkToSave()) {
     	var title = formData["dc:title"];
         var description = formData["dc:description"];
         var postData = jQuery.extend(formData,{
@@ -1152,16 +1152,21 @@ function srSubmitSave(widgetForm,formData) {
             url: "$portalPath/actions/workflow.ajax",
             data: postData,
             dataType: "json",
-            success: function(workflowData){
+            success: function(workflowData) {
                 
-    			if(workflowData.ok){
-    				$("#submitButton,#saveButton2").removeAttr("disabled");
+    			if (workflowData.ok) {
+    				$("#submitButton,#saveButton2,#saveCloseButton2").removeAttr("disabled");
     				$("#loading").hide();
-    				widgets.htmlMessageBox(
-    					$('#save-dialog-message').html(),
-    					function(){ window.location.href="$portalPath/home"; },
-    					"Saved");
-    			}else{
+
+					if (saveAndClose) {
+        				widgets.htmlMessageBox(
+        					$('#save-dialog-message').html(),
+    						function() {
+                        		window.location.href = "$portalPath/home";
+    						},
+        					"Saved");
+					}
+    			} else {
     				failed(workflowData.error);
     			}			
                 
@@ -1173,10 +1178,13 @@ function srSubmitSave(widgetForm,formData) {
 	}
 }
 
+function preSave(widgetForm, data) {
+	// prepare for display of the unobtrusive loading image and "Saved OK" message
+    $(".saved-result").html('<img src="$portalPath/images/icons/loading.gif" />').show();
+}
 
 
-
-$(function(){
+$(function() {
     $(".vkeyword").live("focus", function(){
         var elem=$(this);
         elem.unautocomplete();
@@ -1184,7 +1192,7 @@ $(function(){
     });
 });
 
-function lookupDone(target,data){
+function lookupDone(target,data) {
     var p=target.parent();
     target.text(" | change");
     var displayName = p.find(".identified-as-name");
@@ -1221,14 +1229,14 @@ function lookupDone(target,data){
     }
 }
 
-function lookupCleared(target,data){
+function lookupCleared(target, data) {
     var p = target.parent();
     target.text("lookup");
     p.find(".identified-as-name").text("");
     p.find("input.nl").val("");
 }
 
-function pcLookupDone(target,data){
+function pcLookupDone(target, data) {
     lookupDone(target,data);
     var metadata = data["result-metadata"];
     if (metadata != null) {
@@ -1236,12 +1244,12 @@ function pcLookupDone(target,data){
     }
 }
 
-function pcLookupCleared(target,data){
+function pcLookupCleared(target, data) {
     lookupCleared(target,data);
     $("#locrel\\:prc\\.foaf\\:Person\\.foaf\\:email").val("");
 }	
 
-function getDate(){
+function getDate() {
     var d = new Date();
     var s = d.getFullYear()+"-"+pad(d.getMonth()+1,2)+"-"+pad(d.getDate(),2);
     return s;
@@ -1430,7 +1438,7 @@ $(function() {
 });
 
 // geo location stuff
-(function($){
+(function($) {
     // OpenLayers stylesheets
     $('head').append('<link rel="stylesheet" type="text/css" id="openLayersCss1">');
     $('#openLayersCss1').attr('href', '$portalPath/openlayers/theme/default/style.css');

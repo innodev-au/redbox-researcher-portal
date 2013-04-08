@@ -78,7 +78,7 @@ You will need to add the unpack-researcher-portal execution to the maven-depende
 		</plugin>
 
 
-Licence
--------
+User Guide
+----------
 
-This work is licensed under a <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/au/">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Australia License</a>.
+The University of Adelaide has <a href="http://libguides.adelaide.edu.au/researchdata">provided a user guide</a> for this software.

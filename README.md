@@ -77,3 +77,8 @@ You will need to add the unpack-researcher-portal execution to the maven-depende
 			</executions>
 		</plugin>
 
+
+Licence
+-------
+
+This work is licensed under a <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/au/">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Australia License</a>.

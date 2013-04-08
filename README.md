@@ -81,4 +81,4 @@ You will need to add the unpack-researcher-portal execution to the maven-depende
 User Guide
 ----------
 
-The University of Adelaide has <a href="http://libguides.adelaide.edu.au/researchdata">provided a user guide</a> for this software.
+<a href="http://libguides.adelaide.edu.au/researchdata">This user guide</a> has been provided by The University of Adelaide.

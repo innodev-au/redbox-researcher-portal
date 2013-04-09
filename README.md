@@ -77,3 +77,8 @@ You will need to add the unpack-researcher-portal execution to the maven-depende
 			</executions>
 		</plugin>
 
+
+User Guide
+----------
+
+<a href="http://libguides.adelaide.edu.au/researchdata">This user guide</a> has been provided by The University of Adelaide.
